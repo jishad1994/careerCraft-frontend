@@ -1,0 +1,74 @@
+<!-- signup-form.component.html -->
+<div class="w-full max-w-md bg-white p-8 rounded-2xl shadow-lg space-y-6">
+
+    <h2 class="text-2xl font-bold text-center text-gray-800 mb-4">Make the most of your professional life</h2>
+
+    <form [formGroup]="registerForm" (ngSubmit)="register()" class="space-y-6">
+
+        <form [formGroup]="registerForm" (ngSubmit)="register()" class="space-y-6">
+
+            <!-- First Name -->
+            <div>
+                <input type="text" formControlName="firstName" placeholder="First name" class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 focus:bg-white transition duration-200" [class.border-red-500]="registerForm.get('firstName')?.touched && registerForm.get('firstName')?.invalid">
+                <div *ngIf="registerForm.get('firstName')?.touched && registerForm.get('firstName')?.invalid" class="text-red-500 text-sm mt-1 space-y-1">
+                    <div *ngIf="registerForm.get('firstName')?.errors?.['required']">First name is required.</div>
+                    <div *ngIf="registerForm.get('firstName')?.errors?.['pattern']">Only alphabets allowed.</div>
+                    <div *ngIf="registerForm.get('firstName')?.errors?.['minlength']">At least 2 characters required.</div>
+                    <div *ngIf="registerForm.get('firstName')?.errors?.['maxlength']">Maximum 10 characters allowed.</div>
+                </div>
+            </div>
+
+            <!-- Last Name -->
+            <div>
+                <input type="text" formControlName="lastName" placeholder="Last name" class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 focus:bg-white transition duration-200" [class.border-red-500]="registerForm.get('lastName')?.touched && registerForm.get('lastName')?.invalid">
+                <div *ngIf="registerForm.get('lastName')?.touched && registerForm.get('lastName')?.invalid" class="text-red-500 text-sm mt-1 space-y-1">
+                    <div *ngIf="registerForm.get('lastName')?.errors?.['required']">Last name is required.</div>
+                    <div *ngIf="registerForm.get('lastName')?.errors?.['pattern']">Only alphabets allowed.</div>
+                    <div *ngIf="registerForm.get('lastName')?.errors?.['minlength']">At least 2 characters required.</div>
+                    <div *ngIf="registerForm.get('lastName')?.errors?.['maxlength']">Maximum 10 characters allowed.</div>
+                </div>
+            </div>
+
+
+            <!-- Phone Number -->
+            <div>
+                <input type="text" formControlName="phone" placeholder="Phone number" class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 focus:bg-white transition duration-200" [class.border-red-500]="registerForm.get('phone')?.touched && registerForm.get('phone')?.invalid">
+                <div *ngIf="registerForm.get('phone')?.touched && registerForm.get('phone')?.invalid" class="text-red-500 text-sm mt-1">
+                    <div *ngIf="registerForm.get('phone')?.errors?.['required']">Phone number is required.</div>
+                    <div *ngIf="registerForm.get('phone')?.errors?.['pattern']">Enter a valid Indian phone number.</div>
+                    <div *ngIf="registerForm.get('phone')?.errors?.['phoneExists']">Phone number already exists.</div>
+                </div>
+            </div>
+            <!-- Password -->
+            <div>
+                <input type="password" formControlName="password" placeholder="Password" class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 focus:bg-white transition duration-200" [class.border-red-500]="registerForm.get('password')?.touched && registerForm.get('password')?.invalid">
+                <div *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.invalid" class="text-red-500 text-sm mt-1 space-y-1">
+                    <div *ngIf="registerForm.get('password')?.errors?.['required']">Password is required.</div>
+                    <div *ngIf="registerForm.get('password')?.errors?.['minlength']">At least 8 characters required.</div>
+                    <div *ngIf="registerForm.get('password')?.errors?.['pattern']">
+                        Must contain uppercase, lowercase, and a number.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Confirm Password -->
+            <div>
+                <input type="password" formControlName="confirmPassword" placeholder="Confirm password" class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 focus:bg-white transition duration-200" [class.border-red-500]="(registerForm.get('confirmPassword')?.touched && registerForm.get('confirmPassword')?.invalid) || (registerForm.errors?.['passwordMismatch'] && registerForm.get('confirmPassword')?.touched)">
+                <div *ngIf="registerForm.get('confirmPassword')?.touched && registerForm.get('confirmPassword')?.invalid" class="text-red-500 text-sm mt-1">
+                    <div *ngIf="registerForm.get('confirmPassword')?.errors?.['required']">Please confirm your password.</div>
+                </div>
+                <div *ngIf="registerForm.errors?.['passwordMismatch'] && registerForm.get('confirmPassword')?.touched" class="text-red-500 text-sm mt-1">
+                    Passwords do not match.
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="w-full bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-700 text-white font-semibold py-3 rounded-lg transition-transform transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                [disabled]="registerForm.invalid">
+        Register
+      </button>
+
+        </form>
+
+    </form>
+</div>
