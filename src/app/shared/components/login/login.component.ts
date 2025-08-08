@@ -17,8 +17,8 @@ import {
 export class LoginComponent {
   loginForm: FormGroup;
 
-  @Input() heading: string = '';
-  @Input() buttonLabel: string = '';
+
+
   @Output() submitForm = new EventEmitter<{
     email: string;
     password: string;

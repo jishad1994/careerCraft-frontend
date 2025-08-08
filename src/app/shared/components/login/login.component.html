@@ -1,26 +1,22 @@
 <!-- login.component.html -->
 <div class="w-full max-w-md bg-white p-8 rounded-2xl shadow-lg space-y-6">
     <div class="px-6 py-6 border-b border-gray-100 bg-gray-50">
-        <h2 class="text-2xl font-semibold text-gray-900 text-center">{{ heading }}</h2>
+        <h2 class="text-2xl font-semibold text-gray-900 text-center">Hello</h2>
+        <p class="text-xl font-semibold text-gray-900 text-center">Login to get Strarted</p>
     </div>
-    
+
     <div class="px-6 py-6">
         <form [formGroup]="loginForm" (ngSubmit)="submit()" class="space-y-5">
-            
+
             <!-- Email Field -->
             <div class="space-y-2">
                 <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
-                <input 
-                    id="email"
-                    type="email" 
-                    formControlName="email" 
-                    placeholder="Enter your email"
+                <input id="email" type="email" formControlName="email" placeholder="Enter your email"
                     class="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                     [class.border-red-500]="email.touched && email.invalid"
                     [class.bg-red-50]="email.touched && email.invalid"
                     [class.focus:ring-red-500]="email.touched && email.invalid"
-                    [class.focus:border-red-500]="email.touched && email.invalid"
-                />
+                    [class.focus:border-red-500]="email.touched && email.invalid" />
                 <div *ngIf="email.touched && email.invalid" class="text-red-600 text-xs mt-1">
                     <div *ngIf="email.errors?.['required']">Email is required.</div>
                     <div *ngIf="email.errors?.['email']">Please enter a valid email address.</div>
@@ -30,17 +26,12 @@
             <!-- Password Field -->
             <div class="space-y-2">
                 <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-                <input 
-                    id="password"
-                    type="password" 
-                    formControlName="password" 
-                    placeholder="Enter your password"
+                <input id="password" type="password" formControlName="password" placeholder="Enter your password"
                     class="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                     [class.border-red-500]="password.touched && password.invalid"
                     [class.bg-red-50]="password.touched && password.invalid"
                     [class.focus:ring-red-500]="password.touched && password.invalid"
-                    [class.focus:border-red-500]="password.touched && password.invalid"
-                />
+                    [class.focus:border-red-500]="password.touched && password.invalid" />
                 <div *ngIf="password.touched && password.invalid" class="text-red-600 text-xs mt-1">
                     <div *ngIf="password.errors?.['required']">Password is required.</div>
                     <div *ngIf="password.errors?.['pattern']">
@@ -50,20 +41,14 @@
             </div>
 
             <!-- Submit Button -->
-            <button 
-                type="submit" 
+            <button type="submit"
                 class="w-full py-3 px-4 mt-6 text-white font-medium text-base rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2"
-                [class.bg-blue-600]="loginForm.valid"
-                [class.hover:bg-blue-700]="loginForm.valid"
-                [class.focus:ring-blue-500]="loginForm.valid"
-                [class.transform]="loginForm.valid"
-                [class.hover:-translate-y-0.5]="loginForm.valid"
-                [class.hover:shadow-lg]="loginForm.valid"
-                [class.bg-gray-400]="loginForm.invalid"
-                [class.cursor-not-allowed]="loginForm.invalid"
-                [disabled]="loginForm.invalid"
-            >
-                {{ buttonLabel || 'Sign In' }}
+                [class.bg-blue-600]="loginForm.valid" [class.hover:bg-blue-700]="loginForm.valid"
+                [class.focus:ring-blue-500]="loginForm.valid" [class.transform]="loginForm.valid"
+                [class.hover:-translate-y-0.5]="loginForm.valid" [class.hover:shadow-lg]="loginForm.valid"
+                [class.bg-gray-400]="loginForm.invalid" [class.cursor-not-allowed]="loginForm.invalid"
+                [disabled]="loginForm.invalid">
+                Sign In
             </button>
 
         </form>
