@@ -51,14 +51,14 @@
 
         <!-- Phone Number -->
         <div>
-            <input type="text" formControlName="phone" placeholder="Phone number"
+            <input type="number" formControlName="phone" placeholder="Phone number" 
                 class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 focus:bg-white transition duration-200"
                 [class.border-red-500]="registerForm.get('phone')?.touched && registerForm.get('phone')?.invalid">
             <div *ngIf="registerForm.get('phone')?.touched && registerForm.get('phone')?.invalid"
                 class="text-red-500 text-sm mt-1">
                 <div *ngIf="registerForm.get('phone')?.errors?.['required']">Phone number is required.</div>
                 <div *ngIf="registerForm.get('phone')?.errors?.['pattern']">Enter a valid Indian phone number.</div>
-                <div *ngIf="registerForm.get('phone')?.errors?.['phoneExists']">Phone number already exists.</div>
+                <div *ngIf="registerForm.get('phone')?.errors?.['phoneExists']">Phone number already taken.</div>
             </div>
         </div>
         <!-- Password -->

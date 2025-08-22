@@ -17,21 +17,30 @@ export class AuthService {
   //check phone number exists
   checkPhoneExists(phone: string): Observable<{ exists: boolean }> {
     return this.http.get<{ exists: boolean }>(
-      `${this.baseUrl}/api/user/check-phone/${phone}`
+      `${this.baseUrl}/api/auth/user/check-phone/${phone}`
     );
   }
 
   //check emai exists
   checkEmailExists(email: string): Observable<{ exists: boolean }> {
     return this.http.get<{ exists: boolean }>(
-      `${this.baseUrl}/api/user/check-email/${email}`
+      `${this.baseUrl}/api/auth/user/check-email/${email}`
     );
   }
 
   //user register
   userSignup(payload: userRegister): Observable<any> {
     console.log('user signup works');
+    return this.http.post(`${this.baseUrl}/api/auth/user/signup`, payload);
+  }
 
-    return this.http.post(`${this.baseUrl}/api/user/signup`, payload);
+  //request OTP
+  requestOTP(payload: userRegister): Observable<any> {
+    return this.http.post(`${this.baseUrl}/api/auth/user/request-OTP`, payload);
+  }
+
+  //verify OTP
+  verifyOTP(payload: { otp: string; email: string }): Observable<any> {
+    return this.http.post(`${this.baseUrl}/api/auth/user/verify-OTP`, payload);
   }
 }

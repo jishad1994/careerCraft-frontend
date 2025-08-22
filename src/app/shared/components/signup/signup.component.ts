@@ -13,17 +13,14 @@ import {
   ValidationErrors,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { catchError, debounceTime, map, Observable, of, switchMap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../../services/auth.service';
+import { Router } from '@angular/router';
 
 //mat theme
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatCardModule } from '@angular/material/card';
 import { FormValidators } from '../../../validators/form.validators';
+import { userRegister } from '../../../models/auth.interface';
+import { OtpVerificationComponent } from '../otp-verification/otp-verification.component';
 
 @Component({
   selector: 'app-signup',
@@ -38,7 +35,8 @@ export class SignupComponent {
     private FB: FormBuilder,
     private http: HttpClient,
     private authService: AuthService,
-    private formValidator: FormValidators
+    private formValidator: FormValidators,
+    private router: Router
   ) {
     this.registerForm = this.FB.group(
       {
@@ -63,13 +61,14 @@ export class SignupComponent {
         email: [
           '',
           [Validators.required, Validators.email],
-          [formValidator.emailUniqueValidator.bind(authService)],
+          [formValidator.emailUniqueValidator.bind(this.formValidator)],
         ],
         phone: [
           '',
           [Validators.required, Validators.pattern(PHONE_REGEX)],
-          [formValidator.phoneUniqueValidator.bind(authService)],
+          [formValidator.phoneUniqueValidator.bind(this.formValidator)],
         ],
+        role: ['user'], //fixed role for users
         password: [
           '',
           [
@@ -88,11 +87,25 @@ export class SignupComponent {
     if (this.registerForm.invalid) {
       console.log('form not valid');
     } else {
-      // console.log(this.registerForm.value);
+      this.authService.requestOTP(this.registerForm.value).subscribe({
+        next: (res) => {
+          if (res.success) {
+            //save the user email in the local storage for later retrieval
+            localStorage.setItem('userEmail', res.email);
+            //navigate to OTP verification page
+            this.router.navigate(['user/OTP-verification'], {
+              state: {
+                userEmail: this.registerForm.get('email')?.value, //keep the emai in the state
+              },
+            });
+          } else {
+            //toast logic
 
-      console.log( this.registerForm.value.firstName);
-      this.authService.userSignup(this.registerForm.value).subscribe({
-        next: (res) => console.log('Server response:', res),
+
+  
+          }
+        },
+
         error: (err) => console.error('Error:', err),
       });
     }
