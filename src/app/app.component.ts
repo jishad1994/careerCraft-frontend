@@ -7,7 +7,7 @@ import { LoginPageComponent } from "./pages/login-page/login-page.component";
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, SignupPageComponent, LoginPageComponent],
+  imports: [RouterOutlet],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })

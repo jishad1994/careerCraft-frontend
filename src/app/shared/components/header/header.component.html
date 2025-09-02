@@ -1,0 +1,44 @@
+<header class="w-full bg-white shadow-md px-6 py-3 flex items-center justify-between">
+    <!-- Logo -->
+    <div class="flex items-center space-x-3">
+        <img src={{logoUrl}} alt="Job Portal Logo" class="h-40 w-40" />
+        <span class="font-bold text-xl text-gray-800"></span>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="flex-1 mx-6">
+        <form (ngSubmit)="onSearch()" class="flex">
+            <input [(ngModel)]="searchQuery" name="search" type="text" placeholder="Search for jobs or companies..."
+                class="w-full border border-gray-300 rounded-l-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <button type="submit" class="bg-blue-600 text-white px-4 rounded-r-md hover:bg-blue-700">
+                Search
+            </button>
+        </form>
+    </div>
+
+    <!-- Navigation Links -->
+    <nav class="flex items-center space-x-6 text-gray-700">
+        <a routerLink="/" class="hover:text-blue-600">Home</a>
+
+        <ng-container *ngIf="role === 'user'">
+            <a routerLink="/jobs" class="hover:text-blue-600">Jobs</a>
+            <a routerLink="/saved" class="hover:text-blue-600">Saved Jobs</a>
+        </ng-container>
+
+        <ng-container *ngIf="role === 'company'">
+            <a routerLink="/post-job" class="hover:text-blue-600">Post Job</a>
+            <a routerLink="/applications" class="hover:text-blue-600">Applications</a>
+        </ng-container>
+
+        <!-- Auth Buttons -->
+        <ng-container *ngIf="!isLoggedIn; else loggedIn">
+            <a routerLink="/login" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Login</a>
+        </ng-container>
+
+        <ng-template #loggedIn>
+            <button (click)="onLogout()" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">
+                Logout
+            </button>
+        </ng-template>
+    </nav>
+</header>

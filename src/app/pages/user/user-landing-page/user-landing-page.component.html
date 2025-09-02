@@ -1,0 +1,6 @@
+<app-header
+  [isLoggedIn]="isLoggedIn"
+  [role]="userRole"
+  (logout)="handleLogout()"
+  (search)="handleSearch($event)"
+></app-header>

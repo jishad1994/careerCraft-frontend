@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
+  COMPANY_NAME_REGEX,
   NAME_REGEX,
   PASSWORD_REGEX,
   PHONE_REGEX,
@@ -14,13 +15,12 @@ import {
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { AuthService } from '../../../services/auth.service';
 import { Router } from '@angular/router';
-
-//mat theme
+import { Subject, takeUntil } from 'rxjs';
 import { FormValidators } from '../../../validators/form.validators';
-import { userRegister } from '../../../models/auth.interface';
-import { OtpVerificationComponent } from '../otp-verification/otp-verification.component';
+import { SignupFormHelper } from '../../../helpers/signup-form.helper';
+import { SignupAuthService } from '../../../services/signup-auth/signup-auth.service';
+import { SignupServiceHandler } from '../../../services/signup-service.handler';
 
 @Component({
   selector: 'app-signup',
@@ -28,18 +28,23 @@ import { OtpVerificationComponent } from '../otp-verification/otp-verification.c
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.css'],
 })
-export class SignupComponent {
+export class SignupComponent implements OnInit, OnDestroy {
   registerForm: FormGroup;
+  selectedRole: 'user' | 'company' = 'user';
+  private destroy$ = new Subject<void>();
 
   constructor(
     private FB: FormBuilder,
     private http: HttpClient,
-    private authService: AuthService,
+    private authService: SignupAuthService,
     private formValidator: FormValidators,
-    private router: Router
+    private router: Router,
+    private signupFormHelper: SignupFormHelper,
+    private signupServiceHandler: SignupServiceHandler
   ) {
     this.registerForm = this.FB.group(
       {
+        role: ['user', [Validators.required]],
         firstName: [
           '',
           [
@@ -58,17 +63,24 @@ export class SignupComponent {
             Validators.pattern(NAME_REGEX),
           ],
         ],
+        companyName: [
+          '',
+          [
+            Validators.minLength(2),
+            Validators.maxLength(50),
+            Validators.pattern(COMPANY_NAME_REGEX),
+          ],
+        ],
         email: [
           '',
           [Validators.required, Validators.email],
-          [formValidator.emailUniqueValidator.bind(this.formValidator)],
+          [this.formValidator.phoneOrEmailUniqueValidator(this.selectedRole)],
         ],
         phone: [
           '',
           [Validators.required, Validators.pattern(PHONE_REGEX)],
-          [formValidator.phoneUniqueValidator.bind(this.formValidator)],
+          [this.formValidator.phoneOrEmailUniqueValidator(this.selectedRole)],
         ],
-        role: ['user'], //fixed role for users
         password: [
           '',
           [
@@ -83,31 +95,58 @@ export class SignupComponent {
     );
   }
 
+  ngOnInit(): void {
+    this.setupRoleChangeListener();
+  }
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  private setupRoleChangeListener(): void {
+    this.registerForm
+      .get('role')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((role: 'user' | 'company') => {
+        this.selectedRole = role;
+        this.signupFormHelper.updateValidatorsForRole(this.registerForm, role);
+      });
+  }
+
   signup() {
     if (this.registerForm.invalid) {
       console.log('form not valid');
-    } else {
-      this.authService.requestOTP(this.registerForm.value).subscribe({
-        next: (res) => {
-          if (res.success) {
-            //save the user email in the local storage for later retrieval
-            localStorage.setItem('userEmail', res.email);
-            //navigate to OTP verification page
-            this.router.navigate(['user/OTP-verification'], {
-              state: {
-                userEmail: this.registerForm.get('email')?.value, //keep the emai in the state
-              },
-            });
-          } else {
-            //toast logic
-
-
-  
-          }
-        },
-
-        error: (err) => console.error('Error:', err),
-      });
+      this.signupFormHelper.markAllFieldsAsTouched(this.registerForm);
+      return;
     }
+
+    const formData = this.signupFormHelper.prepareFormDataForSubmission(
+      this.registerForm.value
+    );
+
+    this.signupServiceHandler
+      .handleSignup(formData)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.signupServiceHandler.handleOTPResponse(
+            response,
+            this.registerForm.get('email')?.value,
+            this.selectedRole
+          );
+        },
+        error: (error) => {
+          this.signupServiceHandler.handleSignupError(error, this.selectedRole);
+        },
+      });
+  }
+
+  // Getter for easy access in template
+  get isCompanyMode() {
+    return this.selectedRole === 'company';
+  }
+
+  get isUserMode() {
+    return this.selectedRole === 'user';
   }
 }

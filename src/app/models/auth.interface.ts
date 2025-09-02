@@ -1,6 +1,7 @@
-export interface userRegister {
-  firstName: string;
-  lastName: string;
+export interface IRegisterData {
+  firstName?: string;
+  lastName?: string;
+  name?: string;
   phone: string;
   role: string;
   password: string;

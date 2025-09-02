@@ -10,11 +10,14 @@ import {
   distinctUntilChanged,
 } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { AuthService } from '../services/auth.service';
+import { SignupAuthService } from '../services/signup-auth/signup-auth.service';
 
 @Injectable({ providedIn: 'root' })
 export class FormValidators {
-  constructor(private http: HttpClient, private authService: AuthService) {}
+  constructor(
+    private http: HttpClient,
+    private authService: SignupAuthService
+  ) {}
 
   //confirm password validator
   static passwordMatchValidator(form: AbstractControl) {
@@ -27,37 +30,21 @@ export class FormValidators {
     return null;
   }
 
- 
-  //unique phone number validator
+  // unique phone number validator
 
-  public phoneUniqueValidator(
-    control: AbstractControl
-  ): Observable<ValidationErrors | null> {
-    console.log('phone is checking');
-    if (!control.value) {
-      return of(null);
-    }
-    return of(control.value).pipe(
-      debounceTime(500),
-      switchMap((phone) => this.authService.checkPhoneExists(phone)),
-      map((response) => (response.exists ? { phoneExists: true } : null)),
-      catchError(() => of(null))
-    );
-  }
-
-  //email unique validator
-  public emailUniqueValidator(
-    control: AbstractControl
-  ): Observable<ValidationErrors | null> {
-    if (!control.value) {
-      return of(null);
-    }
-    return of(control.value).pipe(
-      debounceTime(500),
-      distinctUntilChanged(),
-      switchMap((email) => this.authService.checkEmailExists(email)),
-      map((response) => (response.exists ? { emailExists: true } : null)),
-      catchError(() => of(null))
-    );
+  public phoneOrEmailUniqueValidator(role: string) {
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+      if (!control.value) {
+        return of(null);
+      }
+      return of(control.value).pipe(
+        debounceTime(500),
+        switchMap((phoneOrEmail) =>
+          this.authService.checkPhoneOrEmailExists(phoneOrEmail, role)
+        ),
+        map((response) => (response.exists ? { exists: true } : null)),
+        catchError(() => of(null))
+      );
+    };
   }
 }

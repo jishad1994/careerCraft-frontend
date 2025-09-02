@@ -7,6 +7,7 @@
 
     <div class="px-6 py-6">
         <form [formGroup]="loginForm" (ngSubmit)="submit()" class="space-y-5">
+            >
 
             <!-- Email Field -->
             <div class="space-y-2">
@@ -40,6 +41,19 @@
                 </div>
             </div>
 
+            <!-- Role Selection -->
+            <div class="flex items-center space-x-6">
+                <label class="flex items-center space-x-2">
+                    <input type="radio" formControlName="role" value="user" />
+                    <span>User</span>
+                </label>
+                <label class="flex items-center space-x-2">
+                    <input type="radio" formControlName="role" value="company" />
+                    <span>Company</span>
+                </label>
+            </div>
+
+
             <!-- Submit Button -->
             <button type="submit"
                 class="w-full py-3 px-4 mt-6 text-white font-medium text-base rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2"
@@ -48,7 +62,7 @@
                 [class.hover:-translate-y-0.5]="loginForm.valid" [class.hover:shadow-lg]="loginForm.valid"
                 [class.bg-gray-400]="loginForm.invalid" [class.cursor-not-allowed]="loginForm.invalid"
                 [disabled]="loginForm.invalid">
-                Sign In
+                {{ loading ? 'Logging in...' : 'Login' }}
             </button>
 
         </form>
