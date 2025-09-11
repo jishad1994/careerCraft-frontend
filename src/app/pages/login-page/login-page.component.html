@@ -1,10 +1,10 @@
 <div class="min-h-screen grid lg:grid-cols-2  relative">
 
     <!-- Logo (Top-Left Corner) -->
-    <div class=" top-6 left-6 z-10 fixed">
+    <div class=" top-6 left-6 z-10 fixed ">
         <div class="flex items-center space-x-2">
             <!-- <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-lg"> -->
-                <!-- <i class="fas fa-briefcase text-blue-600 text-xl"></i> -->
+            <!-- <i class="fas fa-briefcase text-blue-600 text-xl"></i> -->
             <!-- </div> -->
             <!-- <span class="text-black font-bold text-xl">CareerCraft</span> -->
             <img class="w-30 ml-5" src={{logoUrl}} alt="logo">
@@ -15,7 +15,7 @@
 
 
     <!-- left banner -->
-    <div class="sticky top-0 h-screen flex items-center justify-center bg-gray-50">
+    <div class="sticky top-0 h-screen flex items-center justify-center bg-gray-50 z-0">
         <div class="w-4/5 h-120 bg-center bg-cover rounded-xl shadow-2xl flex items-center justify-center text-white text-xl font-bold"
             style="background-image: url('assets/images/register-banner.svg');">
 
@@ -26,50 +26,15 @@
 
 
 
-    <!-- Right Signup -->
-    <div class="flex flex-col h-screen overflow-y-auto bg-gray-50 p-8">
+    <!-- Right login -->
+    <div class="flex flex-col h-screen overflow-y-auto bg-gray-50 p-8 ">
 
-        <!-- Signup Box -->
-        <div class="flex flex-col flex-grow items-center justify-center">
-            <div class="w-full max-w-md">
-                <div class="glass-effect rounded-2xl p-8 shadow-xl hover-lift">
-                    <!-- <div class="text-center mb-8">
-                        <h2 class="text-3xl font-bold text-gray-800 mb-2">Get Started</h2>
-                        <p class="text-gray-600">Join thousands of professionals today</p>
-                    </div> -->
+       
 
                     <!-- signup component -->
-                    <app-login></app-login>
+                    <app-login (formSubmit)="handleLogin($event)" [loading]="loading" (onGoogleLogin)="initGoogleLogin($event)"></app-login>
 
-                    <!-- Divider -->
-                    <div class="relative mb-6 mt-6">
-                        <div class="absolute inset-0 flex items-center">
-                            <div class="w-full border-t border-gray-300"></div>
-                        </div>
-                        <div class="relative flex justify-center text-sm">
-                            <span class="px-4 bg-white text-gray-500">or</span>
-                        </div>
-                    </div>
-
-                    <!-- Social Signup Buttons -->
-                    <div class="space-y-3 mb-6">
-                        <button
-                            class="social-btn w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg bg-white hover:bg-gray-50 text-gray-700 font-medium">
-                            <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google"
-                                class="w-5 h-5 mr-3">
-                            Continue with Google
-                        </button>
-                    </div>
-
-                    <div class="text-center mt-6">
-                        <p class="text-gray-600">
-                            Do not have an account?
-                            <a href="#" class="text-blue-600 hover:underline font-medium">Signup</a>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
+                   
 
         <!-- Footer (Part of scroll) -->
         <footer class="mt-8 py-4 border-t border-gray-200">

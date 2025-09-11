@@ -27,49 +27,11 @@
 
 
     <!-- Right Signup -->
-    <div class="flex flex-col h-screen overflow-y-auto bg-gray-50 p-8">
+    <div class="flex flex-col h-screen overflow-y-auto bg-gray-50 p-8 z-10">
 
         <!-- Signup Box -->
-        <div class="flex flex-col flex-grow items-center justify-center">
-            <div class="w-full max-w-md">
-                <div class="glass-effect rounded-2xl p-8 shadow-xl hover-lift">
-                    <div class="text-center mb-8">
-                        <h2 class="text-3xl font-bold text-gray-800 mb-2">Get Started</h2>
-                        <p class="text-gray-600">Join thousands of professionals today</p>
-                    </div>
+        <app-signup (GoogleSignupButton)="onGoogleSignup($event)" ></app-signup>
 
-                    <!-- signup component -->
-                    <app-signup></app-signup>
-
-                    <!-- Divider -->
-                    <div class="relative mb-6 mt-6">
-                        <div class="absolute inset-0 flex items-center">
-                            <div class="w-full border-t border-gray-300"></div>
-                        </div>
-                        <div class="relative flex justify-center text-sm">
-                            <span class="px-4 bg-white text-gray-500">or</span>
-                        </div>
-                    </div>
-
-                    <!-- Social Signup Buttons -->
-                    <div class="space-y-3 mb-6">
-                        <button
-                            class="social-btn w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg bg-white hover:bg-gray-50 text-gray-700 font-medium">
-                            <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google"
-                                class="w-5 h-5 mr-3">
-                            Continue with Google
-                        </button>
-                    </div>
-
-                    <div class="text-center mt-6">
-                        <p class="text-gray-600">
-                            Already have an account?
-                            <a href="#" class="text-blue-600 hover:underline font-medium">Sign in</a>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <!-- Footer (Part of scroll) -->
         <footer class="mt-8 py-4 border-t border-gray-200">

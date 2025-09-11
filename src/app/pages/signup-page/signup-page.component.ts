@@ -1,9 +1,6 @@
 import { Component } from '@angular/core';
 import { SignupComponent } from '../../shared/components/signup/signup.component';
-import { LoginComponent } from '../../shared/components/login/login.component';
-import { MatCard } from '@angular/material/card';
-import { MatCardContent } from '../../../../node_modules/@angular/material/card/index';
-import { f } from '../../../../node_modules/@angular/material/icon-module.d-COXCrhrh';
+import { GoogleAuthService } from '../../services/google-auth-service/google-auth.service';
 
 @Component({
   selector: 'app-signup-page',
@@ -12,4 +9,13 @@ import { f } from '../../../../node_modules/@angular/material/icon-module.d-COXC
   templateUrl: './signup-page.component.html',
   styleUrls: ['./signup-page.component.css'],
 })
-export class SignupPageComponent {}
+export class SignupPageComponent {
+  constructor(private _googleAuth: GoogleAuthService) {}
+
+  onGoogleSignup(event: { role: 'user' | 'company'; elementId: string }) {
+console.log('on google signup function worked')
+    this._googleAuth.initGoogle(event.elementId, event.role);
+  }
+}
+
+

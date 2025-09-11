@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { Observable } from 'rxjs';
+import { Observable, retry } from 'rxjs';
 import { IRegisterData } from '../../models/auth.interface';
 
 @Injectable({
@@ -19,7 +19,7 @@ export class SignupAuthService {
     role: string
   ): Observable<{ exists: boolean }> {
     return this.http.post<{ exists: boolean }>(
-      `${this.baseUrl}/api/auth/${role}/check-phoneOrEmailExists`,
+      `${this.baseUrl}/api/auth/${role}/check-availability`,
       { phoneOrEmail, role }
     );
   }
@@ -46,14 +46,14 @@ export class SignupAuthService {
   //request OTP
   requestOTP(payload: IRegisterData): Observable<any> {
     return this.http.post(
-      `${this.baseUrl}/api/auth/${payload.role}/request-OTP`,
+      `${this.baseUrl}/api/auth/${payload.role}/otp/request`,
       payload
     );
   }
 
   resendOTP(payload: { email: string; role: string }): Observable<any> {
     return this.http.post(
-      `${this.baseUrl}/api/auth/${payload.role}/resend-OTP`,
+      `${this.baseUrl}/api/auth/${payload.role}/otp/resend`,
       payload
     );
   }
@@ -65,7 +65,34 @@ export class SignupAuthService {
     role: string;
   }): Observable<any> {
     return this.http.post(
-      `${this.baseUrl}/api/auth/${payload.role}/verify-OTP`,
+      `${this.baseUrl}/api/auth/${payload.role}/otp/verify`,
+      payload
+    );
+  }
+
+  //forgot password
+
+  forgotPassword(payload: {
+    email: string;
+    role: 'user' | 'company';
+  }): Observable<any> {
+    return this.http.post(
+      `${this.baseUrl}/api/auth/${payload.role}/forgotPassword`,
+      payload
+    );
+  }
+
+  //reset password
+
+  resetPassword(
+    payload: {
+      newPassword: string;
+      resetPasswordToken: string;
+    },
+    role: string
+  ): Observable<any> {
+    return this.http.post(
+      `${this.baseUrl}/api/auth/${role}/resetPassword`,
       payload
     );
   }

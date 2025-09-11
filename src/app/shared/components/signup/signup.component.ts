@@ -1,4 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
 import {
   COMPANY_NAME_REGEX,
   NAME_REGEX,
@@ -15,7 +21,7 @@ import {
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { FormValidators } from '../../../validators/form.validators';
 import { SignupFormHelper } from '../../../helpers/signup-form.helper';
@@ -24,7 +30,7 @@ import { SignupServiceHandler } from '../../../services/signup-service.handler';
 
 @Component({
   selector: 'app-signup',
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule,RouterLink],
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.css'],
 })
@@ -32,6 +38,11 @@ export class SignupComponent implements OnInit, OnDestroy {
   registerForm: FormGroup;
   selectedRole: 'user' | 'company' = 'user';
   private destroy$ = new Subject<void>();
+
+  @Output() GoogleSignupButton = new EventEmitter<{
+    role: 'user' | 'company';
+    elementId: string;
+  }>();
 
   constructor(
     private FB: FormBuilder,
@@ -148,5 +159,13 @@ export class SignupComponent implements OnInit, OnDestroy {
 
   get isUserMode() {
     return this.selectedRole === 'user';
+  }
+
+  handleGoogleSignup() {
+    console.log('google signup button clicked')
+    this.GoogleSignupButton.emit({
+      role: this.selectedRole,
+      elementId: 'google-login',
+    });
   }
 }

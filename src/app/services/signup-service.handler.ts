@@ -48,7 +48,7 @@ export class SignupServiceHandler {
     userEmail: string,
     userRole: 'user' | 'company'
   ): void {
-    this.router.navigate(['user/OTP-verification'], {
+    this.router.navigate(['auth/OTP-verification'], {
       state: {
         userEmail: userEmail,
         userRole: userRole,

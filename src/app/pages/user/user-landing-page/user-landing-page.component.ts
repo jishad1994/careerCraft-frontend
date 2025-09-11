@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { HeaderComponent } from '../../../shared/components/header/header.component';
+import { SignupAuthService } from '../../../services/signup-auth/signup-auth.service';
 
 @Component({
   selector: 'app-user-landing-page',
@@ -8,9 +9,10 @@ import { HeaderComponent } from '../../../shared/components/header/header.compon
   styleUrl: './user-landing-page.component.css',
 })
 export class UserLandingPageComponent {
-  constructor() {}
   isLoggedIn: boolean = false;
   userRole: 'user' | 'company' | null = 'user';
+
+  constructor(private _authService: SignupAuthService) {}
 
   handleLogout() {}
 
