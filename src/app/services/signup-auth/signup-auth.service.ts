@@ -35,6 +35,12 @@ export class SignupAuthService {
     });
   }
 
+  logout(role: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/api/auth/${role}/logout`, {
+      withCredentials: true,
+    });
+  }
+
   //user register
   userSignup(email: string, role: string): Observable<any> {
     return this.http.post(`${this.baseUrl}/api/auth/${role}/signup`, {

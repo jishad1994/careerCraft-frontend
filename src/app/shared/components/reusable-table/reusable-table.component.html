@@ -1,0 +1,44 @@
+<h1 class="text-2xl font-bold mb-6">{{heading}}</h1>
+<!-- Search Box -->
+<div class="mb-4">
+    <input type="text" [formControl]="searchControl" placeholder="Search..."
+        class="w-full px-4 py-2 border rounded focus:ring focus:ring-blue-300" />
+</div>
+<div class="overflow-x-auto bg-white shadow-md rounded-lg">
+    <table class="min-w-full text-left text-sm text-gray-600">
+        <thead class="bg-gray-100 text-gray-700 uppercase text-xs">
+            <tr>
+                <th *ngFor="let col of displayedColumns" class="px-6 py-3">{{ col }}</th>
+                <th class="px-6 py-3">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let item of data" class="border-b hover:bg-gray-50">
+                <td *ngFor="let col of displayedColumns" class="px-6 py-4">{{ item[col] }}</td>
+                <td class="px-6 py-4 space-x-2">
+                    <button class="px-2 py-1 bg-blue-500 text-white rounded" (click)="view.emit(item)">View</button>
+                    <button class="px-2 py-1 bg-yellow-500 text-white rounded" (click)="toggleBlock.emit(item)">
+                        {{ item.isBlocked ? 'Unblock' : 'Block' }}
+                    </button>
+                    <button class="px-2 py-1 bg-green-600 text-white rounded"
+                        (click)="verify.emit(item)">Verify</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Pagination Controls -->
+<div class="flex justify-between items-center mt-4">
+    <button class="px-3 py-1 bg-gray-200 rounded disabled:opacity-50" [disabled]="page <= 1"
+        (click)="changePage(page - 1)">
+        Prev
+    </button>
+
+    <span>Page {{ page }} of {{ totalPages }}</span>
+
+    <button class="px-3 py-1 bg-gray-200 rounded disabled:opacity-50" [disabled]="page >= totalPages"
+        (click)="changePage(page + 1)">
+        Next
+    </button>
+</div>

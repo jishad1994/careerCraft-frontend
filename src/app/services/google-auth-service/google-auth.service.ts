@@ -43,11 +43,15 @@ export class GoogleAuthService {
       .subscribe({
         next: (response: any) => {
           localStorage.setItem('accessToken', response.accessToken);
+
+          console.log(typeof resp.user)
           localStorage.setItem('user', JSON.stringify(response.user));
+          localStorage.setItem('userRole', response.user.role);
+          localStorage.setItem('userEmail', response.user.email);
           this._router.navigate([`${role}/home`]);
         },
         error: (error: any) => {
-          console.log(error)
+          console.log(error);
           this._snackBar.open('google login failed', 'close');
         },
       });

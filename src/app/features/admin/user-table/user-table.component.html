@@ -1,0 +1,3 @@
+<app-reusable-table [heading]="heading" [data]="users" [displayedColumns]='displayedColumns' [page]="userPage" [totalPages]="userTotalPages"
+    (pageChange)="loadUsers($event)" (view)="onView($event)" (toggleBlock)="onToggleBlock($event)"
+    (verify)="onVerify($event)" (searchChange)="onSearch($event)"></app-reusable-table>

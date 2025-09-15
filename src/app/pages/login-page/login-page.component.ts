@@ -32,17 +32,22 @@ export class LoginPageComponent {
 
         if (res.success) {
           //set accesstoken inside localstorge
-          localStorage.setItem('accesstoken', res.accesstoken);
+          localStorage.setItem('accesstoken', res.accessToken);
+          localStorage.setItem('user', JSON.stringify(res.user));
+          localStorage.setItem('userRole', res.user.role);
+          localStorage.setItem('userEmail', res.user.email);
           this._snackBar.open('Login successful!', 'close', {
             duration: 3000,
             panelClass: ['bg-green-600', 'text-white'],
           });
 
-          const role = payload.role;
+          const role = res.user?.role;
           if (role === 'user') {
             this._router.navigate(['user/home']);
           } else if (role === 'company') {
             this._router.navigate(['company/home']);
+          } else {
+            this._router.navigate(['admin/dashboard']);
           }
         }
       },

@@ -2,17 +2,17 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { environment } from '../../../environments/environment';
+import { RouterLink, RouterModule } from '@angular/router';
 @Component({
   selector: 'app-header',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css',
 })
 export class HeaderComponent {
-
-  logoUrl=environment.logUrl
+  logoUrl = environment.logUrl;
   @Input() isLoggedIn = false;
-  @Input() role: 'user' | 'company' | null = null;
+  @Input() role: string | null = 'user';
   @Output() logout = new EventEmitter<void>();
   @Output() search = new EventEmitter<string>();
 

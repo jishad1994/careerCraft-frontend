@@ -10,6 +10,7 @@ import {
   Validators,
   FormsModule,
 } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { OTP_PATTERN } from '../../../constants/form.constants';
 import { Router } from '@angular/router';
@@ -38,7 +39,8 @@ export class OtpVerificationComponent implements OnInit {
   constructor(
     private FB: FormBuilder,
     private router: Router,
-    private authService: SignupAuthService
+    private authService: SignupAuthService,
+    private _snackBar: MatSnackBar
   ) {
     this.otpForm = this.FB.group({
       otp: ['', [Validators.required, Validators.pattern(OTP_PATTERN)]],
@@ -90,38 +92,76 @@ export class OtpVerificationComponent implements OnInit {
 
   verifyOTP() {
     if (this.otpForm.invalid) {
-      alert('Please enter a valid OTP');
+      this._snackBar.open('Please enter a valid OTP', 'Close', {
+        duration: 3000,
+      });
       return;
     }
 
     const otp = this.otpForm.get('otp')?.value;
-
-    const role = localStorage.getItem('userRole');
 
     this.authService
       .verifyOTP({ otp, email: this.email, role: this.role })
       .subscribe({
         next: (res) => {
           if (res.success) {
-            alert('OTP verified successfully, redirecting...');
+            this._snackBar.open(
+              'OTP verified successfully, redirecting...',
+              '',
+              {
+                duration: 3000,
+              }
+            );
+            localStorage.setItem('otpVerified', 'true');
+
             this.authService.userSignup(res.email, res.role).subscribe({
               next: (signupRes) => {
                 if (signupRes.success) {
                   localStorage.setItem('accessToken', signupRes.accessToken);
+                  localStorage.setItem('user', JSON.stringify(signupRes.user));
+                  this._snackBar.open('Signup successful!', '', {
+                    duration: 3000,
+                  });
                   this.router.navigate(['user/home']);
                 } else {
-                  alert('Signup failed: ' + signupRes.message);
+                  this._snackBar.open(
+                    `Signup failed: ${signupRes.message}`,
+                    'Close',
+                    {
+                      duration: 3000,
+                    }
+                  );
                 }
               },
-              error: (err) => alert('Signup error: ' + err.error.message),
+              error: (err) => {
+                this._snackBar.open(
+                  `Signup error: ${err.error.message}`,
+                  'Close',
+                  {
+                    duration: 3000,
+                  }
+                );
+              },
             });
           } else {
-            alert('OTP verification failed: ' + res.message);
+            this._snackBar.open(
+              `OTP verification failed`,
+              '',
+              {
+                duration: 3000,
+              }
+            );
           }
         },
-        error: (err) => alert('Verification error: ' + err.message || err),
+        error: (err) => {
+          this._snackBar.open(
+            `OTP Verification failed`,
+            'Close',
+            {
+              duration: 3000,
+            }
+          );
+        },
       });
-
-      
   }
 }

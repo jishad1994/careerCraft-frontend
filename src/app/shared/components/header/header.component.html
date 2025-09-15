@@ -1,8 +1,8 @@
-<header class="w-full bg-white shadow-md px-6 py-3 flex items-center justify-between">
+<header class="w-full bg-white shadow-md px-6 py-4 flex items-center justify-between">
     <!-- Logo -->
     <div class="flex items-center space-x-3">
-        <img src={{logoUrl}} alt="Job Portal Logo" class="h-40 w-40" />
-        <span class="font-bold text-xl text-gray-800"></span>
+        <img src="{{logoUrl}}" alt="Job Portal Logo" class="h-10 w-auto" />
+        <!-- <span class="font-bold text-xl text-gray-800">CareerCraft</span> -->
     </div>
 
     <!-- Search Bar -->
@@ -10,14 +10,14 @@
         <form (ngSubmit)="onSearch()" class="flex">
             <input [(ngModel)]="searchQuery" name="search" type="text" placeholder="Search for jobs or companies..."
                 class="w-full border border-gray-300 rounded-l-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            <button type="submit" class="bg-blue-600 text-white px-4 rounded-r-md hover:bg-blue-700">
+            <button type="submit" class="bg-blue-600 text-white px-4 rounded-r-md hover:bg-blue-700 transition-colors">
                 Search
             </button>
         </form>
     </div>
 
     <!-- Navigation Links -->
-    <nav class="flex items-center space-x-6 text-gray-700">
+    <nav class="flex items-center space-x-6 text-gray-700 font-medium">
         <a routerLink="/" class="hover:text-blue-600">Home</a>
 
         <ng-container *ngIf="role === 'user'">
@@ -32,11 +32,15 @@
 
         <!-- Auth Buttons -->
         <ng-container *ngIf="!isLoggedIn; else loggedIn">
-            <a routerLink="/login" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Login</a>
+            <a routerLink="/auth/login"
+                class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                Login
+            </a>
         </ng-container>
 
         <ng-template #loggedIn>
-            <button (click)="onLogout()" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">
+            <button (click)="onLogout()"
+                class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">
                 Logout
             </button>
         </ng-template>
