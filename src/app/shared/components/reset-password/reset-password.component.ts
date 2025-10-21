@@ -5,7 +5,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { SignupAuthService } from '../../../services/signup-auth/signup-auth.service';
+import { AuthService } from '../../../services/auth/auth.service';
 import { FormValidators } from '../../../validators/form.validators';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
@@ -26,7 +26,7 @@ export class ResetPasswordComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private _authService: SignupAuthService,
+    private _authService: AuthService,
     private _route: ActivatedRoute,
     private _snackBar: MatSnackBar,
     private _router: Router

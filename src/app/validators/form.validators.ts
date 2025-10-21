@@ -8,16 +8,14 @@ import {
   map,
   catchError,
   distinctUntilChanged,
+  timer,
 } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { SignupAuthService } from '../services/signup-auth/signup-auth.service';
+import { AuthService } from '../services/auth/auth.service';
 
 @Injectable({ providedIn: 'root' })
 export class FormValidators {
-  constructor(
-    private http: HttpClient,
-    private authService: SignupAuthService
-  ) {}
+  constructor(private http: HttpClient, private authService: AuthService) {}
 
   //confirm password validator
   static passwordMatchValidator(form: AbstractControl) {
@@ -31,16 +29,14 @@ export class FormValidators {
   }
 
   // unique phone number validator
-
   public phoneOrEmailUniqueValidator(role: string) {
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
       if (!control.value) {
         return of(null);
       }
-      return of(control.value).pipe(
-        debounceTime(500),
-        switchMap((phoneOrEmail) =>
-          this.authService.checkPhoneOrEmailExists(phoneOrEmail, role)
+      return timer(500).pipe(
+        switchMap(() =>
+          this.authService.checkPhoneOrEmailExists(control.value, role)
         ),
         map((response) => (response.exists ? { exists: true } : null)),
         catchError(() => of(null))

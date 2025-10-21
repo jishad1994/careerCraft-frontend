@@ -7,7 +7,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { SignupAuthService } from '../../../services/signup-auth/signup-auth.service';
+import { AuthService } from '../../../services/auth/auth.service';
 import { Route, Router } from '@angular/router';
 import { PASSWORD_REGEX } from '../../../constants/form.constants';
 import { RouterLink } from '@angular/router';

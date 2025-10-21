@@ -1,8 +1,9 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { API_ENDPOINTS } from '../../constants/api-endpoints.constants';
 
 declare const google: any;
 @Injectable({
@@ -16,44 +17,12 @@ export class GoogleAuthService {
     private _snackBar: MatSnackBar
   ) {}
 
-  initGoogle(elementId: string, role: 'user' | 'company') {
-    google.accounts.id.initialize({
-      client_id: this._clientId,
-      callback: (response: any) =>
-        this.handleCredentialResponse(response, role),
-      auto_select: false,
-      ux_mode: 'popup',
-    });
-
-    google.accounts.id.renderButton(document.getElementById(elementId), {
-      theme: 'outline',
-      size: 'large',
-      width: 500,
-    });
-  }
-
-  private handleCredentialResponse(resp: any, role: 'user' | 'company') {
-    const credential = resp.credential; //google ID token
-    this._http
-      .post(
-        `${environment.apiUrl}/api/auth/${role}/googleLogin`,
-        { credential, role },
-        { withCredentials: true }
-      )
-      .subscribe({
-        next: (response: any) => {
-          localStorage.setItem('accessToken', response.accessToken);
-
-          console.log(typeof resp.user)
-          localStorage.setItem('user', JSON.stringify(response.user));
-          localStorage.setItem('userRole', response.user.role);
-          localStorage.setItem('userEmail', response.user.email);
-          this._router.navigate([`${role}/home`]);
-        },
-        error: (error: any) => {
-          console.log(error);
-          this._snackBar.open('google login failed', 'close');
-        },
-      });
+  handleCredentialResponse(credential: string, role: 'user' | 'company') {
+    // credential is google ID token
+    return this._http.post(
+      API_ENDPOINTS.AUTH.GOOGLE_AUTH(role),
+      { credential, role },
+      { withCredentials: true }
+    );
   }
 }

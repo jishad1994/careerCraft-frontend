@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HeaderComponent } from '../../../shared/components/header/header.component';
 import { FooterComponent } from '../../../shared/components/footer/footer.component';
-import { SignupAuthService } from '../../../services/signup-auth/signup-auth.service';
+import { AuthService } from '../../../services/auth/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 
@@ -13,7 +13,7 @@ import { Router } from '@angular/router';
 })
 export class CompanyLandingPageComponent implements OnInit {
   constructor(
-    private _authService: SignupAuthService,
+    private _authService: AuthService,
     private _snackbar: MatSnackBar,
     private _router: Router
   ) {}

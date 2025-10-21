@@ -31,6 +31,7 @@ export class CompaniesTableComponent {
         this.userTotalPages = Math.ceil(
           res.pagination.total / res.pagination.limit
         );
+        this.userPage = res.pagination.page;
       },
 
       error: (error) => {
@@ -49,11 +50,20 @@ export class CompaniesTableComponent {
   }
 
   onToggleBlock(item: any) {
-    item.isBlocked = !item.isBlocked;
     this._adminService
       .blockOrUnblockCompany(String(item._id), item.isBlocked)
-      .subscribe();
-
+      .subscribe({
+        next: (res) => {
+          if (res.success && res.company.isBlocked) {
+            item.isBlocked = true;
+          } else {
+            item.isBlocked = false;
+          }
+        },
+        error: (error) => {
+          this._snackBar.open(error.message, 'close', { duration: 3000 });
+        },
+      });
     console.log(item.isBlocked ? 'blocked' : 'unblocked', item);
   }
 

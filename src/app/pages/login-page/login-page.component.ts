@@ -1,68 +1,69 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { LoginComponent } from '../../shared/components/login/login.component';
 import { environment } from '../../environments/environment';
-import { SignupAuthService } from '../../services/signup-auth/signup-auth.service';
+import { AuthService } from '../../services/auth/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { GoogleAuthService } from '../../services/google-auth-service/google-auth.service';
+import { Subject, takeUntil } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { AuthState } from '../../store/auth/auth.model';
+import { AppState } from '../../store/app.state';
+import {
+  googleLoginRequest,
+  loginRequest,
+} from '../../store/auth/auth.actions';
+
+declare const google: any;
 @Component({
   selector: 'app-login-page',
   imports: [LoginComponent],
   templateUrl: './login-page.component.html',
   styleUrl: './login-page.component.css',
 })
-export class LoginPageComponent {
+export class LoginPageComponent implements OnDestroy {
   logoUrl: string = environment.logUrl;
 
+  private _clientId = environment.GOOGLE_CLIENT_ID;
+  destroy$ = new Subject<void>();
+
   constructor(
-    private _authService: SignupAuthService,
+    private _authService: AuthService,
     private _snackBar: MatSnackBar,
     private _router: Router,
-    private _googleAuth: GoogleAuthService
+    private _googleAuth: GoogleAuthService,
+    private store: Store<AppState>
   ) {}
 
   loading: boolean = false;
   handleLogin(payload: { role: string; email: string; password: string }) {
-    console.log(payload, 'payload');
-
     this.loading = true;
-    this._authService.login(payload).subscribe({
-      next: (res) => {
-        this.loading = false;
 
-        if (res.success) {
-          //set accesstoken inside localstorge
-          localStorage.setItem('accesstoken', res.accessToken);
-          localStorage.setItem('user', JSON.stringify(res.user));
-          localStorage.setItem('userRole', res.user.role);
-          localStorage.setItem('userEmail', res.user.email);
-          this._snackBar.open('Login successful!', 'close', {
-            duration: 3000,
-            panelClass: ['bg-green-600', 'text-white'],
-          });
-
-          const role = res.user?.role;
-          if (role === 'user') {
-            this._router.navigate(['user/home']);
-          } else if (role === 'company') {
-            this._router.navigate(['company/home']);
-          } else {
-            this._router.navigate(['admin/dashboard']);
-          }
-        }
-      },
-
-      error: (err) => {
-        this.loading = false;
-        this._snackBar.open(err.error?.message || 'Login Faild', 'close', {
-          duration: 3000,
-          panelClass: ['bg-red-500', 'text-white'],
-        });
-      },
-    });
+    this.store.dispatch(loginRequest(payload));
   }
 
   initGoogleLogin(event: { role: 'user' | 'company'; elementId: string }) {
-    this._googleAuth.initGoogle(event.elementId, event.role);
+    google.accounts.id.initialize({
+      client_id: this._clientId,
+      callback: (response: any) => {
+        const credential = response.credential;
+        this.store.dispatch(
+          googleLoginRequest({ credential, role: event.role })
+        );
+      },
+      auto_select: false,
+      ux_mode: 'popup',
+    });
+
+    google.accounts.id.renderButton(document.getElementById(event.elementId), {
+      theme: 'outline',
+      size: 'large',
+      width: 500,
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

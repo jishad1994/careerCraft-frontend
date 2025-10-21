@@ -25,12 +25,12 @@ import { Router, RouterLink } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { FormValidators } from '../../../validators/form.validators';
 import { SignupFormHelper } from '../../../helpers/signup-form.helper';
-import { SignupAuthService } from '../../../services/signup-auth/signup-auth.service';
+import { AuthService } from '../../../services/auth/auth.service';
 import { SignupServiceHandler } from '../../../services/signup-service.handler';
 
 @Component({
   selector: 'app-signup',
-  imports: [ReactiveFormsModule, CommonModule,RouterLink],
+  imports: [ReactiveFormsModule, CommonModule, RouterLink],
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.css'],
 })
@@ -47,7 +47,7 @@ export class SignupComponent implements OnInit, OnDestroy {
   constructor(
     private FB: FormBuilder,
     private http: HttpClient,
-    private authService: SignupAuthService,
+    private authService: AuthService,
     private formValidator: FormValidators,
     private router: Router,
     private signupFormHelper: SignupFormHelper,
@@ -162,7 +162,7 @@ export class SignupComponent implements OnInit, OnDestroy {
   }
 
   handleGoogleSignup() {
-    console.log('google signup button clicked')
+    console.log('google signup button clicked');
     this.GoogleSignupButton.emit({
       role: this.selectedRole,
       elementId: 'google-login',

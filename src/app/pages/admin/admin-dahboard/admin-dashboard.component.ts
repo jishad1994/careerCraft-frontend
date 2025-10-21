@@ -5,7 +5,7 @@ import { SidebarComponent } from '../../../features/admin/sidebar/sidebar.compon
 import { AdminService } from '../../../services/admin/admin.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router, RouterOutlet } from '@angular/router';
-import { SignupAuthService } from '../../../services/signup-auth/signup-auth.service';
+import { AuthService } from '../../../services/auth/auth.service';
 
 @Component({
   selector: 'app-admin-dahboard',
@@ -17,7 +17,7 @@ export class AdminDashboardComponent {
   constructor(
     private _adminService: AdminService,
     private _snackBar: MatSnackBar,
-    private _authService: SignupAuthService,
+    private _authService: AuthService,
     private _router: Router
   ) {}
 

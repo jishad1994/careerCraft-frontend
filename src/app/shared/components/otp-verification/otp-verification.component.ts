@@ -15,7 +15,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { OTP_PATTERN } from '../../../constants/form.constants';
 import { Router } from '@angular/router';
 import { FormValidators } from '../../../validators/form.validators';
-import { SignupAuthService } from '../../../services/signup-auth/signup-auth.service';
+import { AuthService } from '../../../services/auth/auth.service';
+import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-otp-verification',
   imports: [ReactiveFormsModule, CommonModule, FormsModule],
@@ -32,6 +33,8 @@ export class OtpVerificationComponent implements OnInit {
   timer: number = 60;
   intervalId: any;
 
+  logoUrl: string = environment.logUrl;
+
   //OTP form
   otpForm: FormGroup;
 
@@ -39,7 +42,7 @@ export class OtpVerificationComponent implements OnInit {
   constructor(
     private FB: FormBuilder,
     private router: Router,
-    private authService: SignupAuthService,
+    private authService: AuthService,
     private _snackBar: MatSnackBar
   ) {
     this.otpForm = this.FB.group({
@@ -78,14 +81,13 @@ export class OtpVerificationComponent implements OnInit {
   resendOTP() {
     this.startResendTimer();
     console.log('resend otp worked');
-    if (this.role == 'user') {
-      this.authService
-        .resendOTP({ email: this.email, role: this.role })
-        .subscribe({
-          next: (res) => console.log(res),
-          error: (err) => console.log(err),
-        });
-    }
+
+    this.authService
+      .resendOTP({ email: this.email, role: this.role })
+      .subscribe({
+        next: (res) => console.log(res),
+        error: (err) => console.log(err),
+      });
   }
 
   //verify OTP
@@ -105,32 +107,21 @@ export class OtpVerificationComponent implements OnInit {
       .subscribe({
         next: (res) => {
           if (res.success) {
-            this._snackBar.open(
-              'OTP verified successfully, redirecting...',
-              '',
-              {
-                duration: 3000,
-              }
-            );
-            localStorage.setItem('otpVerified', 'true');
+            this._snackBar.open('OTP verified successfully', 'close', {
+              duration: 3000,
+            });
 
             this.authService.userSignup(res.email, res.role).subscribe({
               next: (signupRes) => {
                 if (signupRes.success) {
-                  localStorage.setItem('accessToken', signupRes.accessToken);
-                  localStorage.setItem('user', JSON.stringify(signupRes.user));
-                  this._snackBar.open('Signup successful!', '', {
+                  this._snackBar.open('Signup successful!', 'close', {
+                    duration: 6000,
+                  });
+                  this.router.navigate(['auth/login']);
+                } else {
+                  this._snackBar.open(` ${signupRes.message}`, 'Close', {
                     duration: 3000,
                   });
-                  this.router.navigate(['user/home']);
-                } else {
-                  this._snackBar.open(
-                    `Signup failed: ${signupRes.message}`,
-                    'Close',
-                    {
-                      duration: 3000,
-                    }
-                  );
                 }
               },
               error: (err) => {
@@ -144,23 +135,15 @@ export class OtpVerificationComponent implements OnInit {
               },
             });
           } else {
-            this._snackBar.open(
-              `OTP verification failed`,
-              '',
-              {
-                duration: 3000,
-              }
-            );
+            this._snackBar.open(`OTP verification failed`, '', {
+              duration: 3000,
+            });
           }
         },
         error: (err) => {
-          this._snackBar.open(
-            `OTP Verification failed`,
-            'Close',
-            {
-              duration: 3000,
-            }
-          );
+          this._snackBar.open(`OTP Verification failed`, 'Close', {
+            duration: 3000,
+          });
         },
       });
   }

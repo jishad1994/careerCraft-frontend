@@ -20,29 +20,35 @@
     <nav class="flex items-center space-x-6 text-gray-700 font-medium">
         <a routerLink="/" class="hover:text-blue-600">Home</a>
 
-        <ng-container *ngIf="role === 'user'">
-            <a routerLink="/jobs" class="hover:text-blue-600">Jobs</a>
-            <a routerLink="/saved" class="hover:text-blue-600">Saved Jobs</a>
+        <ng-container *ngIf="role$ | async as role">
+            <ng-container *ngIf="role === 'user'">
+                <a routerLink="/jobs" class="hover:text-blue-600">Jobs</a>
+                <a routerLink="/saved" class="hover:text-blue-600">Saved Jobs</a>
+            </ng-container>
+
+            <ng-container *ngIf="role === 'company'">
+                <a routerLink="/post-job" class="hover:text-blue-600">Post Job</a>
+                <a routerLink="/applications" class="hover:text-blue-600">Applications</a>
+            </ng-container>
         </ng-container>
 
-        <ng-container *ngIf="role === 'company'">
-            <a routerLink="/post-job" class="hover:text-blue-600">Post Job</a>
-            <a routerLink="/applications" class="hover:text-blue-600">Applications</a>
-        </ng-container>
 
         <!-- Auth Buttons -->
-        <ng-container *ngIf="!isLoggedIn; else loggedIn">
-            <a routerLink="/auth/login"
-                class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                Login
-            </a>
-        </ng-container>
+        <ng-container *ngIf="isLoggedIn$ | async as isLoggedIn">
+            <ng-container *ngIf="!isLoggedIn; else loggedIn">
+                <a routerLink="/auth/login"
+                    class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                    Login
+                </a>
+            </ng-container>
 
+        </ng-container>
         <ng-template #loggedIn>
             <button (click)="onLogout()"
                 class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">
                 Logout
             </button>
         </ng-template>
+
     </nav>
 </header>

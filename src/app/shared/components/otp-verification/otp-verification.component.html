@@ -1,40 +1,74 @@
-<div class="flex justify-center items-center min-h-screen bg-gray-50 px-4">
-    <div class="w-full max-w-md bg-white shadow-lg rounded-2xl p-6">
+<div class="min-h-screen grid lg:grid-cols-2 relative bg-gray-50">
+
+  <!-- Logo (Top-Left Corner) -->
+  <div class="absolute top-6 left-6 z-10">
+    <div class="flex items-center space-x-2">
+      <img class="h-10 w-auto" src="{{logoUrl}}" alt="logo">
+    </div>
+  </div>
+
+  <!-- Left banner -->
+  <div class="hidden lg:flex items-center justify-center bg-gray-50">
+    <div class="w-3/5 h-[700px] bg-center bg-no-repeat rounded-xl shadow-2xl"
+      style="background-image: url('assets/images/otp-verification-banner.svg');">
+    </div>
+  </div>
+
+  <!-- Right Section -->
+  <div class="flex flex-col h-screen justify-between p-8">
+
+    <!-- OTP Card (Centered) -->
+    <div class="flex flex-1 items-center justify-center">
+      <div class="w-full max-w-md bg-white shadow-lg rounded-2xl p-6">
         <!-- Title -->
         <h2 class="text-2xl font-semibold text-gray-800 text-center mb-2">OTP Verification</h2>
         <p class="text-gray-600 text-center mb-6">
-            We have sent an OTP to your email <span class="font-medium">{{email || 'address'}}</span>
+          We have sent an OTP to your email <span class="font-medium">{{email || 'address'}}</span>
         </p>
 
         <!-- Form -->
         <form [formGroup]="otpForm" (ngSubmit)="verifyOTP()" class="space-y-4">
-            <!-- OTP Input -->
-            <div>
-                <input type="text" formControlName="otp" placeholder="Enter OTP" minlength="6" maxlength="6"
-                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
+          <!-- OTP Input -->
+          <div>
+            <input type="text" formControlName="otp" placeholder="Enter OTP" minlength="6" maxlength="6"
+              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
+          </div>
 
-            </div>
-            <!-- Validation Errors -->
-            <div *ngIf="otpForm.get('otp')?.touched && otpForm.get('otp')?.invalid" class="text-red-500 text-sm mt-1">
-                <div *ngIf="otpForm.get('otp')?.errors?.['required']">OTP is required.</div>
-                <div *ngIf="otpForm.get('otp')?.errors?.['pattern']">Enter a valid OTP.</div>
-            </div>
+          <!-- Validation Errors -->
+          <div *ngIf="otpForm.get('otp')?.touched && otpForm.get('otp')?.invalid"
+            class="text-red-500 text-sm mt-1">
+            <div *ngIf="otpForm.get('otp')?.errors?.['required']">OTP is required.</div>
+            <div *ngIf="otpForm.get('otp')?.errors?.['pattern']">Enter a valid OTP.</div>
+          </div>
 
-            <!-- Buttons -->
-            <div class="flex justify-between items-center pt-2">
-                <button type="button" (click)="resendOTP()" [disabled]="resendDisabled"
-                    class="text-sm text-indigo-600 hover:underline">
+          <!-- Buttons -->
+          <div class="flex justify-between items-center pt-2">
+            <button type="button" (click)="resendOTP()" [disabled]="resendDisabled"
+              class="text-sm text-indigo-600 hover:underline">
+              <span *ngIf="resendDisabled">Resend OTP in {{ timer }}s</span>
+              <span *ngIf="!resendDisabled" >Resend OTP</span>
+            </button>
 
-                    <span *ngIf="resendDisabled">Resend OTP in {{ timer }}s</span>
-                    <span *ngIf="!resendDisabled">Resend OTP</span>
-                </button>
-
-
-                <button type="submit" [disabled]="otpForm.invalid"
-                    class="px-5 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed">
-                    Verify OTP
-                </button>
-            </div>
+            <button type="submit" [disabled]="otpForm.invalid"
+              class="px-5 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed">
+              Verify OTP
+            </button>
+          </div>
         </form>
+      </div>
     </div>
+
+    <!-- Footer -->
+    <footer class="py-4 border-t border-gray-200">
+      <div class="flex flex-wrap justify-center gap-4 text-gray-600 text-sm">
+        <a href="#" class="hover:underline">About Us</a>
+        <a href="#" class="hover:underline">Contact Us</a>
+        <a href="#" class="hover:underline">FAQs</a>
+        <a href="#" class="hover:underline">Terms & Conditions</a>
+        <a href="#" class="hover:underline">Report a Problem</a>
+        <a href="#" class="hover:underline">Privacy Policy</a>
+      </div>
+    </footer>
+
+  </div>
 </div>

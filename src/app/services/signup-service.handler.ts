@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
-import { SignupAuthService } from './signup-auth/signup-auth.service';
+import { AuthService } from './auth/auth.service';
 import { IRegisterData } from '../models/auth.interface';
 export interface OTPResponse {
   success: boolean;
@@ -15,7 +15,7 @@ export interface OTPResponse {
 })
 export class SignupServiceHandler {
   constructor(
-    private signupAuthService: SignupAuthService,
+    private signupAuthService: AuthService,
     private router: Router
   ) {}
 
