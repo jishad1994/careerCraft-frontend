@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-company-landing-page',
-  imports: [HeaderComponent, FooterComponent],
+  imports: [],
   templateUrl: './company-landing-page.component.html',
   styleUrl: './company-landing-page.component.css',
 })
@@ -17,11 +17,10 @@ export class CompanyLandingPageComponent implements OnInit {
     private _snackbar: MatSnackBar,
     private _router: Router
   ) {}
-  isLoggedIn: boolean = false;
-  userRole: string | null = 'user';
+  
 
   handleLogout() {
-    this._authService.logout(this.userRole!).subscribe({
+    this._authService.logout().subscribe({
       next: (res) => {
         if (res.success) {
           this._snackbar.open('logout successfull', 'close', {
@@ -42,12 +41,10 @@ export class CompanyLandingPageComponent implements OnInit {
     });
   }
 
-  handleSearch(event: string) {}
+ 
 
   ngOnInit(): void {
-    let user = JSON.parse(localStorage.getItem('user') || '');
-    console.log('user',user)
-    user ? (this.isLoggedIn = true) : (this.isLoggedIn = false);
-    this.userRole = localStorage.getItem('userRole');
+   
+  
   }
 }

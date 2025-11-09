@@ -28,7 +28,12 @@ export class AdminService {
   getCompanies(query: string): Observable<any> {
     return this._http.get(API_ENDPOINTS.ADMIN.GET_COMPANIES(query));
   }
-
+  /**
+   * 
+   * @param id 
+   * @param flag 
+   * @returns 
+   */
   blockOrUnblockCompany(id: string, flag: boolean): Observable<any> {
     const action = flag ? 'block' : 'unblock';
     return this._http.patch(

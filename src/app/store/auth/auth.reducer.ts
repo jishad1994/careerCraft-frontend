@@ -1,5 +1,5 @@
 import { createReducer, on } from '@ngrx/store';
-import { AuthState } from './auth.model';
+import { AuthState } from '../../models/auth.model';
 import {
   loginRequest,
   loginSuccess,

@@ -1,54 +1,116 @@
 <header class="w-full bg-white shadow-md px-6 py-4 flex items-center justify-between">
     <!-- Logo -->
     <div class="flex items-center space-x-3">
-        <img src="{{logoUrl}}" alt="Job Portal Logo" class="h-10 w-auto" />
-        <!-- <span class="font-bold text-xl text-gray-800">CareerCraft</span> -->
+        <img [src]="logoUrl" alt="Job Portal Logo" class="h-10 w-auto" />
     </div>
 
-    <!-- Search Bar -->
-    <div class="flex-1 mx-6">
-        <form (ngSubmit)="onSearch()" class="flex">
-            <input [(ngModel)]="searchQuery" name="search" type="text" placeholder="Search for jobs or companies..."
-                class="w-full border border-gray-300 rounded-l-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            <button type="submit" class="bg-blue-600 text-white px-4 rounded-r-md hover:bg-blue-700 transition-colors">
-                Search
-            </button>
-        </form>
-    </div>
+    <!-- Dynamic Header Content -->
+    <!-- ===================== LOGGED IN ===================== -->
+    <ng-container *ngIf="isLoggedIn$ | async; else loggedOut">
+        <!-- Search Bar -->
+        <div class="flex-1 mx-6">
+            <form (ngSubmit)="onSearch()" class="flex">
+                <input [(ngModel)]="searchQuery" name="search" type="text" placeholder="Search for jobs or companies..."
+                    class="w-full border border-gray-300 rounded-l-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                <button type="submit"
+                    class="bg-blue-600 text-white px-4 rounded-r-md hover:bg-blue-700 transition-colors">
+                    Search
+                </button>
+            </form>
+        </div>
 
-    <!-- Navigation Links -->
-    <nav class="flex items-center space-x-6 text-gray-700 font-medium">
-        <a routerLink="/" class="hover:text-blue-600">Home</a>
+        <!-- Role-based navigation -->
+        <nav class="flex items-center space-x-6 text-gray-700 font-medium">
+            <ng-container *ngIf="role$ | async as role">
+                <!-- User Role -->
+                <ng-container *ngIf="role === 'user'">
+                    <a routerLink="/jobs" class="hover:text-blue-600">Jobs</a>
+                    <a routerLink="/saved" class="hover:text-blue-600">Saved Jobs</a>
+                    <a routerLink="/messages" class="hover:text-blue-600">Messaging</a>
+                    <a routerLink="/notifications" class="hover:text-blue-600">Notifications</a>
+                    <div class="relative dropdown-container">
+                        <button (click)="toggleDropdown()"
+                            class="flex items-center space-x-1 hover:text-blue-600 focus:outline-none">
+                            <span>Me</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
 
-        <ng-container *ngIf="role$ | async as role">
-            <ng-container *ngIf="role === 'user'">
-                <a routerLink="/jobs" class="hover:text-blue-600">Jobs</a>
-                <a routerLink="/saved" class="hover:text-blue-600">Saved Jobs</a>
+                        <!-- Dropdown -->
+                        <div *ngIf="isDropdownOpen"
+                            class="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-50 transition-all duration-200 ease-out">
+                            <a routerLink="/profile" (click)="closeDropdown()"
+                                class="block px-4 py-2 text-gray-700 hover:bg-gray-100">View Profile</a>
+                            <button (click)="onLogout(); closeDropdown()"
+                                class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">
+                                Sign Out
+                            </button>
+                        </div>
+                    </div>
+
+
+                </ng-container>
+
+                <!-- Company Role -->
+                <ng-container *ngIf="role === 'company'">
+                    <a routerLink="/post-job" class="hover:text-blue-600">Post Job</a>
+                    <a routerLink="/applications" class="hover:text-blue-600">Applications</a>
+                    <a routerLink="/messages" class="hover:text-blue-600">Messaging</a>
+                    <a routerLink="/notifications" class="hover:text-blue-600">Notifications</a>
+                    <div class="relative dropdown-container">
+                        <button (click)="toggleDropdown()"
+                            class="flex items-center space-x-1 hover:text-blue-600 focus:outline-none">
+                            <span>Me</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+
+                        <!-- Dropdown -->
+                        <div *ngIf="isDropdownOpen"
+                            class="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-50 transition-all duration-200 ease-out">
+                            <a routerLink="/profile" (click)="closeDropdown()"
+                                class="block px-4 py-2 text-gray-700 hover:bg-gray-100">View Profile</a>
+                            <button (click)="onLogout(); closeDropdown()"
+                                class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">
+                                Sign Out
+                            </button>
+                        </div>
+                    </div>
+
+
+                </ng-container>
             </ng-container>
 
-            <ng-container *ngIf="role === 'company'">
-                <a routerLink="/post-job" class="hover:text-blue-600">Post Job</a>
-                <a routerLink="/applications" class="hover:text-blue-600">Applications</a>
-            </ng-container>
-        </ng-container>
-
-
-        <!-- Auth Buttons -->
-        <ng-container *ngIf="isLoggedIn$ | async as isLoggedIn">
-            <ng-container *ngIf="!isLoggedIn; else loggedIn">
-                <a routerLink="/auth/login"
-                    class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                    Login
-                </a>
-            </ng-container>
-
-        </ng-container>
-        <ng-template #loggedIn>
+            <!-- Logout -->
             <button (click)="onLogout()"
                 class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">
                 Logout
             </button>
-        </ng-template>
+        </nav>
+    </ng-container>
 
-    </nav>
+    <!-- ===================== LOGGED OUT ===================== -->
+    <ng-template #loggedOut>
+        <nav class="flex items-center space-x-6 text-gray-700 font-medium">
+            <a routerLink="/" class="hover:text-blue-600">Home</a>
+            <a routerLink="/jobs" class="hover:text-blue-600">Jobs</a>
+            <a routerLink="/companies" class="hover:text-blue-600">Companies</a>
+
+            <a routerLink="/auth/login"
+                class="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors">
+                Sign In
+            </a>
+
+            <a routerLink="/auth/signup"
+                class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                Join Now
+            </a>
+        </nav>
+    </ng-template>
 </header>

@@ -1,19 +1,47 @@
-import { HttpInterceptorFn } from '@angular/common/http';
+import {
+  HttpErrorResponse,
+  HttpInterceptorFn,
+  HttpResponse,
+} from '@angular/common/http';
+
+import { inject, Inject } from '@angular/core';
+import { AuthService } from '../services/auth/auth.service';
+import { catchError, switchMap, tap, throwError } from 'rxjs';
+import { API_ENDPOINTS } from '../constants/api-endpoints.constants';
 
 export const authInterceptor: HttpInterceptorFn = function (req, next) {
-  if (req.url.includes('/api/auth')) {
-    console.log('escaped auth route')
-    return next(req);
-  }
+  //add cookies for all requests
+  const authReq = req.clone({ withCredentials: true });
 
-  let authReq = req;
-  let token = localStorage.getItem('accessToken');
+  const authService = inject(AuthService);
 
-  if (token) {
-    authReq.clone({
-      setHeaders: { Authorization: `Bearer ${token}` },
-    });
-  }
-console.log('not escaped auth rote')
-  return next(authReq);
+  return next(authReq).pipe(
+    tap((event) => {
+      if (event instanceof HttpResponse) {
+        console.log(`response from ${req.url}`);
+      }
+    }),
+    catchError((error: HttpErrorResponse) => {
+      //case 1:access token expired
+      if (
+        error.status === 401 &&
+        !req.url.includes(API_ENDPOINTS.AUTH.REFRESH())
+      ) {
+        return authService.refresh().pipe(
+          switchMap(() => {
+            const retryReq = req.clone({ withCredentials: true });
+            return next(retryReq);
+          }),
+          catchError((refreshError) => {
+            //case 2:refresh token expired or invalid
+            console.log(`refresh token expired or invalid`, refreshError);
+            authService.logout();
+            return throwError(() => refreshError);
+          })
+        );
+      }
+      // Other errors
+      return throwError(() => error);
+    })
+  );
 };

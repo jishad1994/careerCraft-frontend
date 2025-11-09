@@ -1,5 +1,5 @@
 import { createAction, props, StoreRootModule } from '@ngrx/store';
-import { AuthUser } from './auth.model';
+import { AuthUser } from '../../models/auth.model';
 
 //normal login actions
 export const loginRequest = createAction(
@@ -36,6 +36,8 @@ export const googleLoginSuccess = createAction(
 
 // logout actions
 export const logoutRequest = createAction(
+
+  
   '[Auth] Logout request',
   props<{ role: 'user' | 'company' }>()
 );

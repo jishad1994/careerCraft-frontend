@@ -13,13 +13,20 @@ import { CompaniesTableComponent } from './features/admin/companies-table/compan
 import { OTPGuard } from './route-guards/otp.guard';
 import { RoleGuard } from './route-guards/role.guard';
 import { AuthGuard } from './route-guards/auth.guard';
+import { CommonLandingPageComponent } from './pages/common-landing-page/common-landing-page.component';
 
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: '/auth/login',
+    redirectTo: '/home',
     pathMatch: 'full',
   },
+
+  {
+    path: 'home',
+    component: CommonLandingPageComponent,
+  },
+
   {
     path: 'auth',
     loadChildren: () =>
@@ -38,6 +45,6 @@ export const routes: Routes = [
   {
     path: 'admin',
     loadChildren: () =>
-      import('./routes/admin.routes').then((m) => m.ADMIN_ROUTES),   
+      import('./routes/admin.routes').then((m) => m.ADMIN_ROUTES),
   },
 ];

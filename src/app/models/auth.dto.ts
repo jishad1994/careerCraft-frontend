@@ -1,6 +1,6 @@
-import { AuthUser } from "../store/auth/auth.model";
+import { AuthUser } from './auth.model';
 
-export interface LoginResponseUserDTO {
+export interface AuthResponseUserDTO {
   id: string;
   email: string;
   role: 'user' | 'company';
@@ -13,8 +13,13 @@ export interface LoginResponseUserDTO {
 export interface LoginResponseDTO {
   success: boolean;
   message: string;
-  user: AuthUser;
+  data: { user: AuthResponseUserDTO };
   accessToken?: string;
+}
+export interface RefreshTokenResponseDTO {
+  success: boolean;
+  message: string;
+  data?: { user: AuthResponseUserDTO };
 }
 
 export interface LogoutResponseDTO {

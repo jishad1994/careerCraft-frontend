@@ -49,11 +49,11 @@ export class AuthEffects {
         mergeMap(({ email, password, role }) =>
           this._authService.login({ email, password, role }).pipe(
             map((response) => {
-              if (!response.success || !response.user) {
+              if (!response.success || !response.data?.user) {
                 throw new Error(response.message || 'Login failed');
               }
 
-              return loginSuccess({ user: response.user });
+              return loginSuccess({ user: response.data?.user });
             }),
             catchError((error) => {
               const message =
@@ -70,9 +70,7 @@ export class AuthEffects {
         this._actions$.pipe(
           ofType(loginSuccess),
           tap(({ user }) => {
-
-
-            console.log('login success effect worked')
+            console.log('login success effect worked');
             this._snackBar.open('Login successful!', 'close', {
               duration: 3000,
               panelClass: ['bg-green-600', 'text-white'],
@@ -88,7 +86,7 @@ export class AuthEffects {
       this._actions$.pipe(
         ofType(logoutRequest),
         mergeMap(({ role }) =>
-          this._authService.logout(role).pipe(
+          this._authService.logout().pipe(
             map((res: any) => {
               console.log('respones: ', res);
               if (!res.success) {
@@ -109,8 +107,7 @@ export class AuthEffects {
         this._actions$.pipe(
           ofType(logoutSuccess),
           tap(() => {
-
-            console.log('logout success worked')
+            console.log('logout success worked');
             this._snackBar.open('Logout successful!', 'close', {
               duration: 3000,
               panelClass: ['bg-green-600', 'text-white'],

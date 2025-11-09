@@ -1,7 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { BehaviorSubject, Observable, retry, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  catchError,
+  Observable,
+  retry,
+  tap,
+  throwError,
+} from 'rxjs';
 import { IRegisterData } from '../../models/auth.interface';
 import { API_ENDPOINTS } from '../../constants/api-endpoints.constants';
 import {
@@ -9,19 +16,22 @@ import {
   LoginResponseDTO,
   LogoutResponseDTO,
   OtpRequestUserDataDTO,
+  RefreshTokenResponseDTO,
   SignupRequestDTO,
 } from '../../models/auth.dto';
-import { saveToStorage } from '../../helpers/auth.service.helpers';
-import { AuthUser } from '../../store/auth/auth.model';
+import { AuthUser } from '../../models/auth.model';
+import { AuthStateService } from '../authState/auth-state.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  constructor(private _http: HttpClient) {}
-
-  private authSubject = new BehaviorSubject('default message');
-  messenger$ = this.authSubject.asObservable();
+  constructor(
+    private _http: HttpClient,
+    private _authStateService: AuthStateService,
+    private _router: Router
+  ) {}
 
   //base url from environment files
   private baseUrl = environment.apiUrl;
@@ -37,6 +47,33 @@ export class AuthService {
     );
   }
 
+  //refresh
+
+  refresh() {
+    return this._http
+      .get<RefreshTokenResponseDTO>(API_ENDPOINTS.AUTH.REFRESH())
+      .pipe(
+        tap((response) => {
+          this._authStateService.updateState({
+            isLoggedIn: true,
+            user: response.data?.user || null,
+            error: null,
+            loading: false,
+          });
+        }),
+        catchError((errror) => {
+          this._authStateService.updateState({
+            isLoggedIn: false,
+            user: null,
+            error: 'Session expired, please login again',
+            loading: false,
+          });
+
+          return throwError(() => errror);
+        })
+      );
+  }
+
   //Login
   login(payload: {
     email: string;
@@ -47,19 +84,23 @@ export class AuthService {
       .post<LoginResponseDTO>(API_ENDPOINTS.AUTH.LOGIN(payload.role), payload)
       .pipe(
         tap((response: LoginResponseDTO) => {
-          saveToStorage(response); //save access token and user object to local storage
-          if (response.success && response.user) {
-            this.authSubject.next(JSON.stringify(response.user));
+          if (response.success) {
+            this._authStateService.login(response.data?.user);
           }
+        }),
+        catchError((error) => {
+          this._authStateService.logout();
+          console.log('login api error: ', error);
+          return throwError(() => error);
         })
       );
   }
 
   //logout
-  logout(role: string): Observable<any> {
+  logout(): Observable<any> {
     return this._http
       .post<LogoutResponseDTO>(
-        API_ENDPOINTS.AUTH.LOGOUT(role),
+        API_ENDPOINTS.AUTH.LOGOUT(),
         {},
         {
           withCredentials: true,
@@ -69,6 +110,8 @@ export class AuthService {
         tap((response: LogoutResponseDTO) => {
           if (response.success) {
             localStorage.clear();
+            this._authStateService.logout();
+            this._router.navigate(['/home']);
           }
         })
       );
@@ -91,7 +134,10 @@ export class AuthService {
   }
 
   resendOTP(payload: { email: string; role: string }): Observable<any> {
-    return this._http.post(API_ENDPOINTS.AUTH.RESEND_OTP(payload.role), payload);
+    return this._http.post(
+      API_ENDPOINTS.AUTH.RESEND_OTP(payload.role),
+      payload
+    );
   }
 
   //verify OTP
@@ -100,7 +146,10 @@ export class AuthService {
     email: string;
     role: string;
   }): Observable<any> {
-    return this._http.post(API_ENDPOINTS.AUTH.VERIFY_OTP(payload.role), payload);
+    return this._http.post(
+      API_ENDPOINTS.AUTH.VERIFY_OTP(payload.role),
+      payload
+    );
   }
 
   //forgot password

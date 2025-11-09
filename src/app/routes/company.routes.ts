@@ -2,12 +2,13 @@ import { Routes } from '@angular/router';
 import { CompanyLandingPageComponent } from '../pages/company/company-landing-page/company-landing-page.component';
 import { AuthGuard } from '../route-guards/auth.guard';
 import { RoleGuard } from '../route-guards/role.guard';
+import { MainLayoutComponent } from '../layouts/main-layout/main-layout.component';
+import { UserLandingPageComponent } from '../pages/user/user-landing-page/user-landing-page.component';
 
 export const COMPANY_ROUTES: Routes = [
   {
-    path: 'home',
-    component: CompanyLandingPageComponent,
-    canActivate: [AuthGuard, RoleGuard],
-    data: { role: 'company' },
+    path: '',
+    component: MainLayoutComponent,
+    children: [{ path: 'home', component: CompanyLandingPageComponent }],
   },
 ];

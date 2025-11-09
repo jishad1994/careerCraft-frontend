@@ -2,7 +2,11 @@ import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import {
+  HTTP_INTERCEPTORS,
+  provideHttpClient,
+  withInterceptors,
+} from '@angular/common/http';
 import { authInterceptor } from './interceptors/auth.interceptor';
 import { provideStore } from '@ngrx/store';
 import { authReducer } from './store/auth/auth.reducer';
@@ -19,5 +23,6 @@ export const appConfig: ApplicationConfig = {
     provideStore({ auth: authReducer }),
     provideEffects([AuthEffects]),
     provideStoreDevtools({ maxAge: 25 }),
+    provideHttpClient(withInterceptors([authInterceptor])),
   ],
 };

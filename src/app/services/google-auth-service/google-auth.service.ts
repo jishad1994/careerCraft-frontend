@@ -4,6 +4,8 @@ import { environment } from '../../environments/environment';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { API_ENDPOINTS } from '../../constants/api-endpoints.constants';
+import { AuthStateService } from '../authState/auth-state.service';
+import { tap } from 'rxjs';
 
 declare const google: any;
 @Injectable({
@@ -14,15 +16,24 @@ export class GoogleAuthService {
   constructor(
     private _http: HttpClient,
     private _router: Router,
-    private _snackBar: MatSnackBar
+    private _snackBar: MatSnackBar,
+    private _authStateService: AuthStateService
   ) {}
 
   handleCredentialResponse(credential: string, role: 'user' | 'company') {
     // credential is google ID token
-    return this._http.post(
-      API_ENDPOINTS.AUTH.GOOGLE_AUTH(role),
-      { credential, role },
-      { withCredentials: true }
-    );
+    return this._http
+      .post(
+        API_ENDPOINTS.AUTH.GOOGLE_AUTH(role),
+        { credential, role },
+        { withCredentials: true }
+      )
+      .pipe(
+        tap((res: any) => {
+          if (res.success) {
+            this._authStateService.login(res.user);
+          }
+        })
+      );
   }
 }

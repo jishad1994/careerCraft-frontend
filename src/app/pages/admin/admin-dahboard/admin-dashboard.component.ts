@@ -22,7 +22,7 @@ export class AdminDashboardComponent {
   ) {}
 
   logout() {
-    this._authService.logout('admin');
+    this._authService.logout();
     localStorage.clear();
     this._router.navigate(['auth/login']);
   }

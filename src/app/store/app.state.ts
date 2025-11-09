@@ -1,4 +1,4 @@
-import { AuthState } from './auth/auth.model';
+import { AuthState } from '../models/auth.model';
 
 export interface AppState {
   auth: AuthState;

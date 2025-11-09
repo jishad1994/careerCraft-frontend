@@ -5,9 +5,12 @@ export const baseUrl = environment.apiUrl;
 export const API_ENDPOINTS = {
   AUTH: {
     BASE: `/api/auth/`,
+
+    REFRESH: () => `${baseUrl}/api/auth/refresh`,
+
     LOGIN: (role: string) => `${baseUrl}/api/auth/${role}/login`,
 
-    LOGOUT: (role: string) => `${baseUrl}/api/auth/${role}/logout`,
+    LOGOUT: () => `${baseUrl}/api/auth/logout`,
 
     SIGNUP: (role: string) => `${baseUrl}/api/auth/${role}/signup`,
 
@@ -25,7 +28,7 @@ export const API_ENDPOINTS = {
 
     CHECK_PHONE_OR_EMAIL: (role: string) =>
       `${baseUrl}/api/auth/${role}/check-availability`,
-    
+
     GOOGLE_AUTH: (role: string) => `${baseUrl}/api/auth/${role}/googleLogin`,
   },
 

@@ -10,3 +10,4 @@ export const USER_ROUTES: Routes = [
     children: [{ path: 'home', component: UserLandingPageComponent }],
   },
 ];
+ 
