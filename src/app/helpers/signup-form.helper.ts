@@ -95,7 +95,7 @@ export class SignupFormHelper {
   }
 
   prepareFormDataForSubmission(formValue: SignupFormData): any {
-    const formData = { ...formValue };
+    const formData = { ...formValue, phone: String(formValue.phone) };
 
     if (formData.role === 'company') {
       formData.name = formData.companyName;

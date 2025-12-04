@@ -67,10 +67,6 @@ export class LoginPageComponent implements OnDestroy {
       client_id: this._clientId,
       callback: (response: any) => {
         const credential = response.credential;
-        // this.store.dispatch(
-        //   googleLoginRequest({ credential, role: event.role })
-        // );
-
         this._googleAuth
           .handleCredentialResponse(credential, event.role)
           .pipe(takeUntil(this.destroy$))
@@ -102,6 +98,7 @@ export class LoginPageComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
+    
     this.destroy$.next();
     this.destroy$.complete();
   }

@@ -51,4 +51,15 @@ export const API_ENDPOINTS = {
     BLOCK_OR_UNBLOCK_USER: (id: string, action: string) =>
       `${baseUrl}/api/admin/users/${id}/${action}`,
   },
+  USER: {
+    PROFILE: {
+      GET_PROFILE: `${baseUrl}/api/user/me`,
+
+      UPDATE_PROFILE: `${baseUrl}/api/user/me`,
+
+      UPDATE_PROFILE_PICTURE: `${baseUrl}/api/user/me/profile-picture`,
+
+      DELETE_PROFILE_PICTURE: `${baseUrl}/api/user/me/profile-picture`,
+    },
+  },
 };

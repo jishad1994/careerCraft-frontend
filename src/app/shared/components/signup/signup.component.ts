@@ -27,6 +27,7 @@ import { FormValidators } from '../../../validators/form.validators';
 import { SignupFormHelper } from '../../../helpers/signup-form.helper';
 import { AuthService } from '../../../services/auth/auth.service';
 import { SignupServiceHandler } from '../../../services/signup-service.handler';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-signup',
@@ -51,7 +52,8 @@ export class SignupComponent implements OnInit, OnDestroy {
     private formValidator: FormValidators,
     private router: Router,
     private signupFormHelper: SignupFormHelper,
-    private signupServiceHandler: SignupServiceHandler
+    private signupServiceHandler: SignupServiceHandler,
+    private _snackBar: MatSnackBar
   ) {
     this.registerForm = this.FB.group(
       {
@@ -147,7 +149,19 @@ export class SignupComponent implements OnInit, OnDestroy {
           );
         },
         error: (error) => {
-          this.signupServiceHandler.handleSignupError(error, this.selectedRole);
+          if (error.status == 422) {
+            this._snackBar.open(
+              `${error.error?.errors[0]?.field} is not valid`,
+              'close',
+              { duration: 2000 }
+            );
+          } else {
+            this._snackBar.open(
+              'Something went wrong.Please try again',
+              'close',
+              { duration: 2000 }
+            );
+          }
         },
       });
   }

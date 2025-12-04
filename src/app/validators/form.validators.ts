@@ -38,7 +38,7 @@ export class FormValidators {
         switchMap(() =>
           this.authService.checkPhoneOrEmailExists(control.value, role)
         ),
-        map((response) => (response.exists ? { exists: true } : null)),
+        map((response) => (response.data?.exists ? { exists: true } : null)),
         catchError(() => of(null))
       );
     };

@@ -40,8 +40,8 @@ export class AuthService {
   checkPhoneOrEmailExists(
     phoneOrEmail: string,
     role: string
-  ): Observable<{ exists: boolean }> {
-    return this._http.post<{ exists: boolean }>(
+  ): Observable<{ data: { exists: boolean } }> {
+    return this._http.post<{ data: { exists: boolean } }>(
       API_ENDPOINTS.AUTH.CHECK_PHONE_OR_EMAIL(role),
       { phoneOrEmail, role }
     );

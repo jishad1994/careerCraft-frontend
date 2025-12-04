@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { AuthService } from './auth/auth.service';
 import { IRegisterData } from '../models/auth.interface';
+import { MatSnackBar } from '@angular/material/snack-bar';
 export interface OTPResponse {
   success: boolean;
   email: string;
@@ -16,7 +17,8 @@ export interface OTPResponse {
 export class SignupServiceHandler {
   constructor(
     private signupAuthService: AuthService,
-    private router: Router
+    private router: Router,
+    private _snackBar: MatSnackBar
   ) {}
 
   handleSignup(
@@ -33,7 +35,12 @@ export class SignupServiceHandler {
   ): void {
     if (response.success) {
       this.storeUserData(response.email, userRole);
-      this.navigateToOTPVerification(userEmail, userRole);
+      this._snackBar.open('An OTP has been sent to your email', 'close', {
+        duration: 2000,
+      });
+      setTimeout(() => {
+        this.navigateToOTPVerification(userEmail, userRole);
+      }, 2000);
     } else {
       this.handleRegistrationError(response.message);
     }
@@ -57,7 +64,7 @@ export class SignupServiceHandler {
   }
 
   private handleRegistrationError(message?: string): void {
-    console.error('Registration failed:', message);
+    this._snackBar.open(`${message}`, 'close', { duration: 2000 });
   }
 
   handleSignupError(error: any, role: 'user' | 'company'): void {

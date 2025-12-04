@@ -31,11 +31,7 @@ export class SignupPageComponent implements OnDestroy {
           .handleCredentialResponse(response, event.role)
           .pipe(takeUntil(this.destroy$))
           .subscribe({
-            next: (response: any) => {
-              localStorage.setItem('accessToken', response.accessToken);
-              localStorage.setItem('user', JSON.stringify(response.user));
-              localStorage.setItem('userRole', response.user.role);
-              localStorage.setItem('userEmail', response.user.email);
+            next: (response: any) => {      
               this._router.navigate([`${response.user.role}/home`]);
             },
             error: (error: any) => {
