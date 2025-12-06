@@ -35,8 +35,6 @@ export class UserProfileService {
   }
 
   deleteProfilePicture(): Observable<ApiResponse<UserProfile>> {
-    return this._http.delete<ApiResponse<UserProfile>>(
-      API_ENDPOINTS.USER.PROFILE.DELETE_PROFILE_PICTURE
-    );
+    return this._http.delete<ApiResponse<UserProfile>>(API_ENDPOINTS.USER.PROFILE.DELETE_PROFILE_PICTURE);
   }
 }

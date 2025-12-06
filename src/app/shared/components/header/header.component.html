@@ -42,7 +42,7 @@
                         <!-- Dropdown -->
                         <div *ngIf="isDropdownOpen"
                             class="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-50 transition-all duration-200 ease-out">
-                            <a routerLink="/profile" (click)="closeDropdown()"
+                            <a routerLink="/user/profile" (click)="closeDropdown()"
                                 class="block px-4 py-2 text-gray-700 hover:bg-gray-100">View Profile</a>
                             <button (click)="onLogout(); closeDropdown()"
                                 class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">

@@ -29,7 +29,7 @@ export interface UserProfile {
   email: string;
   phone: string;
   role: string;
-  profilePicture: string;
+  profilePicture?: string;
   about: string;
   provider: string;
   isBlocked: boolean;
