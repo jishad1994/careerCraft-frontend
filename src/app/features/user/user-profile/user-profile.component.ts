@@ -87,7 +87,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     this.profile.skills.forEach((skill) => {
       this.skills.push(
         this.fb.group({
-          id: [skill.id],
+          id: [skill._id],
           name: [skill.name, Validators.required],
         })
       );

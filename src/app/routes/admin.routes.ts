@@ -4,6 +4,8 @@ import { CompaniesTableComponent } from '../features/admin/companies-table/compa
 import { AuthGuard } from '../route-guards/auth.guard';
 import { RoleGuard } from '../route-guards/role.guard';
 import { AdminDashboardComponent } from '../pages/admin/admin-dahboard/admin-dashboard.component';
+import { SkillManagementComponent } from '../features/admin/skills/skill-management/skill-management.component';
+import { SkillDetailsComponent } from '../features/admin/skills/skill-details/skill-details.component';
 
 export const ADMIN_ROUTES: Routes = [
   {
@@ -14,12 +16,14 @@ export const ADMIN_ROUTES: Routes = [
   {
     path: 'dashboard',
     component: AdminDashboardComponent,
-    canActivate: [ RoleGuard],
+    // canActivate: [ RoleGuard],
     // canActivateChild: [RoleGuard],
     data: { role: 'admin' },
     children: [
-      { path: 'usersTable', component: UserTableComponent },
-      { path: 'companiesTable', component: CompaniesTableComponent },
+      { path: 'users', component: UserTableComponent },
+      { path: 'companies', component: CompaniesTableComponent },
+      { path: 'skills-management', component: SkillManagementComponent },
+      { path: 'skills-management/:id', component: SkillDetailsComponent },
     ],
   },
 ];

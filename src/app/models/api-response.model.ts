@@ -1,14 +1,15 @@
+export interface PaginationMeta {
+  page: number;
+  limit: number;
+  totalItems: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+}
 export interface ApiResponse<T, E = Record<string, string[]>> {
   success: boolean;
   message: string;
   data: T | null;
-  pagination?: {
-    page: number;
-    limit: number;
-    totalItems: number;
-    totalPages: number;
-    hasNextPage: boolean;
-    hasPrevPage: boolean;
-  };
+  pagination?: PaginationMeta;
   errors?: E | null;
 }

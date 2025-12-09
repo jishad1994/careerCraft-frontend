@@ -16,7 +16,7 @@ export class UserProfileService {
     );
   }
 
-  updateProfile(data: FormData | any): Observable<ApiResponse<UserProfile>> {
+  updateProfile(data: FormData): Observable<ApiResponse<UserProfile>> {
     return this._http.patch<ApiResponse<UserProfile>>(
       API_ENDPOINTS.USER.PROFILE.UPDATE_PROFILE,
       data
@@ -35,6 +35,15 @@ export class UserProfileService {
   }
 
   deleteProfilePicture(): Observable<ApiResponse<UserProfile>> {
-    return this._http.delete<ApiResponse<UserProfile>>(API_ENDPOINTS.USER.PROFILE.DELETE_PROFILE_PICTURE);
+    return this._http.delete<ApiResponse<UserProfile>>(
+      API_ENDPOINTS.USER.PROFILE.DELETE_PROFILE_PICTURE
+    );
+  }
+
+  addUserSkills(skillIds: string[]): Observable<ApiResponse<UserProfile>> {
+    return this._http.post<ApiResponse<UserProfile>>(
+      API_ENDPOINTS.USER.PROFILE.ADD_USER_SKILLS,
+      skillIds
+    );
   }
 }

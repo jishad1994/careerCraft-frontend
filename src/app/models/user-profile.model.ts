@@ -1,7 +1,4 @@
-export interface Skill {
-  id: string;
-  name: string;
-}
+import { Skill } from './skill.model';
 
 export interface Education {
   type: string;

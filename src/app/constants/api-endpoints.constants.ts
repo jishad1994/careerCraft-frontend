@@ -60,6 +60,22 @@ export const API_ENDPOINTS = {
       UPDATE_PROFILE_PICTURE: `${baseUrl}/api/user/me/profile-picture`,
 
       DELETE_PROFILE_PICTURE: `${baseUrl}/api/user/me/profile-picture`,
+
+      ADD_USER_SKILLS: `${baseUrl}/api/user/me/addUserSkills`,
     },
+  },
+
+  SKILL: {
+    CREATE_SKILL: `${baseUrl}/api/skills`,
+    
+    GET_SKILLS_PAGINATED: `${baseUrl}/api/skills`,
+
+    GET_SKILL: (id: string) => `${baseUrl}/api/skills/${id}`,
+
+    UPDATE_SKILL: (id: string) => `${baseUrl}/api/skills/${id}`,
+
+    TOGGLE_BLOCK: (id: String) => `${baseUrl}/api/skills/${id}`,
+
+    DELETE_SKILL: (id: string) => `${baseUrl}/api/skills/${id}`,
   },
 };

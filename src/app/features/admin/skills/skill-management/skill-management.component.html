@@ -1,0 +1,55 @@
+<div class="p-6 space-y-4">
+
+  <!-- Search -->
+  <input
+    type="text"
+    [(ngModel)]="search"
+    (input)="onSearch()"
+    placeholder="Search skills..."
+    class="border p-2 rounded w-full"
+  />
+
+  <!-- Skills Table -->
+  <table class="w-full border-collapse">
+    <thead>
+      <tr class="bg-gray-100">
+        <th class="border p-2">Name</th>
+        <th class="border p-2">Status</th>
+        <th class="border p-2">Created</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr
+        *ngFor="let skill of skills"
+        (click)="goToSkill(skill._id)"
+        class="cursor-pointer hover:bg-gray-50"
+      >
+        <td class="border p-2">{{ skill.name }}</td>
+        <td class="border p-2">
+          <span
+            class="px-3 py-1 rounded text-sm"
+            [class.bg-green-200]="!skill.blocked"
+            [class.bg-red-200]="skill.blocked"
+          >
+            {{ skill.blocked ? 'Blocked' : 'Active' }}
+          </span>
+        </td>
+        <!-- <td class="border p-2">{{ skill.createdAt | date }}</td> -->
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Pagination -->
+  <div class="flex justify-center space-x-2 mt-4">
+    <button class="px-3 py-1 bg-gray-300 rounded" [disabled]="page === 1"
+      (click)="changePage(page - 1)">Prev</button>
+
+    <span>Page {{ page }}</span>
+
+    <button class="px-3 py-1 bg-gray-300 rounded"
+      [disabled]="page * limit >= total"
+      (click)="changePage(page + 1)">Next</button>
+  </div>
+
+</div>
