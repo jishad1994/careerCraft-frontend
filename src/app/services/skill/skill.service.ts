@@ -11,6 +11,13 @@ import { Skill } from '../../models/skill.model';
 export class SkillService {
   constructor(private _http: HttpClient) {}
 
+  createSkill(skill: Skill): Observable<ApiResponse<Skill>> {
+    return this._http.post<ApiResponse<Skill>>(
+      API_ENDPOINTS.SKILL.CREATE_SKILL,
+      skill
+    );
+  }
+
   getSkillsPaginated(
     page = 1,
     limit = 10,
@@ -30,18 +37,23 @@ export class SkillService {
     );
   }
 
-  updateSkill(
-    id: string,
-    payload: Skill
-  ): Observable<ApiResponse<Skill>> {
-    return this._http.put<ApiResponse<Skill>>(API_ENDPOINTS.SKILL.UPDATE_SKILL(id), payload);
+  updateSkill(id: string, payload: Skill): Observable<ApiResponse<Skill>> {
+    return this._http.put<ApiResponse<Skill>>(
+      API_ENDPOINTS.SKILL.UPDATE_SKILL(id),
+      payload
+    );
   }
 
-  toggleBlock(id: string): Observable<ApiResponse<Skill>>  {
-    return this._http.patch<ApiResponse<Skill>>(API_ENDPOINTS.SKILL.TOGGLE_BLOCK(id), {});
+  toggleBlock(id: string): Observable<ApiResponse<Skill>> {
+    return this._http.patch<ApiResponse<Skill>>(
+      API_ENDPOINTS.SKILL.TOGGLE_BLOCK(id),
+      {}
+    );
   }
 
-  deleteSkill(id: string) : Observable<ApiResponse<null>> {
-    return this._http.delete<ApiResponse<null>>(API_ENDPOINTS.SKILL.DELETE_SKILL(id));
+  deleteSkill(id: string): Observable<ApiResponse<null>> {
+    return this._http.delete<ApiResponse<null>>(
+      API_ENDPOINTS.SKILL.DELETE_SKILL(id)
+    );
   }
 }

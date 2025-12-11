@@ -10,13 +10,14 @@ import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-skill-details',
-  imports: [CommonModule,FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './skill-details.component.html',
   styleUrl: './skill-details.component.css',
 })
 export class SkillDetailsComponent implements OnInit {
   skill: Skill | null = null;
   id!: string;
+  page!: number;
   destroy$ = new Subject<void>();
   constructor(
     private _skillService: SkillService,
@@ -27,6 +28,9 @@ export class SkillDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.id = this._route.snapshot.params['id'];
+    this._route.queryParams.subscribe((params) => {
+      this.page = params['page'] ? +params['page'] : 1;
+    });
     this.loadSkill();
   }
 
@@ -56,6 +60,9 @@ export class SkillDetailsComponent implements OnInit {
         .subscribe({
           next: () => {
             this._snackBar.open('Skill updated', 'close', { duration: 2000 });
+            this._router.navigate(['/admin/dashboard/skills-management'], {
+              queryParams: { page: this.page },
+            });
           },
           error: (err) => {
             console.log(err.message);
@@ -99,7 +106,9 @@ export class SkillDetailsComponent implements OnInit {
           this._snackBar.open('Skill deleted successfully', 'close', {
             duration: 2000,
           });
-          this._router.navigate(['/admin/dashboard/skills-management']);
+          this._router.navigate(['/admin/dashboard/skills-management'], {
+            queryParams: { page: this.page },
+          });
         },
         error: (err) => {
           console.log(err.message);
@@ -108,5 +117,11 @@ export class SkillDetailsComponent implements OnInit {
           });
         },
       });
+  }
+
+  goBack(): void {
+    this._router.navigate(['/admin/dashboard/skills-management'], {
+      queryParams: { page: this.page },
+    });
   }
 }

@@ -74,7 +74,7 @@ export const API_ENDPOINTS = {
 
     UPDATE_SKILL: (id: string) => `${baseUrl}/api/skills/${id}`,
 
-    TOGGLE_BLOCK: (id: String) => `${baseUrl}/api/skills/${id}`,
+    TOGGLE_BLOCK: (id: String) => `${baseUrl}/api/skills/${id}/toggle-block`,
 
     DELETE_SKILL: (id: string) => `${baseUrl}/api/skills/${id}`,
   },

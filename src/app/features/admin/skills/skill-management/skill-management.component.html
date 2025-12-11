@@ -1,55 +1,78 @@
 <div class="p-6 space-y-4">
 
   <!-- Search -->
-  <input
-    type="text"
-    [(ngModel)]="search"
-    (input)="onSearch()"
-    placeholder="Search skills..."
-    class="border p-2 rounded w-full"
-  />
+  <input type="text" [(ngModel)]="search" (input)="onSearch()" placeholder="Search skills..."
+    class="border p-2 rounded w-full" />
 
   <!-- Skills Table -->
   <table class="w-full border-collapse">
-    <thead>
-      <tr class="bg-gray-100">
-        <th class="border p-2">Name</th>
-        <th class="border p-2">Status</th>
-        <th class="border p-2">Created</th>
+    <thead class="bg-gray-200">
+      <tr>
+        <th class="p-3 text-left">Name</th>
+        <th class="p-3 text-left">Description</th>
+        <th class="p-3 text-left">Status</th>
+        <th class="p-3">Actions</th>
       </tr>
     </thead>
 
     <tbody>
-      <tr
-        *ngFor="let skill of skills"
-        (click)="goToSkill(skill._id)"
-        class="cursor-pointer hover:bg-gray-50"
-      >
-        <td class="border p-2">{{ skill.name }}</td>
-        <td class="border p-2">
-          <span
-            class="px-3 py-1 rounded text-sm"
-            [class.bg-green-200]="!skill.blocked"
-            [class.bg-red-200]="skill.blocked"
-          >
-            {{ skill.blocked ? 'Blocked' : 'Active' }}
+      <tr *ngFor="let skill of skills">
+        <td class="p-3">{{ skill.name }}</td>
+        <td class="p-3">{{ skill.description }}</td>
+        <td class="p-3">
+          <span [class.text-green-600]="!skill.blocked" [class.text-red-600]="skill.blocked">
+            {{ skill.blocked ? "Blocked" : "Active" }}
           </span>
         </td>
-        <!-- <td class="border p-2">{{ skill.createdAt | date }}</td> -->
+        <td class="p-3">
+          <button class="bg-blue-600 text-white px-3 py-1 rounded mr-2" (click)="goToSkill(skill._id)">
+            View
+          </button>
+          <button class="bg-red-600 text-white px-3 py-1 rounded" (click)="deleteSkill(skill._id)">
+            Delete
+          </button>
+        </td>
       </tr>
     </tbody>
   </table>
 
   <!-- Pagination -->
   <div class="flex justify-center space-x-2 mt-4">
-    <button class="px-3 py-1 bg-gray-300 rounded" [disabled]="page === 1"
-      (click)="changePage(page - 1)">Prev</button>
+    <button class="px-3 py-1 bg-gray-300 rounded" [disabled]="page === 1" (click)="changePage(page - 1)">Prev</button>
 
     <span>Page {{ page }}</span>
 
-    <button class="px-3 py-1 bg-gray-300 rounded"
-      [disabled]="page * limit >= total"
+    <button class="px-3 py-1 bg-gray-300 rounded" [disabled]="page * limit >= total"
       (click)="changePage(page + 1)">Next</button>
+  </div>
+
+
+
+  <div class="mt-8 p-6 bg-gray-100 rounded">
+    <h2 class="text-xl font-semibold mb-4">Create New Skill</h2>
+
+    <form [formGroup]="skillForm" (ngSubmit)="createSkill()">
+      <div class="mb-4">
+        <label class="block mb-1 font-medium">Skill Name</label>
+        <input type="text" formControlName="name" class="border p-2 w-full rounded" />
+      </div>
+
+      <div class="mb-4">
+        <label class="block mb-1 font-medium">Description</label>
+        <textarea formControlName="description" class="border p-2 w-full rounded"></textarea>
+      </div>
+
+      <div class="flex gap-3">
+        <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded" [disabled]="skillForm.invalid">
+          Create
+        </button>
+
+        <button type="button" class="bg-gray-400 text-white px-4 py-2 rounded" (click)="skillForm.reset()">
+          Cancel
+        </button>
+       
+      </div>
+    </form>
   </div>
 
 </div>
