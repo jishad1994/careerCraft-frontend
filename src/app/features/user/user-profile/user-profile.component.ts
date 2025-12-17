@@ -4,7 +4,13 @@ import {
   Experience,
   UserProfile,
 } from '../../../models/user-profile.model';
-import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormArray,
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { UserProfileService } from '../../../services/user/profile/user-profile.service';
 import { Subject, takeUntil } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -12,7 +18,7 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-user-profile',
-  imports: [CommonModule,ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './user-profile.component.html',
   styleUrl: './user-profile.component.css',
 })
@@ -150,7 +156,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     this.skills.removeAt(index);
   }
 
-  
   addEducation(): void {
     this.educationList.push(this.createEducationGroup());
   }
@@ -273,7 +278,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (response) => {
           if (this.profile) {
-            this.profile.profilePicture = '';
+            this.profile.profilePicture = { key: '', location: '' };
           }
           this.uploadingImage = false;
 

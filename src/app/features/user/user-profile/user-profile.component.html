@@ -20,7 +20,7 @@
                     <div class="relative -mt-16 mb-4">
                         <div class="relative inline-block">
                             <div class="w-32 h-32 rounded-full border-4 border-white overflow-hidden bg-white">
-                                <img *ngIf="profile.profilePicture" [src]="profile.profilePicture"
+                                <img *ngIf="profile.profilePicture" [src]="profile.profilePicture.location"
                                     [alt]="profile.firstName" class="w-full h-full object-cover">
                                 <div *ngIf="!profile.profilePicture"
                                     class="w-full h-full bg-blue-600 flex items-center justify-center text-white text-3xl font-semibold">
