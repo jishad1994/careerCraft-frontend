@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { UserProfile } from '../../../models/user-profile.model';
+import { Education, UserProfile } from '../../../models/user-profile.model';
 import { API_ENDPOINTS } from '../../../constants/api-endpoints.constants';
 import { ApiResponse } from '../../../models/api-response.model';
 
@@ -16,7 +16,9 @@ export class UserProfileService {
     );
   }
 
-  updateProfile(data: FormData): Observable<ApiResponse<UserProfile>> {
+  updateProfile(
+    data: Partial<UserProfile>
+  ): Observable<ApiResponse<UserProfile>> {
     return this._http.patch<ApiResponse<UserProfile>>(
       API_ENDPOINTS.USER.PROFILE.UPDATE_PROFILE,
       data
@@ -44,6 +46,28 @@ export class UserProfileService {
     return this._http.post<ApiResponse<UserProfile>>(
       API_ENDPOINTS.USER.PROFILE.ADD_USER_SKILLS,
       skillIds
+    );
+  }
+
+  addEducation(education: Education): Observable<ApiResponse<UserProfile>> {
+    return this._http.post<ApiResponse<UserProfile>>(
+      API_ENDPOINTS.USER.PROFILE.ADD_EDUCATION,
+      education
+    );
+  }
+  updateEducation(
+    index: number,
+    education: Education
+  ): Observable<ApiResponse<UserProfile>> {
+    return this._http.put<ApiResponse<UserProfile>>(
+      API_ENDPOINTS.USER.PROFILE.UPDATE_EDUCATION,
+      { index, education }
+    );
+  }
+
+  deleteEducation(index: number): Observable<ApiResponse<UserProfile>> {
+    return this._http.delete<ApiResponse<UserProfile>>(
+      API_ENDPOINTS.USER.PROFILE.DELETE_EDUCATION(index)
     );
   }
 }

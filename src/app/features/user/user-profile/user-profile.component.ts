@@ -15,10 +15,12 @@ import { UserProfileService } from '../../../services/user/profile/user-profile.
 import { Subject, takeUntil } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
+import { BasicProfileComponent } from './basic-profile/basic-profile.component';
+import { EducationSectionComponent } from "./education-section/education-section.component";
 
 @Component({
   selector: 'app-user-profile',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, BasicProfileComponent, EducationSectionComponent],
   templateUrl: './user-profile.component.html',
   styleUrl: './user-profile.component.css',
 })
@@ -28,6 +30,12 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   editMode = false;
   uploadingImage = false;
   showImageMenu = false;
+
+  editBasicInfo = false;
+  editingEducation: number | null = null;
+  editingExperience: number | null = null;
+  addingEducation = false;
+  addingExperience = false;
 
   profileForm!: FormGroup;
   destroy$ = new Subject<void>();
@@ -260,7 +268,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         error: (err) => {
           this.uploadingImage = false;
           console.log(err.message);
-          this._snackBar.open(err.message, 'close', { duration: 2000 });
+          this._snackBar.open(err.error?.message, 'close', { duration: 2000 });
         },
       });
   }
@@ -278,7 +286,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (response) => {
           if (this.profile) {
-            this.profile.profilePicture = { key: '', location: '' };
+            this.profile.profilePicture = undefined;
           }
           this.uploadingImage = false;
 
@@ -288,6 +296,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           console.log(err.message);
+          this.uploadingImage = false;
           this._snackBar.open('Failed to delete profile picture', 'close', {
             duration: 2000,
           });
@@ -310,6 +319,14 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       month: 'short',
       year: 'numeric',
     });
+  }
+
+  onBasicInfoUpdated(updatedProfile: UserProfile) {
+    this.profile = updatedProfile;
+  }
+
+  onEducationUpdated(updatedProfile: UserProfile) {
+    this.profile = updatedProfile;
   }
 
   ngOnDestroy(): void {

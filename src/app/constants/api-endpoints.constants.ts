@@ -61,13 +61,20 @@ export const API_ENDPOINTS = {
 
       DELETE_PROFILE_PICTURE: `${baseUrl}/api/user/me/profile-picture`,
 
-      ADD_USER_SKILLS: `${baseUrl}/api/user/me/addUserSkills`,
+      ADD_USER_SKILLS: `${baseUrl}/api/user/me/userSkills`,
+
+      ADD_EDUCATION: `${baseUrl}/api/user/me/userEducation`,
+
+      UPDATE_EDUCATION: `${baseUrl}/api/user/me/userEducation`,
+
+      DELETE_EDUCATION: (index: number) =>
+        `${baseUrl}/api/user/me/userEducation/${index}`,
     },
   },
 
   SKILL: {
     CREATE_SKILL: `${baseUrl}/api/skills`,
-    
+
     GET_SKILLS_PAGINATED: `${baseUrl}/api/skills`,
 
     GET_SKILL: (id: string) => `${baseUrl}/api/skills/${id}`,

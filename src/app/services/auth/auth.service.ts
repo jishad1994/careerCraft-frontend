@@ -61,7 +61,7 @@ export class AuthService {
             loading: false,
           });
         }),
-        catchError((errror) => {
+        catchError((error) => {
           this._authStateService.updateState({
             isLoggedIn: false,
             user: null,
@@ -69,7 +69,7 @@ export class AuthService {
             loading: false,
           });
 
-          return throwError(() => errror);
+          return throwError(() => error);
         })
       );
   }

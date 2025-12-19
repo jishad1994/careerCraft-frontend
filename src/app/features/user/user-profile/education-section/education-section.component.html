@@ -1,0 +1,119 @@
+<!-- Education Section -->
+<div class="bg-white rounded-lg shadow-sm p-6">
+    <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-semibold text-gray-900">Education</h2>
+        <button (click)="startAddEducation()" *ngIf="!addingEducation"
+            class="text-blue-600 hover:text-blue-700 flex items-center gap-1">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            Add Education
+        </button>
+    </div>
+
+    <!-- Add Education Form -->
+    <form *ngIf="addingEducation" [formGroup]="educationForm"
+        class="p-4 border border-gray-200 rounded-lg space-y-3 mb-4">
+        <h3 class="font-medium text-gray-900">New Education</h3>
+        <input type="text" formControlName="type" placeholder="Degree Type *"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+        <input type="text" formControlName="institution" placeholder="Institution *"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+        <input type="text" formControlName="fieldOfStudy" placeholder="Field of Study *"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+        <div class="grid grid-cols-2 gap-3">
+            <input type="month" formControlName="startDate" class="px-3 py-2 border border-gray-300 rounded-lg">
+            <input type="month" formControlName="endDate" [disabled]="educationForm.get('isCurrent')?.value"
+                class="px-3 py-2 border border-gray-300 rounded-lg">
+        </div>
+        <label class="flex items-center gap-2">
+            <input type="checkbox" formControlName="isCurrent" class="rounded text-blue-600">
+            <span class="text-sm text-gray-700">I currently study here</span>
+        </label>
+        <input type="text" formControlName="grade" placeholder="Grade/GPA (optional)"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+        <div class="flex gap-2">
+            <button type="button" (click)="saveEducation()"
+                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Save</button>
+            <button type="button" (click)="cancelAddEducation()"
+                class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">Cancel</button>
+        </div>
+    </form>
+
+    <!-- Experience List -->
+    <div class="space-y-4" *ngIf="profile">
+        <div *ngFor="let edu of profile.education; let i = index" class="p-4 border border-gray-200 rounded-lg">
+
+            <!-- View Mode -->
+            <div *ngIf="editingEducation !== i" class="flex gap-4">
+                <div class="flex-shrink-0 w-12 h-12 bg-gray-100 rounded flex items-center justify-center">
+                    <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222">
+                        </path>
+                    </svg>
+                </div>
+                <div class="flex-1">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="font-semibold text-gray-900">{{ edu.institution }}</h3>
+                            <p class="text-gray-600">{{ edu.type }} - {{ edu.fieldOfStudy }}</p>
+                            <p class="text-sm text-gray-500 mt-1">
+                                {{ formatDate(edu.startDate) }} - {{ edu.isCurrent ? 'Present' :
+                                formatDate(edu.endDate!) }}
+                            </p>
+                            <p *ngIf="edu.grade" class="text-sm text-gray-700 mt-1">Grade: {{ edu.grade }}</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button (click)="startEditEducation(i)" class="text-blue-600 hover:text-blue-700">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                                    </path>
+                                </svg>
+                            </button>
+                            <button (click)="deleteEducation(i)" class="text-red-600 hover:text-red-700">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                    </path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edit Mode -->
+            <form *ngIf="editingEducation === i" [formGroup]="educationForm" class="space-y-3">
+                <input type="text" formControlName="type" placeholder="Education type *"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                <input type="text" formControlName="institution" placeholder="institution *"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                <input type="text" formControlName="fieldOfStudy" placeholder="fieldOfStudy *"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                <div class="grid grid-cols-2 gap-3">
+                    <input type="month" formControlName="startDate" class="px-3 py-2 border border-gray-300 rounded-lg">
+                    <input type="month" formControlName="endDate" [disabled]="educationForm.get('isCurrent')?.value"
+                        class="px-3 py-2 border border-gray-300 rounded-lg">
+                </div>
+                <label class="flex items-center gap-2">
+                    <input type="checkbox" formControlName="isCurrent" class="rounded text-blue-600">
+                    <span class="text-sm text-gray-700">I currently study</span>
+                </label>
+                <input type="text" formControlName="grade" placeholder="grade *"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                <div class="flex gap-2">
+                    <button type="button" (click)="updateEducation(i)"
+                        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Update</button>
+                    <button type="button" (click)="cancelEditEducation()"
+                        class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">Cancel</button>
+                </div>
+            </form>
+        </div>
+
+        <div *ngIf="profile.education.length === 0 && !addingEducation" class="text-gray-500 text-center py-4">
+            No education added yet.
+        </div>
+    </div>
+</div>
