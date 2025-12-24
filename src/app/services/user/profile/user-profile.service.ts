@@ -1,7 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Education, UserProfile } from '../../../models/user-profile.model';
+import {
+  Education,
+  Experience,
+  UserProfile,
+} from '../../../models/user-profile.model';
 import { API_ENDPOINTS } from '../../../constants/api-endpoints.constants';
 import { ApiResponse } from '../../../models/api-response.model';
 
@@ -44,14 +48,19 @@ export class UserProfileService {
 
   addUserSkills(skillIds: string[]): Observable<ApiResponse<UserProfile>> {
     return this._http.post<ApiResponse<UserProfile>>(
-      API_ENDPOINTS.USER.PROFILE.ADD_USER_SKILLS,
+      API_ENDPOINTS.USER.PROFILE.SKILLS.ADD,
       skillIds
+    );
+  }
+  removeUserSkill(skillId: string): Observable<ApiResponse<UserProfile>> {
+    return this._http.delete<ApiResponse<UserProfile>>(
+      API_ENDPOINTS.USER.PROFILE.SKILLS.DELETE(skillId)
     );
   }
 
   addEducation(education: Education): Observable<ApiResponse<UserProfile>> {
     return this._http.post<ApiResponse<UserProfile>>(
-      API_ENDPOINTS.USER.PROFILE.ADD_EDUCATION,
+      API_ENDPOINTS.USER.PROFILE.EDUCATION.ADD,
       education
     );
   }
@@ -60,14 +69,35 @@ export class UserProfileService {
     education: Education
   ): Observable<ApiResponse<UserProfile>> {
     return this._http.put<ApiResponse<UserProfile>>(
-      API_ENDPOINTS.USER.PROFILE.UPDATE_EDUCATION,
+      API_ENDPOINTS.USER.PROFILE.EDUCATION.UPDATE,
       { index, education }
     );
   }
 
   deleteEducation(index: number): Observable<ApiResponse<UserProfile>> {
     return this._http.delete<ApiResponse<UserProfile>>(
-      API_ENDPOINTS.USER.PROFILE.DELETE_EDUCATION(index)
+      API_ENDPOINTS.USER.PROFILE.EDUCATION.DELETE(index)
+    );
+  }
+
+  addExperience(experience: Experience): Observable<ApiResponse<UserProfile>> {
+    return this._http.post<ApiResponse<UserProfile>>(
+      API_ENDPOINTS.USER.PROFILE.EDUCATION.ADD,
+      experience
+    );
+  }
+  updateExperience(
+    experience: Experience,
+    index: number
+  ): Observable<ApiResponse<UserProfile>> {
+    return this._http.put<ApiResponse<UserProfile>>(
+      API_ENDPOINTS.USER.PROFILE.EDUCATION.UPDATE,
+      { experience, index }
+    );
+  }
+  deleteExperience(index: number): Observable<ApiResponse<UserProfile>> {
+    return this._http.delete<ApiResponse<UserProfile>>(
+      API_ENDPOINTS.USER.PROFILE.EDUCATION.DELETE(index)
     );
   }
 }

@@ -17,10 +17,12 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
 import { BasicProfileComponent } from './basic-profile/basic-profile.component';
 import { EducationSectionComponent } from "./education-section/education-section.component";
+import { ExperienceSectionComponent } from './experience-section/experience-section.component';
+import { SkillsSectionComponent } from "./skills-section/skills-section.component";
 
 @Component({
   selector: 'app-user-profile',
-  imports: [CommonModule, ReactiveFormsModule, BasicProfileComponent, EducationSectionComponent],
+  imports: [CommonModule, ReactiveFormsModule, BasicProfileComponent, EducationSectionComponent, ExperienceSectionComponent, SkillsSectionComponent],
   templateUrl: './user-profile.component.html',
   styleUrl: './user-profile.component.css',
 })
@@ -326,6 +328,12 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   }
 
   onEducationUpdated(updatedProfile: UserProfile) {
+    this.profile = updatedProfile;
+  }
+  onExperienceUpdated(updatedProfile: UserProfile) {
+    this.profile = updatedProfile;
+  }
+  onSKillsUpdated(updatedProfile: UserProfile) {
     this.profile = updatedProfile;
   }
 

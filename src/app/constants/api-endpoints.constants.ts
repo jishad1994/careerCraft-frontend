@@ -60,15 +60,28 @@ export const API_ENDPOINTS = {
       UPDATE_PROFILE_PICTURE: `${baseUrl}/api/user/me/profile-picture`,
 
       DELETE_PROFILE_PICTURE: `${baseUrl}/api/user/me/profile-picture`,
+      
+      SKILLS: {
+        ADD: `${baseUrl}/api/user/me/userSkills`,
+        DELETE: (id: string) => `${baseUrl}/api/user/me/userSkills/${id}`,
+      },
 
-      ADD_USER_SKILLS: `${baseUrl}/api/user/me/userSkills`,
+      EDUCATION: {
+        ADD: `${baseUrl}/api/user/me/userEducation`,
+        UPDATE: `${baseUrl}/api/user/me/userEducation`,
 
-      ADD_EDUCATION: `${baseUrl}/api/user/me/userEducation`,
+        DELETE: (index: number) =>
+          `${baseUrl}/api/user/me/userEducation/${index}`,
+      },
 
-      UPDATE_EDUCATION: `${baseUrl}/api/user/me/userEducation`,
+      EXPERIENCE: {
+        ADD: `${baseUrl}/api/user/me/userExperience`,
 
-      DELETE_EDUCATION: (index: number) =>
-        `${baseUrl}/api/user/me/userEducation/${index}`,
+        UPDATE: `${baseUrl}/api/user/me/userExperience`,
+
+        DELETE: (index: number) =>
+          `${baseUrl}/api/user/me/userExperience/${index}`,
+      },
     },
   },
 
