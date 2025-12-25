@@ -8,7 +8,18 @@ import { UserLandingPageComponent } from '../pages/user/user-landing-page/user-l
 export const COMPANY_ROUTES: Routes = [
   {
     path: '',
-    component: MainLayoutComponent,
-    children: [{ path: 'home', component: CompanyLandingPageComponent }],
+    loadComponent: () =>
+      import('../layouts/main-layout/main-layout.component').then(
+        (m) => m.MainLayoutComponent
+      ),
+    children: [
+      {
+        path: 'home',
+        loadComponent: () =>
+          import(
+            '../pages/company/company-landing-page/company-landing-page.component'
+          ).then((m) => m.CompanyLandingPageComponent),
+      },
+    ],
   },
 ];

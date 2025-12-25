@@ -6,12 +6,39 @@ import { ForgotPasswordComponent } from '../shared/components/forgot-password/fo
 import { ResetPasswordComponent } from '../shared/components/reset-password/reset-password.component';
 
 export const AUTH_ROUTES: Routes = [
-  { path: 'signup', component: SignupPageComponent },
-  { path: 'login', component: LoginPageComponent },
+  {
+    path: 'signup',
+    loadComponent: () =>
+      import('../pages/signup-page/signup-page.component').then(
+        (m) => m.SignupPageComponent
+      ),
+  },
+  {
+    path: 'login',
+    loadComponent: () =>
+      import('../pages/login-page/login-page.component').then(
+        (m) => m.LoginPageComponent
+      ),
+  },
   {
     path: 'OTP-verification',
-    component: OtpVerificationPageComponent,
+    loadComponent: () =>
+      import(
+        '../pages/otp-verification-page/otp-verification-page.component'
+      ).then((m) => m.OtpVerificationPageComponent),
   },
-  { path: 'forgotPassword', component: ForgotPasswordComponent },
-  { path: 'resetPassword', component: ResetPasswordComponent },
+  {
+    path: 'forgotPassword',
+    loadComponent: () =>
+      import(
+        '../shared/components/forgot-password/forgot-password.component'
+      ).then((m) => m.ForgotPasswordComponent),
+  },
+  {
+    path: 'resetPassword',
+    loadComponent: () =>
+      import(
+        '../shared/components/reset-password/reset-password.component'
+      ).then((m) => m.ResetPasswordComponent),
+  },
 ];
