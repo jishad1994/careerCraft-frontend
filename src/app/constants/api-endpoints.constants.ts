@@ -60,7 +60,7 @@ export const API_ENDPOINTS = {
       UPDATE_PROFILE_PICTURE: `${baseUrl}/api/user/me/profile-picture`,
 
       DELETE_PROFILE_PICTURE: `${baseUrl}/api/user/me/profile-picture`,
-      
+
       SKILLS: {
         ADD: `${baseUrl}/api/user/me/userSkills`,
         DELETE: (id: string) => `${baseUrl}/api/user/me/userSkills/${id}`,
@@ -82,6 +82,22 @@ export const API_ENDPOINTS = {
         DELETE: (index: number) =>
           `${baseUrl}/api/user/me/userExperience/${index}`,
       },
+    },
+  },
+
+  COMPANY: {
+    PROFILE: {
+      GET_PROFILE: `${baseUrl}/api/company/me`,
+
+      UPDATE_PROFILE: `${baseUrl}/api/company/me`,
+
+      UPDATE_PROFILE_PICTURE: `${baseUrl}/api/company/me/profile-picture`,
+
+      UPDATE_BANNER_IMAGE: `${baseUrl}/api/company/me/banner-image`,
+
+      UPLOAD_DOCUMENTS: `${baseUrl}/api/company/me/documents`,
+
+      DELETE_DOCUMENT: `${baseUrl}/api/company/me/documents`,
     },
   },
 

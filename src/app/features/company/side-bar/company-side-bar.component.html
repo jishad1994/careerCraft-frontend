@@ -1,0 +1,110 @@
+<aside
+  class="h-screen bg-slate-900 text-slate-100 flex flex-col transition-all duration-300"
+  [class.w-64]="!collapsed"
+  [class.w-20]="collapsed"
+>
+
+  <!-- Header -->
+  <div class="flex items-center justify-between p-4 border-b border-slate-700">
+    <span *ngIf="!collapsed" class="text-lg font-semibold">
+      Company
+    </span>
+    <button
+      class="text-slate-300 hover:text-white"
+      (click)="toggleSidebar()"
+    >
+      ☰
+    </button>
+  </div>
+
+  <!-- Menu -->
+  <nav class="flex-1 overflow-y-auto">
+    <ul class="space-y-1 p-2">
+
+      <!-- Dashboard -->
+      <li
+        routerLink="/company/dashboard"
+        routerLinkActive="bg-slate-800"
+        class="flex items-center gap-3 p-3 rounded-lg cursor-pointer hover:bg-slate-800"
+      >
+        <span>📊</span>
+        <span *ngIf="!collapsed">Dashboard</span>
+      </li>
+
+      <!-- Profile -->
+      <li
+        routerLink="/company/profile"
+        routerLinkActive="bg-slate-800"
+        class="flex items-center gap-3 p-3 rounded-lg cursor-pointer hover:bg-slate-800"
+      >
+        <span>🏢</span>
+        <span *ngIf="!collapsed">Profile</span>
+      </li>
+
+      <!-- Job Management -->
+      <li
+        (click)="toggleJobMenu()"
+        class="flex items-center gap-3 p-3 rounded-lg cursor-pointer hover:bg-slate-800"
+      >
+        <span>🧳</span>
+        <span *ngIf="!collapsed" class="flex-1">Job Management</span>
+        <span *ngIf="!collapsed">
+          {{ jobMenuOpen ? '▲' : '▼' }}
+        </span>
+      </li>
+
+      <!-- Submenu -->
+      <ul *ngIf="jobMenuOpen && !collapsed" class="ml-8 space-y-1">
+        <li
+          routerLink="/company/jobs/new"
+          class="p-2 rounded hover:bg-slate-800 cursor-pointer"
+        >
+          ➕ Post New Job
+        </li>
+        <li
+          routerLink="/company/jobs/active"
+          class="p-2 rounded hover:bg-slate-800 cursor-pointer"
+        >
+          📄 Active Jobs
+        </li>
+        <li
+          routerLink="/company/jobs/manage"
+          class="p-2 rounded hover:bg-slate-800 cursor-pointer"
+        >
+          ⚙️ Manage Jobs
+        </li>
+      </ul>
+
+      <!-- Employees -->
+      <li
+        routerLink="/company/employees"
+        class="flex items-center gap-3 p-3 rounded-lg cursor-pointer hover:bg-slate-800"
+      >
+        <span>👥</span>
+        <span *ngIf="!collapsed">Employees</span>
+      </li>
+
+      <!-- Settings -->
+      <li
+        routerLink="/company/settings"
+        class="flex items-center gap-3 p-3 rounded-lg cursor-pointer hover:bg-slate-800"
+      >
+        <span>⚙️</span>
+        <span *ngIf="!collapsed">Settings</span>
+      </li>
+
+    </ul>
+  </nav>
+
+  <!-- Logout -->
+  <div class="p-3 border-t border-slate-700">
+    <button
+      (click)="logout()"
+      class="w-full flex items-center gap-3 p-3 rounded-lg text-red-400 hover:bg-slate-800"
+    >
+      <span>🚪</span>
+      <span *ngIf="!collapsed">Logout</span>
+    </button>
+  </div>
+
+</aside>

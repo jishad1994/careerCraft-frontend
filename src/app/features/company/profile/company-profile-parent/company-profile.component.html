@@ -1,0 +1,40 @@
+<div class="min-h-screen bg-gray-100 py-8">
+  <div class="max-w-6xl mx-auto px-4">
+
+    <!-- Loading State -->
+    <div *ngIf="loading && !profile" class="flex items-center justify-center min-h-[400px]">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+    </div>
+
+
+    <div *ngIf="profile" class="space-y-4">
+
+      <app-company-basic-profile [profile]="profile"
+        (updatedProfile)="onChildUpdated($event)"></app-company-basic-profile>
+
+
+
+      <app-company-document-section [profile]="profile"
+        (updatedProfile)="onChildUpdated($event)"></app-company-document-section>
+
+      <!-- Subscription Info (Optional) -->
+      <!-- <div class="bg-white rounded-lg shadow-sm p-6" *ngIf="profile.subscriptionStatus">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">Subscription</h2>
+        <div class="flex items-center gap-4">
+          <span class="px-4 py-2 rounded-full text-sm font-medium" 
+                [ngClass]="{
+                  'bg-green-100 text-green-800': profile.subscriptionStatus === 'active',
+                  'bg-red-100 text-red-800': profile.subscriptionStatus === 'expired',
+                  'bg-yellow-100 text-yellow-800': profile.subscriptionStatus === 'pending'
+                }">
+            {{ profile.subscriptionStatus | titlecase }}
+          </span>
+          <div *ngIf="profile.subscriptionEnd" class="text-sm text-gray-600">
+            Valid until: {{ profile.subscriptionEnd | date:'mediumDate' }}
+          </div>
+        </div>
+      </div> -->
+
+    </div>
+  </div>
+</div>

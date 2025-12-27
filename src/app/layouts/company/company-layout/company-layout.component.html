@@ -1,0 +1,26 @@
+<div class="min-h-screen flex flex-col">
+  
+  <!-- Header - Fixed at top -->
+  <app-header class="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm"></app-header>
+  
+  <!-- Content Area with Sidebar -->
+  <div class="flex flex-1 pt-16">
+    
+    <!-- Sidebar - Fixed on larger screens, hidden on mobile -->
+    <app-company-side-bar 
+      class="fixed left-0 top-16 bottom-0 w-64 bg-white border-r border-gray-200 overflow-y-auto hidden lg:block z-40">
+    </app-company-side-bar>
+    
+    <!-- Main Content Area -->
+    <main class="flex-1 lg:ml-64 bg-gray-50">
+      <div class="min-h-[calc(100vh-4rem)]">
+        <router-outlet></router-outlet>
+      </div>
+    </main>
+    
+  </div>
+  
+  <!-- Footer -->
+  <app-footer class="bg-gray-800 text-white mt-auto lg:ml-64"></app-footer>
+  
+</div>

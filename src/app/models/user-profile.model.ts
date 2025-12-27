@@ -1,3 +1,4 @@
+import { IAddress } from './company/company-profile.model';
 import { Skill } from './skill.model';
 
 export interface Education {
@@ -34,7 +35,7 @@ export interface UserProfile {
   education: Education[];
   experience: Experience[];
   location: string;
-  address: string;
+  address: IAddress;
   createdAt: string;
   updatedAt: string;
 }
