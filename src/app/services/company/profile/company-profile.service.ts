@@ -72,12 +72,9 @@ export class CompanyProfileService {
     );
   }
 
-  deleteDocument(documentUrl: string): Observable<ApiResponse<CompanyProfile>> {
+  deleteDocument(documentKey: string): Observable<ApiResponse<CompanyProfile>> {
     return this._http.delete<ApiResponse<CompanyProfile>>(
-      API_ENDPOINTS.COMPANY.PROFILE.DELETE_DOCUMENT,
-      {
-        body: { documentUrl },
-      }
+      API_ENDPOINTS.COMPANY.PROFILE.DELETE_DOCUMENT(documentKey)
     );
   }
 }

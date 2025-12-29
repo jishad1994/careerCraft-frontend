@@ -1,3 +1,5 @@
+import { IDocuments } from '../user-profile.model';
+
 export class IAddress {
   city!: string;
   state!: string;
@@ -14,7 +16,7 @@ export interface CompanyProfile {
   profilePicture?: { key: string; location: string };
   isBlocked: boolean;
   isVerified: boolean;
-  documents: string[];
+  documents: IDocuments[];
   website?: string;
   location?: string;
   industry?: string;

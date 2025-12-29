@@ -76,20 +76,17 @@
                     </div>
 
 
-
-                    <app-basic-profile [profile]="profile"
-                        (updatedBasicInfo)="onBasicInfoUpdated($event)"></app-basic-profile>
+                    <app-basic-profile [profile]="profile" (updatedBasicInfo)="onUpdated($event)"></app-basic-profile>
 
                     <app-education-section [profile]="profile"
-                        (updatedEducation)="onEducationUpdated($event)"></app-education-section>
+                        (updatedEducation)="onUpdated($event)"></app-education-section>
 
                     <!-- Skills Section -->
-                    <app-skills-section [profile]="profile"
-                        (updatedUser)="onSKillsUpdated($event)"></app-skills-section>
+                    <app-skills-section [profile]="profile" (updatedUser)="onUpdated($event)"></app-skills-section>
 
                     <!-- Experience Section -->
                     <app-experience-section [profile]="profile"
-                        (updatedExperience)="onExperienceUpdated($event)"></app-experience-section>
+                        (updatedExperience)="onUpdated($event)"></app-experience-section>
 
 
 

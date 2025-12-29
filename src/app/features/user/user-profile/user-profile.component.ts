@@ -103,7 +103,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     this.profile.skills.forEach((skill) => {
       this.skills.push(
         this.fb.group({
-          id: [skill._id],
+          id: [skill.id],
           name: [skill.name, Validators.required],
         })
       );
@@ -323,19 +323,11 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     });
   }
 
-  onBasicInfoUpdated(updatedProfile: UserProfile) {
+  onUpdated(updatedProfile: UserProfile) {
     this.profile = updatedProfile;
   }
 
-  onEducationUpdated(updatedProfile: UserProfile) {
-    this.profile = updatedProfile;
-  }
-  onExperienceUpdated(updatedProfile: UserProfile) {
-    this.profile = updatedProfile;
-  }
-  onSKillsUpdated(updatedProfile: UserProfile) {
-    this.profile = updatedProfile;
-  }
+ 
 
   ngOnDestroy(): void {
     this.destroy$.next();

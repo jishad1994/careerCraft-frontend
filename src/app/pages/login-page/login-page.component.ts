@@ -24,7 +24,7 @@ export class LoginPageComponent implements OnDestroy {
   destroy$ = new Subject<void>();
   roleRoutes: Record<string, string> = {
     user: '/user/home',
-    company: '/company/home',
+    company: '/company/dashboard',
     admin: '/admin/dashboard',
   };
 

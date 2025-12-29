@@ -1,28 +1,20 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  OnInit,
-  Output,
-} from '@angular/core';
-import { CompanyProfile } from '../../../../models/company/company-profile.model';
-import { Subject, takeUntil } from 'rxjs';
-import { CompanyProfileService } from '../../../../services/company/profile/company-profile.service';
-import { FormBuilder } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
-import { IDocuments } from '../../../../models/user-profile.model';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { IDocuments, UserProfile } from '../../../../models/user-profile.model';
+import { Subject, takeUntil } from 'rxjs';
+import { UserProfileService } from '../../../../services/user/profile/user-profile.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
-  selector: 'app-company-document-section',
-  imports: [CommonModule],
-  templateUrl: './company-document-section.component.html',
-  styleUrl: './company-document-section.component.css',
+  selector: 'app-document-section',
+  imports: [CommonModule, ReactiveFormsModule],
+  templateUrl: './document-section.component.html',
+  styleUrl: './document-section.component.css',
 })
-export class CompanyDocumentSectionComponent implements OnInit, OnDestroy {
-  @Input() profile: CompanyProfile | null = null;
-  @Output() updatedProfile = new EventEmitter<CompanyProfile>();
+export class DocumentSectionComponent {
+  @Input() profile: UserProfile | null = null;
+  @Output() updatedProfile = new EventEmitter<UserProfile>();
 
   uploadingDocument = false;
   loading = false;
@@ -30,7 +22,7 @@ export class CompanyDocumentSectionComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<void>();
 
   constructor(
-    private _companyProfileService: CompanyProfileService,
+    private _userProfileService: UserProfileService,
     private fb: FormBuilder,
     private _snackBar: MatSnackBar
   ) {}
@@ -76,13 +68,13 @@ export class CompanyDocumentSectionComponent implements OnInit, OnDestroy {
 
   uploadDocument(file: File): void {
     this.uploadingDocument = true;
-    this._companyProfileService
-      .uploadDocument(file)
+    this._userProfileService
+      .uploadCertificate(file)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
           if (this.profile) {
-            this.profile.documents = response.data?.documents || [];
+            this.updatedProfile.emit(response.data as UserProfile);
           }
           this.uploadingDocument = false;
           this._snackBar.open('Document uploaded successfully', 'close', {
@@ -98,17 +90,17 @@ export class CompanyDocumentSectionComponent implements OnInit, OnDestroy {
       });
   }
 
-  deleteDocument(documentKey: string): void {
+  deleteDocument(documentkey: string): void {
     if (!confirm('Delete this document?')) return;
 
     this.loading = true;
-    this._companyProfileService
-      .deleteDocument(documentKey)
+    this._userProfileService
+      .deleteCertificate(documentkey)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
           if (this.profile) {
-            this.profile.documents = response.data?.documents || [];
+            this.updatedProfile.emit(response.data as UserProfile);
           }
           this.loading = false;
           this._snackBar.open('Document deleted successfully', 'close', {

@@ -115,7 +115,7 @@ export class ExperienceSectionComponent implements OnInit, OnDestroy {
 
     this.loading = true;
     this._userProfileService
-      .updateExperience(this.experienceForm.value, index)
+      .updateExperience(index,this.experienceForm.value)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {

@@ -63,8 +63,10 @@ export class SkillsSectionComponent implements OnDestroy {
   }
 
   addSkill(skillId: string): void {
+
+    console.log("skill id is :",skillId)
     this._userProfileService
-      .addUserSkills([skillId])
+      .addUserSkill(skillId)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
@@ -84,6 +86,9 @@ export class SkillsSectionComponent implements OnDestroy {
   }
 
   removeSkill(skillId: string): void {
+
+    console.log("skill id is:",skillId);
+    
     this._userProfileService
       .removeUserSkill(skillId)
       .pipe(takeUntil(this.destroy$))

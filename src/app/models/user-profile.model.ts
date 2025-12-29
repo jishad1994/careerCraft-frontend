@@ -7,8 +7,8 @@ export interface Education {
   fieldOfStudy: string;
   startDate: string;
   endDate?: string;
-  isCurrent: boolean;
-  grade: string;
+  isCurrent?: boolean;
+  grade?: string;
 }
 
 export interface Experience {
@@ -18,6 +18,18 @@ export interface Experience {
   endDate?: string;
   isCurrent: boolean;
   description: string;
+}
+
+interface PopulatedSkill {
+  id: string;
+  name: string;
+}
+export interface IDocuments {
+  originalName: string;
+  key: string;
+  mimeType: string;
+  size: number;
+  uploadedAt: Date;
 }
 
 export interface UserProfile {
@@ -31,9 +43,10 @@ export interface UserProfile {
   about: string;
   provider: string;
   isBlocked: boolean;
-  skills: Skill[];
+  skills: PopulatedSkill[];
   education: Education[];
   experience: Experience[];
+  certificates: IDocuments[];
   location: string;
   address: IAddress;
   createdAt: string;

@@ -62,25 +62,38 @@ export const API_ENDPOINTS = {
       DELETE_PROFILE_PICTURE: `${baseUrl}/api/user/me/profile-picture`,
 
       SKILLS: {
-        ADD: `${baseUrl}/api/user/me/userSkills`,
-        DELETE: (id: string) => `${baseUrl}/api/user/me/userSkills/${id}`,
+        GET: `${baseUrl}/api/user/me/user-skills`,
+
+        ADD: `${baseUrl}/api/user/me/user-skills`,
+
+        DELETE: (id: string) => `${baseUrl}/api/user/me/user-skills/${id}`,
       },
 
       EDUCATION: {
-        ADD: `${baseUrl}/api/user/me/userEducation`,
-        UPDATE: `${baseUrl}/api/user/me/userEducation`,
+
+        ADD: `${baseUrl}/api/user/me/user-education`,
+
+        UPDATE: `${baseUrl}/api/user/me/user-education`,
 
         DELETE: (index: number) =>
-          `${baseUrl}/api/user/me/userEducation/${index}`,
+          `${baseUrl}/api/user/me/user-education/${index}`,
       },
 
       EXPERIENCE: {
-        ADD: `${baseUrl}/api/user/me/userExperience`,
 
-        UPDATE: `${baseUrl}/api/user/me/userExperience`,
+        ADD: `${baseUrl}/api/user/me/user-experience`,
+
+        UPDATE: `${baseUrl}/api/user/me/user-experience`,
 
         DELETE: (index: number) =>
-          `${baseUrl}/api/user/me/userExperience/${index}`,
+          `${baseUrl}/api/user/me/user-experience/${index}`,
+      },
+
+      CERTIFICATES: {
+        ADD: `${baseUrl}/api/user/me/certificates`,
+
+        DELETE: (documentKey: string) =>
+          `${baseUrl}/api/user/me/certificates/${documentKey}`,
       },
     },
   },
@@ -97,7 +110,8 @@ export const API_ENDPOINTS = {
 
       UPLOAD_DOCUMENTS: `${baseUrl}/api/company/me/documents`,
 
-      DELETE_DOCUMENT: `${baseUrl}/api/company/me/documents`,
+      DELETE_DOCUMENT: (key: string) =>
+        `${baseUrl}/api/company/me/documents/${key}`,
     },
   },
 
