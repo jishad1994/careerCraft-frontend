@@ -3,48 +3,58 @@ import { Injectable, Query } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 import { API_ENDPOINTS } from '../../constants/api-endpoints.constants';
+import { ApiResponse } from '../../models/api-response.model';
+import { CompanyProfile, ICompanyListItem } from '../../models/company/company-profile.model';
+import { IUserListItem, UserProfile } from '../../models/user-profile.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AdminService {
-
   constructor(private _http: HttpClient) {}
 
-  getUsersPaginated(page: number, limit: number = 5): Observable<any> {
-    return this._http.get(API_ENDPOINTS.ADMIN.GET_USERS_PAGINATED(page, limit));
-  }
-
-  getUsers(query: string): Observable<any> {
-    return this._http.get(API_ENDPOINTS.ADMIN.GET_USERS(query));
-  }
-
-  getCompaniesPaginated(page: number, limit: number = 5): Observable<any> {
-    return this._http.get(
-      API_ENDPOINTS.ADMIN.GET_COMPANIES_PAGINATED(page, limit)
+  getUsers(
+    page: number = 1,
+    limit: number = 10,
+    query?: string
+  ): Observable<ApiResponse<IUserListItem[]>> {
+    return this._http.get<ApiResponse<IUserListItem[]>>(
+      API_ENDPOINTS.ADMIN.GET_USERS(page, limit, query)
     );
   }
 
-  getCompanies(query: string): Observable<any> {
-    return this._http.get(API_ENDPOINTS.ADMIN.GET_COMPANIES(query));
+  getCompanies(
+    page: number = 1,
+    limit: number = 10,
+    query?: string
+  ): Observable<ApiResponse<ICompanyListItem[]>> {
+    return this._http.get<ApiResponse<ICompanyListItem[]>>(
+      API_ENDPOINTS.ADMIN.GET_COMPANIES(page, limit, query)
+    );
   }
   /**
-   * 
-   * @param id 
-   * @param flag 
-   * @returns 
+   *
+   * @param id
+   * @param flag
+   * @returns
    */
-  blockOrUnblockCompany(id: string, flag: boolean): Observable<any> {
+  blockOrUnblockCompany(
+    id: string,
+    flag: boolean
+  ): Observable<ApiResponse<ICompanyListItem>> {
     const action = flag ? 'block' : 'unblock';
-    return this._http.patch(
+    return this._http.patch<ApiResponse<ICompanyListItem>>(
       API_ENDPOINTS.ADMIN.BLOCK_OR_UNBLOCK_COMPANY(id, action),
       {}
     );
   }
 
-  blockOrUnblockUser(id: string, flag: boolean): Observable<any> {
+  blockOrUnblockUser(
+    id: string,
+    flag: boolean
+  ): Observable<ApiResponse<IUserListItem>> {
     const action = flag ? 'block' : 'unblock';
-    return this._http.patch(
+    return this._http.patch<ApiResponse<IUserListItem>>(
       API_ENDPOINTS.ADMIN.BLOCK_OR_UNBLOCK_USER(id, action),
       {}
     );

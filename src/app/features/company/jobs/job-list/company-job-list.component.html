@@ -1,0 +1,124 @@
+<div class="container mx-auto px-4 py-8">
+      
+      <!-- Header -->
+      <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-900">My Jobs</h1>
+        <button 
+          (click)="createJob()"
+          class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+          + Create Job
+        </button>
+      </div>
+
+      <!-- Loading -->
+      <div *ngIf="loading" class="flex justify-center py-12">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+
+      <!-- Jobs List -->
+      <div *ngIf="!loading" class="space-y-4">
+        
+        <!-- Job Card -->
+        <div *ngFor="let job of jobs" 
+             class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow">
+          
+          <div class="flex justify-between items-start">
+            <div class="flex-1">
+              <h3 class="text-xl font-semibold text-gray-900 mb-2">{{ job.title }}</h3>
+              
+              <div class="flex flex-wrap gap-4 text-sm text-gray-600 mb-3">
+                <span class="flex items-center gap-1">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                  </svg>
+                  {{ job.location.city }}, {{ job.location.country }}
+                </span>
+                <span class="flex items-center gap-1">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                  </svg>
+                  {{ job.employmentType }}
+                </span>
+                <span class="flex items-center gap-1">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                  </svg>
+                  {{ job.workMode }}
+                </span>
+              </div>
+
+              <div class="flex flex-wrap gap-2 mb-3">
+                <span [class]="getStatusClass(job.status)" 
+                      class="px-2 py-1 text-xs font-medium rounded-full">
+                  {{ job.status }}
+                </span>
+                <span *ngIf="job.isVerified" 
+                      class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
+                  Verified
+                </span>
+                <span *ngIf="!job.isVerified" 
+                      class="px-2 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-800">
+                  Pending Verification
+                </span>
+              </div>
+
+              <div class="flex gap-4 text-sm text-gray-500">
+                <span>{{ job.applicationsCount }} Applications</span>
+                <span>{{ job.viewsCount }} Views</span>
+                <span>{{ job.openings }} Openings</span>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex gap-2 ml-4">
+              <button 
+                (click)="viewJob(job._id)"
+                class="px-3 py-1.5 border border-blue-300 text-blue-700 rounded-md hover:bg-blue-50 transition-colors text-sm">
+                View
+              </button>
+              <button 
+                (click)="editJob(job._id)"
+                class="px-3 py-1.5 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors text-sm">
+                Edit
+              </button>
+              <button 
+                (click)="deleteJob(job)"
+                class="px-3 py-1.5 border border-red-300 text-red-700 rounded-md hover:bg-red-50 transition-colors text-sm">
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="jobs.length === 0" class="text-center py-12">
+          <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+          </svg>
+          <p class="text-gray-500 mb-4">No jobs posted yet</p>
+          <button 
+            (click)="createJob()"
+            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+            Create Your First Job
+          </button>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <div *ngIf="pagination && jobs.length > 0" class="mt-6 flex justify-center gap-2">
+        <button 
+          (click)="changePage(pagination.page - 1)"
+          [disabled]="!pagination.hasPrevPage"
+          class="px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed">
+          Previous
+        </button>
+        <span class="px-4 py-2">Page {{ pagination.page }} of {{ pagination.totalPages }}</span>
+        <button 
+          (click)="changePage(pagination.page + 1)"
+          [disabled]="!pagination.hasNextPage"
+          class="px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed">
+          Next
+        </button>
+      </div>
+
+    </div>

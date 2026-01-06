@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 
-
 export const ADMIN_ROUTES: Routes = [
   {
     path: '',
@@ -17,6 +16,15 @@ export const ADMIN_ROUTES: Routes = [
     // canActivateChild: [RoleGuard],
     data: { role: 'admin' },
     children: [
+      { path: '', redirectTo: 'users', pathMatch: 'full' },
+
+      {
+        path: 'jobs',
+        loadComponent: () =>
+          import(
+            '../features/admin/jobs/job-list/admin-job-list.component'
+          ).then((m) => m.AdminJobListComponent),
+      },
       {
         path: 'users',
         loadComponent: () =>
@@ -42,8 +50,8 @@ export const ADMIN_ROUTES: Routes = [
         path: 'skills-management/:id',
         loadComponent: () =>
           import(
-            '../features/admin/skills/skill-management/skill-management.component'
-          ).then((m) => m.SkillManagementComponent),
+            '../features/admin/skills/skill-details/skill-details.component'
+          ).then((m) => m.SkillDetailsComponent),
       },
     ],
   },

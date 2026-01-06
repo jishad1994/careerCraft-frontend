@@ -49,7 +49,6 @@ export class CompanyProfileComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (response: ApiResponse<CompanyProfile>) => {
           this.profile = response.data;
-
           this.loading = false;
         },
         error: (err) => {

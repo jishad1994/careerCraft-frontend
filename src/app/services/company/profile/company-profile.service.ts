@@ -24,7 +24,7 @@ export class CompanyProfileService {
   updateBasicProfile(
     data: BasicCompanyUpdate
   ): Observable<ApiResponse<CompanyProfile>> {
-    return this._http.patch<ApiResponse<CompanyProfile>>(
+    return this._http.put<ApiResponse<CompanyProfile>>(
       API_ENDPOINTS.COMPANY.PROFILE.UPDATE_PROFILE,
       data
     );
@@ -42,7 +42,7 @@ export class CompanyProfileService {
 
   deleteProfilePicture(): Observable<ApiResponse<CompanyProfile>> {
     return this._http.delete<ApiResponse<CompanyProfile>>(
-      API_ENDPOINTS.COMPANY.PROFILE.UPDATE_PROFILE_PICTURE
+      API_ENDPOINTS.COMPANY.PROFILE.DELETE_PROFILE_PICTURE
     );
   }
 
@@ -58,7 +58,7 @@ export class CompanyProfileService {
 
   deleteBannerImage(): Observable<ApiResponse<CompanyProfile>> {
     return this._http.delete<ApiResponse<CompanyProfile>>(
-      API_ENDPOINTS.COMPANY.PROFILE.UPDATE_BANNER_IMAGE
+      API_ENDPOINTS.COMPANY.PROFILE.DELETE_BANNER_IMAGE
     );
   }
 

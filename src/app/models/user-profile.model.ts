@@ -1,6 +1,10 @@
 import { IAddress } from './company/company-profile.model';
 import { Skill } from './skill.model';
 
+export interface IPublicFileAsset {
+  key: string;
+  location: string;
+}
 export interface Education {
   type: string;
   institution: string;
@@ -50,5 +54,26 @@ export interface UserProfile {
   location: string;
   address: IAddress;
   createdAt: string;
+  updatedAt: string;
+}
+
+export interface IUserListItem {
+  _id: string;
+
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone?: string;
+
+  provider: 'local' | 'google';
+  role: 'user' | 'company';
+
+  isBlocked: boolean;
+
+  profilePicture?: IPublicFileAsset;
+
+  location?: string;
+
+  createdAt: string; // ISO string
   updatedAt: string;
 }

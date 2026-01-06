@@ -1,0 +1,173 @@
+<div class="min-h-screen bg-gray-50">
+      
+      <!-- Search Header -->
+      <div class="bg-blue-600 text-white py-12">
+        <div class="container mx-auto px-4">
+          <h1 class="text-4xl font-bold mb-6">Find Your Dream Job</h1>
+          
+          <!-- Search Bar -->
+          <div class="bg-white rounded-lg p-4 shadow-lg">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <input
+                [(ngModel)]="filters.keyword"
+                (keyup.enter)="searchJobs()"
+                type="text"
+                placeholder="Job title, keywords..."
+                class="px-4 py-3 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500">
+              
+              <input
+                [(ngModel)]="filters.location"
+                (keyup.enter)="searchJobs()"
+                type="text"
+                placeholder="City, state, or country"
+                class="px-4 py-3 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500">
+              
+              <button
+                (click)="searchJobs()"
+                class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                Search Jobs
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="container mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          
+          <!-- Filters Sidebar -->
+          <div class="lg:col-span-1">
+            <div class="bg-white rounded-lg shadow-sm p-6">
+              <h3 class="text-lg font-semibold mb-4">Filters</h3>
+              
+              <!-- Employment Type -->
+              <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Employment Type</label>
+                <select [(ngModel)]="filters.employmentType" (change)="searchJobs()"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                  <option value="">All Types</option>
+                  <option value="full-time">Full Time</option>
+                  <option value="part-time">Part Time</option>
+                  <option value="contract">Contract</option>
+                  <option value="internship">Internship</option>
+                  <option value="freelance">Freelance</option>
+                </select>
+              </div>
+
+              <!-- Work Mode -->
+              <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Work Mode</label>
+                <select [(ngModel)]="filters.workMode" (change)="searchJobs()"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                  <option value="">All Modes</option>
+                  <option value="onsite">Onsite</option>
+                  <option value="remote">Remote</option>
+                  <option value="hybrid">Hybrid</option>
+                </select>
+              </div>
+
+              <!-- Experience -->
+              <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Min Experience (years)</label>
+                <input type="number" [(ngModel)]="filters.experienceMin" (change)="searchJobs()"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                       min="0" placeholder="0">
+              </div>
+
+              <button (click)="clearFilters()"
+                      class="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                Clear Filters
+              </button>
+            </div>
+          </div>
+
+          <!-- Jobs List -->
+          <div class="lg:col-span-3">
+            
+            <!-- Loading -->
+            <div *ngIf="loading" class="flex justify-center py-12">
+              <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            </div>
+
+            <!-- Results Count -->
+            <div *ngIf="!loading && pagination" class="mb-4 text-gray-600">
+              Found {{ pagination.totalItems }} jobs
+            </div>
+
+            <!-- Job Cards -->
+            <div *ngIf="!loading" class="space-y-4">
+              <div *ngFor="let job of jobs"
+                   (click)="viewJob(job.slug)"
+                   class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow cursor-pointer">
+                
+                <div class="flex justify-between items-start mb-3">
+                  <div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-1">{{ job.title }}</h3>
+                    <p class="text-gray-600">{{ job.company.name }}</p>
+                  </div>
+                  <span *ngIf="job.isFeatured" 
+                        class="px-3 py-1 bg-yellow-100 text-yellow-800 text-sm font-medium rounded-full">
+                    Featured
+                  </span>
+                </div>
+
+                <div class="flex flex-wrap gap-3 text-sm text-gray-600 mb-4">
+                  <span class="flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                    </svg>
+                    {{ job.location.city }}, {{ job.location.country }}
+                  </span>
+                  <span class="px-2 py-1 bg-gray-100 rounded">{{ job.employmentType }}</span>
+                  <span class="px-2 py-1 bg-gray-100 rounded">{{ job.workMode }}</span>
+                  <span *ngIf="job.experience.min">{{ job.experience.min }}+ years</span>
+                </div>
+
+                <p class="text-gray-700 mb-4 line-clamp-2">{{ job.description }}</p>
+
+                <div class="flex flex-wrap gap-2 mb-4">
+                  <span *ngFor="let skill of job.skills.slice(0, 5)" 
+                        class="px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded-full">
+                    {{ skill.name }}
+                  </span>
+                  <span *ngIf="job.skills.length > 5" class="px-2 py-1 text-gray-500 text-xs">
+                    +{{ job.skills.length - 5 }} more
+                  </span>
+                </div>
+
+                <div class="flex justify-between items-center text-sm text-gray-500">
+                  <span>{{ job.applicationsCount }} applicants</span>
+                  <span>Posted {{ getTimeAgo(job.createdAt) }}</span>
+                </div>
+              </div>
+
+              <!-- Empty State -->
+              <div *ngIf="jobs.length === 0" class="text-center py-12">
+                <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+                <p class="text-gray-500">No jobs found. Try adjusting your filters.</p>
+              </div>
+            </div>
+
+            <!-- Pagination -->
+            <div *ngIf="pagination && jobs.length > 0" class="mt-6 flex justify-center gap-2">
+              <button 
+                (click)="changePage(pagination.page - 1)"
+                [disabled]="!pagination.hasPrevPage"
+                class="px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50">
+                Previous
+              </button>
+              <span class="px-4 py-2">Page {{ pagination.page }} of {{ pagination.totalPages }}</span>
+              <button 
+                (click)="changePage(pagination.page + 1)"
+                [disabled]="!pagination.hasNextPage"
+                class="px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50">
+                Next
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>

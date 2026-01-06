@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 
-
 export const USER_ROUTES: Routes = [
   {
     path: '',
@@ -24,6 +23,13 @@ export const USER_ROUTES: Routes = [
           import('../features/user/user-profile/user-profile.component').then(
             (m) => m.UserProfileComponent
           ),
+      },
+      {
+        path: 'jobs',
+        loadComponent: () =>
+          import(
+            '../features/user/jobs/job-search/user-job-search.component'
+          ).then((m) => m.UserJobSearchComponent),
       },
 
       { path: '**', redirectTo: 'home' },

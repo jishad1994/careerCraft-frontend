@@ -1,0 +1,61 @@
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { ApiResponse } from '../../../models/api-response.model';
+import { Job } from '../../../models/job/job.model';
+import { API_ENDPOINTS } from '../../../constants/api-endpoints.constants';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class AdminJobService {
+  constructor(private _http: HttpClient) {}
+
+  getAllJobs(
+    page: number = 1,
+    limit: number = 10,
+    status?: string,
+    isVerified?: boolean
+  ): Observable<ApiResponse<Job[]>> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('limit', limit.toString());
+
+    if (status) params = params.set('status', status);
+    if (isVerified !== undefined)
+      params = params.set('isVerified', isVerified.toString());
+
+    return this._http.get<ApiResponse<Job[]>>(
+      API_ENDPOINTS.ADMIN.JOB.GET_ALL_JOBS,
+      { params }
+    );
+  }
+
+  verifyJob(jobId: string): Observable<ApiResponse<Job>> {
+    return this._http.patch<ApiResponse<Job>>(
+      API_ENDPOINTS.ADMIN.JOB.VERIFY_JOB(jobId),
+      {}
+    );
+  }
+
+  // Block job
+  blockJob(jobId: string): Observable<ApiResponse<Job>> {
+    return this._http.patch<ApiResponse<Job>>(
+      API_ENDPOINTS.ADMIN.JOB.BLOCK_JOB(jobId),
+      {}
+    );
+  }
+
+  // Unblock job
+  unblockJob(jobId: string): Observable<ApiResponse<Job>> {
+    return this._http.patch<ApiResponse<Job>>(
+      API_ENDPOINTS.ADMIN.JOB.UNBLOCK_JOB(jobId),
+      {}
+    );
+  }
+
+  // Delete job
+  deleteJob(jobId: string): Observable<ApiResponse<null>> {
+    return this._http.delete<ApiResponse<null>>(API_ENDPOINTS.ADMIN.JOB.DELETE_JOB(jobId));
+  }
+}

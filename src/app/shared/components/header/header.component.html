@@ -24,7 +24,7 @@
             <ng-container *ngIf="role$ | async as role">
                 <!-- User Role -->
                 <ng-container *ngIf="role === 'user'">
-                    <a routerLink="/jobs" class="hover:text-blue-600">Jobs</a>
+                    <a routerLink="/user/jobs" class="hover:text-blue-600">Jobs</a>
                     <a routerLink="/saved" class="hover:text-blue-600">Saved Jobs</a>
                     <a routerLink="/messages" class="hover:text-blue-600">Messaging</a>
                     <a routerLink="/notifications" class="hover:text-blue-600">Notifications</a>
@@ -56,7 +56,7 @@
 
                 <!-- Company Role -->
                 <ng-container *ngIf="role === 'company'">
-                    <a routerLink="/post-job" class="hover:text-blue-600">Post Job</a>
+                    <a routerLink="/company/dashboard/jobs/create" class="hover:text-blue-600">Post Job</a>
                     <a routerLink="/applications" class="hover:text-blue-600">Applications</a>
                     <a routerLink="/messages" class="hover:text-blue-600">Messaging</a>
                     <a routerLink="/notifications" class="hover:text-blue-600">Notifications</a>
