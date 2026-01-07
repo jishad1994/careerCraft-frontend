@@ -3,8 +3,8 @@
 
 #environment 
 
-src/app/environment/environment.prod.ts
-src/app/environment/environment.ts
+src/app/environments/environment.prod.ts
+src/app/environments/environment.ts
 
 # Compiled output
 /dist
