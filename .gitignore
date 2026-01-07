@@ -3,7 +3,7 @@
 
 #environment 
 
-/environment
+/src/app/environment
 
 # Compiled output
 /dist
