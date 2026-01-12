@@ -1,7 +1,14 @@
 import { Routes } from '@angular/router';
 
-
 export const AUTH_ROUTES: Routes = [
+  {
+    path: '',
+    loadComponent: () =>
+      import('../pages/login-page/login-page.component').then(
+        (m) => m.LoginPageComponent
+      ),
+  },
+
   {
     path: 'signup',
     loadComponent: () =>
@@ -36,5 +43,12 @@ export const AUTH_ROUTES: Routes = [
       import(
         '../shared/components/reset-password/reset-password.component'
       ).then((m) => m.ResetPasswordComponent),
+  },
+  {
+    path: '**',
+    loadComponent: () =>
+      import('../pages/login-page/login-page.component').then(
+        (m) => m.LoginPageComponent
+      ),
   },
 ];

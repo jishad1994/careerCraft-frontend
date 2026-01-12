@@ -14,6 +14,7 @@ import { provideEffects } from '@ngrx/effects';
 import { AuthEffects } from './store/auth/auth.effects';
 
 import { provideStoreDevtools } from '@ngrx/store-devtools';
+import { httpErrorInterceptor } from './interceptors/error-interceptor/http-error.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -23,6 +24,8 @@ export const appConfig: ApplicationConfig = {
     provideStore({ auth: authReducer }),
     provideEffects([AuthEffects]),
     provideStoreDevtools({ maxAge: 25 }),
-    provideHttpClient(withInterceptors([authInterceptor])),
+    provideHttpClient(
+      withInterceptors([authInterceptor, httpErrorInterceptor])
+    ),
   ],
 };

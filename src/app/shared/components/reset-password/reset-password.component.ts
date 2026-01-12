@@ -22,7 +22,7 @@ import { Router } from '@angular/router';
 export class ResetPasswordComponent implements OnInit {
   resetForm: FormGroup;
   resetPasswordToken!: string;
-  role!: 'company' | 'user';
+  role!: 'user' | 'company' | 'admin';
 
   constructor(
     private fb: FormBuilder,
@@ -44,7 +44,8 @@ export class ResetPasswordComponent implements OnInit {
     this.resetPasswordToken = this._route.snapshot.queryParamMap.get('token')!;
     this.role = this._route.snapshot.queryParamMap.get('role') as
       | 'user'
-      | 'company';
+      | 'company'
+      | 'admin';
   }
 
   get password() {
@@ -55,29 +56,29 @@ export class ResetPasswordComponent implements OnInit {
   }
 
   submit() {
+    
     if (this.resetForm.invalid) {
       this.resetForm.markAllAsTouched();
       return;
     }
 
     const newPassword = this.password.value;
-    const payload = {
-      newPassword,
-      resetPasswordToken: this.resetPasswordToken,
-    };
+    const resetPasswordToken = this.resetPasswordToken;
 
-    this._authService.resetPassword(payload, this.role).subscribe({
-      next: () => {
-        this._snackBar.open('Password reset successful!', 'Close', {
-          duration: 3000,
-        });
-        this._router.navigate(['auth/login']);
-      },
-      error: (err) => {
-        this._snackBar.open('Reset failed: ' + err.message, 'Close', {
-          duration: 3000,
-        });
-      },
-    });
+    this._authService
+      .resetPassword(newPassword, resetPasswordToken, this.role)
+      .subscribe({
+        next: () => {
+          this._snackBar.open('Password reset successful!', 'Close', {
+            duration: 3000,
+          });
+          this._router.navigate(['auth/login']);
+        },
+        error: (err) => {
+          this._snackBar.open('Reset failed: ' + err.message, 'Close', {
+            duration: 3000,
+          });
+        },
+      });
   }
 }

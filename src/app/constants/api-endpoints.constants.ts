@@ -2,171 +2,181 @@ import { environment } from '../environments/environment';
 
 export const baseUrl = environment.apiUrl;
 
+export const authBaseUrl = environment.authBaseUrl;
+export const userBaseUrl = environment.userBaseUrl;
+export const adminBaseUrl = environment.adminBaseUrl;
+export const companyBaseUrl = environment.companyBaseUrl;
+export const skillManagementBaseUrl = environment.skillManagementBaseUrl;
+
 export const API_ENDPOINTS = {
   AUTH: {
     BASE: `/api/auth/`,
 
-    REFRESH: () => `${baseUrl}/api/auth/refresh`,
+    REFRESH: () => `${baseUrl}${authBaseUrl}/refresh`,
 
-    LOGIN: (role: string) => `${baseUrl}/api/auth/${role}/login`,
+    LOGIN: (role: string) => `${baseUrl}${authBaseUrl}/${role}/login`,
 
-    LOGOUT: () => `${baseUrl}/api/auth/logout`,
+    LOGOUT: () => `${baseUrl}${authBaseUrl}/logout`,
 
-    SIGNUP: (role: string) => `${baseUrl}/api/auth/${role}/signup`,
+    SIGNUP: (role: string) => `${baseUrl}${authBaseUrl}/${role}/signup`,
 
-    REQUEST_OTP: (role: string) => `${baseUrl}/api/auth/${role}/otp/request`,
+    REQUEST_OTP: (role: string) =>
+      `${baseUrl}${authBaseUrl}/${role}/otp/request`,
 
-    RESEND_OTP: (role: string) => `${baseUrl}/api/auth/${role}/otp/resend`,
+    RESEND_OTP: (role: string) => `${baseUrl}${authBaseUrl}/${role}/otp/resend`,
 
-    VERIFY_OTP: (role: string) => `${baseUrl}/api/auth/${role}/otp/verify`,
+    VERIFY_OTP: (role: string) => `${baseUrl}${authBaseUrl}/${role}/otp/verify`,
 
     FORGOT_PASSWORD: (role: string) =>
-      `${baseUrl}/api/auth/${role}/forgotPassword`,
+      `${baseUrl}${authBaseUrl}/${role}/forgotPassword`,
 
     RESET_PASSWORD: (role: string) =>
-      `${baseUrl}/api/auth/${role}/resetPassword`,
+      `${baseUrl}${authBaseUrl}/${role}/resetPassword`,
 
     CHECK_PHONE_OR_EMAIL: (role: string) =>
-      `${baseUrl}/api/auth/${role}/check-availability`,
+      `${baseUrl}${authBaseUrl}/${role}/check-availability`,
 
-    GOOGLE_AUTH: (role: string) => `${baseUrl}/api/auth/${role}/googleLogin`,
+    GOOGLE_AUTH: (role: string) =>
+      `${baseUrl}${authBaseUrl}/${role}/googleLogin`,
   },
 
   ADMIN: {
     GET_USERS: (page: number, limit: number, search?: string) =>
-      `${baseUrl}/api/admin/getUsers?page=${page}&limit=${limit}&search=${search}`,
+      `${baseUrl}${adminBaseUrl}/getUsers?page=${page}&limit=${limit}&search=${search}`,
 
     GET_COMPANIES: (page: number, limit: number, search?: string) =>
-
-     `${baseUrl}/api/admin/getCompanies?page=${page}&limit=${limit}&search=${search}`,
+      `${baseUrl}${adminBaseUrl}/getCompanies?page=${page}&limit=${limit}&search=${search}`,
 
     BLOCK_OR_UNBLOCK_COMPANY: (id: string, action: string) =>
-      `${baseUrl}/api/admin/companies/${id}/${action}`,
+      `${baseUrl}${adminBaseUrl}/companies/${id}/${action}`,
 
     BLOCK_OR_UNBLOCK_USER: (id: string, action: string) =>
-      `${baseUrl}/api/admin/users/${id}/${action}`,
+      `${baseUrl}${adminBaseUrl}/users/${id}/${action}`,
 
     JOB: {
-      GET_ALL_JOBS: `${baseUrl}/api/admin/jobs`,
+      GET_ALL_JOBS: `${baseUrl}${adminBaseUrl}/jobs`,
 
       VERIFY_JOB: (jobId: string) =>
-        `${baseUrl}/api/admin/jobs/${jobId}/verify`,
+        `${baseUrl}${adminBaseUrl}/jobs/${jobId}/verify`,
 
       BLOCK_JOB: (jobId: string) =>
-        `${baseUrl}/api/admin/jobs/${jobId}/block`,
+        `${baseUrl}${adminBaseUrl}/jobs/${jobId}/block`,
 
       UNBLOCK_JOB: (jobId: string) =>
-        `${baseUrl}/api/admin/jobs/${jobId}/unblock`,
-      DELETE_JOB: (jobId: string) =>
-        `${baseUrl}/api/admin/jobs/${jobId}`,
-
+        `${baseUrl}${adminBaseUrl}/jobs/${jobId}/unblock`,
+      DELETE_JOB: (jobId: string) => `${baseUrl}${adminBaseUrl}/jobs/${jobId}`,
     },
   },
+
   USER: {
     PROFILE: {
-      GET_PROFILE: `${baseUrl}/api/user/me`,
+      GET_PROFILE: `${baseUrl}${userBaseUrl}/me`,
 
-      UPDATE_PROFILE: `${baseUrl}/api/user/me`,
+      UPDATE_PROFILE: `${baseUrl}${userBaseUrl}/me`,
 
-      UPDATE_PROFILE_PICTURE: `${baseUrl}/api/user/me/profile-picture`,
+      UPDATE_PROFILE_PICTURE: `${baseUrl}${userBaseUrl}/me/profile-picture`,
 
-      DELETE_PROFILE_PICTURE: `${baseUrl}/api/user/me/profile-picture`,
+      DELETE_PROFILE_PICTURE: `${baseUrl}${userBaseUrl}/me/profile-picture`,
 
       SKILLS: {
-        GET: `${baseUrl}/api/user/me/user-skills`,
+        GET: `${baseUrl}${userBaseUrl}/me/user-skills`,
 
-        ADD: `${baseUrl}/api/user/me/user-skills`,
+        ADD: `${baseUrl}${userBaseUrl}/me/user-skills`,
 
-        DELETE: (id: string) => `${baseUrl}/api/user/me/user-skills/${id}`,
+        DELETE: (id: string) => `${baseUrl}${userBaseUrl}/me/user-skills/${id}`,
       },
 
       EDUCATION: {
-        ADD: `${baseUrl}/api/user/me/user-education`,
+        ADD: `${baseUrl}${userBaseUrl}/me/user-education`,
 
-        UPDATE: `${baseUrl}/api/user/me/user-education`,
+        UPDATE: `${baseUrl}${userBaseUrl}/me/user-education`,
 
         DELETE: (index: number) =>
-          `${baseUrl}/api/user/me/user-education/${index}`,
+          `${baseUrl}${userBaseUrl}/me/user-education/${index}`,
       },
 
       EXPERIENCE: {
-        ADD: `${baseUrl}/api/user/me/user-experience`,
+        ADD: `${baseUrl}${userBaseUrl}/me/user-experience`,
 
-        UPDATE: `${baseUrl}/api/user/me/user-experience`,
+        UPDATE: `${baseUrl}${userBaseUrl}/me/user-experience`,
 
         DELETE: (index: number) =>
-          `${baseUrl}/api/user/me/user-experience/${index}`,
+          `${baseUrl}${userBaseUrl}/me/user-experience/${index}`,
       },
 
       CERTIFICATES: {
-        ADD: `${baseUrl}/api/user/me/certificates`,
+        ADD: `${baseUrl}${userBaseUrl}/me/certificates`,
 
         DELETE: (documentKey: string) =>
-          `${baseUrl}/api/user/me/certificates/${documentKey}`,
+          `${baseUrl}${userBaseUrl}/me/certificates/${documentKey}`,
       },
     },
 
     JOB: {
-      SEARCH_JOBS: `${baseUrl}/api/user/jobs/search`,
+      SEARCH_JOBS: `${baseUrl}${userBaseUrl}/jobs/search`,
 
-      GET_JOB_BY_ID: (jobId: string) => `${baseUrl}/api/user/jobs/${jobId}`,
+      GET_JOB_BY_ID: (jobId: string) =>
+        `${baseUrl}${userBaseUrl}/jobs/${jobId}`,
 
       GET_JOB_BY_SLUG: (slug: string) =>
-        `${baseUrl}/api/user/jobs/slug/${slug}`,
+        `${baseUrl}${userBaseUrl}/jobs/slug/${slug}`,
 
       APPLY_FOR_JOB: (jobId: string) =>
-        `${baseUrl}/api/user/jobs/${jobId}/apply`,
+        `${baseUrl}${userBaseUrl}/jobs/${jobId}/apply`,
     },
   },
 
   COMPANY: {
     PROFILE: {
-      GET_PROFILE: `${baseUrl}/api/company/me`,
+      GET_PROFILE: `${baseUrl}${companyBaseUrl}/me`,
 
-      UPDATE_PROFILE: `${baseUrl}/api/company/me`,
+      UPDATE_PROFILE: `${baseUrl}${companyBaseUrl}/me`,
 
-      UPDATE_PROFILE_PICTURE: `${baseUrl}/api/company/me/profile-picture`,
+      UPDATE_PROFILE_PICTURE: `${baseUrl}${companyBaseUrl}/me/profile-picture`,
 
-      DELETE_PROFILE_PICTURE: `${baseUrl}/api/company/me/profile-picture`,
+      DELETE_PROFILE_PICTURE: `${baseUrl}${companyBaseUrl}/me/profile-picture`,
 
-      UPDATE_BANNER_IMAGE: `${baseUrl}/api/company/me/banner-image`,
+      UPDATE_BANNER_IMAGE: `${baseUrl}${companyBaseUrl}/me/banner-image`,
 
-      DELETE_BANNER_IMAGE: `${baseUrl}/api/company/me/banner-image`,
+      DELETE_BANNER_IMAGE: `${baseUrl}${companyBaseUrl}/me/banner-image`,
 
-      UPLOAD_DOCUMENTS: `${baseUrl}/api/company/me/documents`,
+      UPLOAD_DOCUMENTS: `${baseUrl}${companyBaseUrl}/me/documents`,
 
       DELETE_DOCUMENT: (key: string) =>
-        `${baseUrl}/api/company/me/documents?key=${key}`,
+        `${baseUrl}${companyBaseUrl}/me/documents?key=${key}`,
     },
 
     JOBS: {
-      CREATE_JOB: `${baseUrl}/api/company/jobs`,
+      CREATE_JOB: `${baseUrl}${companyBaseUrl}/jobs`,
 
-      GET_COMPANY_JOBS: `${baseUrl}/api/company/jobs`,
+      GET_COMPANY_JOBS: `${baseUrl}${companyBaseUrl}/jobs`,
 
-      GET_JOB_BY_ID: (jobId: string) => `${baseUrl}/api/company/jobs/${jobId}`,
+      GET_JOB_BY_ID: (jobId: string) =>
+        `${baseUrl}${companyBaseUrl}/jobs/${jobId}`,
 
       UPDATE_JOB_BY_ID: (jobId: string) =>
-        `${baseUrl}/api/company/jobs/${jobId}`,
+        `${baseUrl}${companyBaseUrl}/jobs/${jobId}`,
 
       UPDATE_JOB_STATUS: (jobId: string) =>
-        `${baseUrl}/api/company/jobs/${jobId}/status`,
+        `${baseUrl}${companyBaseUrl}/jobs/${jobId}/status`,
 
-      DELETE_JOB: (jobId: string) => `${baseUrl}/api/company/jobs/${jobId}`,
+      DELETE_JOB: (jobId: string) =>
+        `${baseUrl}${companyBaseUrl}/jobs/${jobId}`,
     },
   },
 
   SKILL: {
-    CREATE_SKILL: `${baseUrl}/api/skills`,
+    CREATE_SKILL: `${baseUrl}${skillManagementBaseUrl}`,
 
-    GET_SKILLS_PAGINATED: `${baseUrl}/api/skills`,
+    GET_SKILLS_PAGINATED: `${baseUrl}${skillManagementBaseUrl}`,
 
-    GET_SKILL: (id: string) => `${baseUrl}/api/skills/${id}`,
+    GET_SKILL: (id: string) => `${baseUrl}${skillManagementBaseUrl}/${id}`,
 
-    UPDATE_SKILL: (id: string) => `${baseUrl}/api/skills/${id}`,
+    UPDATE_SKILL: (id: string) => `${baseUrl}${skillManagementBaseUrl}/${id}`,
 
-    TOGGLE_BLOCK: (id: String) => `${baseUrl}/api/skills/${id}/toggle-block`,
+    TOGGLE_BLOCK: (id: String) =>
+      `${baseUrl}${skillManagementBaseUrl}/${id}/toggle-block`,
 
-    DELETE_SKILL: (id: string) => `${baseUrl}/api/skills/${id}`,
+    DELETE_SKILL: (id: string) => `${baseUrl}${skillManagementBaseUrl}/${id}`,
   },
 };

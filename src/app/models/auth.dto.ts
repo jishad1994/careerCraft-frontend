@@ -19,7 +19,7 @@ export interface LoginResponseDTO {
 export interface RefreshTokenResponseDTO {
   success: boolean;
   message: string;
-  data?: { user: AuthResponseUserDTO };
+  data: AuthResponseUserDTO;
 }
 
 export interface LogoutResponseDTO {

@@ -80,14 +80,11 @@ export class OtpVerificationComponent implements OnInit {
 
   resendOTP() {
     this.startResendTimer();
-    console.log('resend otp worked');
 
-    this.authService
-      .resendOTP({ email: this.email, role: this.role })
-      .subscribe({
-        next: (res) => console.log(res),
-        error: (err) => console.log(err),
-      });
+    this.authService.resendOTP(this.email, this.role).subscribe({
+      next: (res) => console.log(res),
+      error: (err) => console.log(err),
+    });
   }
 
   //verify OTP
@@ -102,49 +99,40 @@ export class OtpVerificationComponent implements OnInit {
 
     const otp = this.otpForm.get('otp')?.value;
 
-    this.authService
-      .verifyOTP({ otp, email: this.email, role: this.role })
-      .subscribe({
-        next: (res) => {
-          if (res.success) {
-            this._snackBar.open('OTP verified successfully', 'close', {
-              duration: 3000,
-            });
+    this.authService.verifyOTP(otp, this.email, this.role).subscribe({
+      next: (res) => {
+        this._snackBar.open('OTP verified successfully', 'close', {
+          duration: 3000,
+        });
 
-            this.authService.userSignup(res.email, res.role).subscribe({
-              next: (signupRes) => {
-                if (signupRes.success) {
-                  this._snackBar.open('Signup successful!', 'close', {
-                    duration: 6000,
-                  });
-                  this.router.navigate(['auth/login']);
-                } else {
-                  this._snackBar.open(` ${signupRes.message}`, 'Close', {
-                    duration: 3000,
-                  });
+        if (res.data) {
+          this.authService.userSignup(res.data.email, res.data.role).subscribe({
+            next: (signupRes) => {
+              if (signupRes.success) {
+                this._snackBar.open('Signup successful!', 'close', {
+                  duration: 6000,
+                });
+
+                this.router.navigate(['auth/login']);
+              }
+            },
+            error: (err) => {
+              this._snackBar.open(
+                err.message || 'Otp verification failed',
+                'Close',
+                {
+                  duration: 3000,
                 }
-              },
-              error: (err) => {
-                this._snackBar.open(
-                  `Signup error: ${err.error.message}`,
-                  'Close',
-                  {
-                    duration: 3000,
-                  }
-                );
-              },
-            });
-          } else {
-            this._snackBar.open(`OTP verification failed`, '', {
-              duration: 3000,
-            });
-          }
-        },
-        error: (err) => {
-          this._snackBar.open(`OTP Verification failed`, 'Close', {
-            duration: 3000,
+              );
+            },
           });
-        },
-      });
+        }
+      },
+      error: (err) => {
+        this._snackBar.open(`OTP Verification failed`, 'Close', {
+          duration: 3000,
+        });
+      },
+    });
   }
 }

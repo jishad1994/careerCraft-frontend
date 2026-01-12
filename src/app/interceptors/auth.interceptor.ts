@@ -8,12 +8,15 @@ import { inject, Inject } from '@angular/core';
 import { AuthService } from '../services/auth/auth.service';
 import { catchError, switchMap, tap, throwError } from 'rxjs';
 import { API_ENDPOINTS } from '../constants/api-endpoints.constants';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 export const authInterceptor: HttpInterceptorFn = function (req, next) {
   //add cookies for all requests
   const authReq = req.clone({ withCredentials: true });
 
   const authService = inject(AuthService);
+
+  const snackBar = inject(MatSnackBar);
 
   return next(authReq).pipe(
     tap((event) => {
@@ -22,8 +25,7 @@ export const authInterceptor: HttpInterceptorFn = function (req, next) {
       }
     }),
     catchError((error: HttpErrorResponse) => {
-    
-      //case 1:access token expired
+      //access token expired
       if (
         error.status === 401 &&
         !req.url.includes(API_ENDPOINTS.AUTH.REFRESH())
@@ -33,9 +35,10 @@ export const authInterceptor: HttpInterceptorFn = function (req, next) {
             const retryReq = req.clone({ withCredentials: true });
             return next(retryReq);
           }),
+
           catchError((refreshError) => {
-            //case 2:refresh token expired or invalid
-            console.log(`refresh token expired or invalid`, refreshError);
+            //refresh token expired or invalid
+
             authService.logout();
             return throwError(() => refreshError);
           })

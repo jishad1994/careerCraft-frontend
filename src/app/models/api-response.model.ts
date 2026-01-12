@@ -12,4 +12,5 @@ export interface ApiResponse<T, E = Record<string, string[]>> {
   data: T | null;
   pagination?: PaginationMeta;
   errors?: E | null;
+  statusCode?: number;
 }

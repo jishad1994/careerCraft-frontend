@@ -38,13 +38,13 @@ export class ForgotPasswordComponent {
   }
 
   async submit() {
-    const payload = this.forgotForm.value;
+    const { email, role } = this.forgotForm.value;
 
     if (this.forgotForm.invalid) {
       this.forgotForm.markAllAsTouched();
     }
 
-    this._authService.forgotPassword(payload).subscribe({
+    this._authService.forgotPassword(email, role).subscribe({
       next: (res) => {
         if (res.success) {
           console;

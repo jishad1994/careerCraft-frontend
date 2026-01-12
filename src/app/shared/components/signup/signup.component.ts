@@ -128,7 +128,6 @@ export class SignupComponent implements OnInit, OnDestroy {
 
   signup() {
     if (this.registerForm.invalid) {
-      console.log('form not valid');
       this.signupFormHelper.markAllFieldsAsTouched(this.registerForm);
       return;
     }

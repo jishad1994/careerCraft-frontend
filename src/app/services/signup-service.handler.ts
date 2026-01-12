@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { AuthService } from './auth/auth.service';
 import { IRegisterData } from '../models/auth.interface';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ApiResponse } from '../models/api-response.model';
 export interface OTPResponse {
   success: boolean;
   email: string;
@@ -23,38 +24,36 @@ export class SignupServiceHandler {
 
   handleSignup(
     formData: IRegisterData
-    // role: 'user' | 'company'
-  ): Observable<OTPResponse> {
+  ): Observable<ApiResponse<{ email: string; role: string }>> {
     return this.signupAuthService.requestOTP(formData);
   }
 
   handleOTPResponse(
-    response: OTPResponse,
-    userEmail: string,
-    userRole: 'user' | 'company'
+    response: ApiResponse<{ email: string; role: string }>,
+    email: string,
+    role: string
   ): void {
     if (response.success) {
-      this.storeUserData(response.email, userRole);
-      this._snackBar.open('An OTP has been sent to your email', 'close', {
-        duration: 2000,
-      });
-      setTimeout(() => {
-        this.navigateToOTPVerification(userEmail, userRole);
-      }, 2000);
+      if (response.data) {
+        this.storeUserData(response.data.email, response.data.role);
+        this._snackBar.open('An OTP has been sent to your email', 'close', {
+          duration: 2000,
+        });
+        setTimeout(() => {
+          this.navigateToOTPVerification(email, role);
+        }, 2000);
+      }
     } else {
       this.handleRegistrationError(response.message);
     }
   }
 
-  private storeUserData(email: string, role: 'user' | 'company'): void {
+  private storeUserData(email: string, role: string): void {
     localStorage.setItem('userEmail', email);
     localStorage.setItem('userRole', role);
   }
 
-  private navigateToOTPVerification(
-    userEmail: string,
-    userRole: 'user' | 'company'
-  ): void {
+  private navigateToOTPVerification(userEmail: string, userRole: string): void {
     this.router.navigate(['auth/OTP-verification'], {
       state: {
         userEmail: userEmail,

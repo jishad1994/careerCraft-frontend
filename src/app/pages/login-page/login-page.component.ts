@@ -51,9 +51,10 @@ export class LoginPageComponent implements OnDestroy {
               duration: 2000,
             });
 
-            const path =
-              this.roleRoutes[res.data?.user['role']] || '/auth/login';
-            this._router.navigate([path]);
+            if (res.data) {
+              const path = this.roleRoutes[res.data['role']] || '/auth/login';
+              this._router.navigate([path]);
+            }
           }
         },
         error: (error) => {
@@ -98,7 +99,6 @@ export class LoginPageComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    
     this.destroy$.next();
     this.destroy$.complete();
   }

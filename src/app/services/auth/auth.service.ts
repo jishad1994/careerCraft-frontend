@@ -12,6 +12,7 @@ import {
 import { IRegisterData } from '../../models/auth.interface';
 import { API_ENDPOINTS } from '../../constants/api-endpoints.constants';
 import {
+  AuthResponseUserDTO,
   LoginRequestDTO,
   LoginResponseDTO,
   LogoutResponseDTO,
@@ -22,6 +23,7 @@ import {
 import { AuthUser } from '../../models/auth.model';
 import { AuthStateService } from '../authState/auth-state.service';
 import { Router } from '@angular/router';
+import { ApiResponse } from '../../models/api-response.model';
 
 @Injectable({
   providedIn: 'root',
@@ -40,8 +42,8 @@ export class AuthService {
   checkPhoneOrEmailExists(
     phoneOrEmail: string,
     role: string
-  ): Observable<{ data: { exists: boolean } }> {
-    return this._http.post<{ data: { exists: boolean } }>(
+  ): Observable<ApiResponse<{ exists: boolean }>> {
+    return this._http.post<ApiResponse<{ exists: boolean }>>(
       API_ENDPOINTS.AUTH.CHECK_PHONE_OR_EMAIL(role),
       { phoneOrEmail, role }
     );
@@ -49,14 +51,14 @@ export class AuthService {
 
   //refresh
 
-  refresh() {
+  refresh(): Observable<ApiResponse<AuthResponseUserDTO>> {
     return this._http
-      .get<RefreshTokenResponseDTO>(API_ENDPOINTS.AUTH.REFRESH())
+      .get<ApiResponse<AuthResponseUserDTO>>(API_ENDPOINTS.AUTH.REFRESH())
       .pipe(
         tap((response) => {
           this._authStateService.updateState({
             isLoggedIn: true,
-            user: response.data?.user || null,
+            user: response.data || null,
             error: null,
             loading: false,
           });
@@ -79,13 +81,18 @@ export class AuthService {
     email: string;
     password: string;
     role: string;
-  }): Observable<LoginResponseDTO> {
+  }): Observable<ApiResponse<AuthResponseUserDTO>> {
     return this._http
-      .post<LoginResponseDTO>(API_ENDPOINTS.AUTH.LOGIN(payload.role), payload)
+      .post<ApiResponse<AuthResponseUserDTO>>(
+        API_ENDPOINTS.AUTH.LOGIN(payload.role),
+        payload
+      )
       .pipe(
-        tap((response: LoginResponseDTO) => {
+        tap((response) => {
           if (response.success) {
-            this._authStateService.login(response.data?.user);
+            if (response.data) {
+              this._authStateService.login(response.data);
+            }
           }
         }),
         catchError((error) => {
@@ -97,9 +104,9 @@ export class AuthService {
   }
 
   //logout
-  logout(): Observable<any> {
+  logout(): Observable<ApiResponse<null>> {
     return this._http
-      .post<LogoutResponseDTO>(
+      .post<ApiResponse<null>>(
         API_ENDPOINTS.AUTH.LOGOUT(),
         {},
         {
@@ -107,7 +114,7 @@ export class AuthService {
         }
       )
       .pipe(
-        tap((response: LogoutResponseDTO) => {
+        tap((response) => {
           if (response.success) {
             localStorage.clear();
             this._authStateService.logout();
@@ -118,35 +125,46 @@ export class AuthService {
   }
 
   //user register
-  userSignup(email: string, role: string): Observable<any> {
-    return this._http.post<SignupRequestDTO>(API_ENDPOINTS.AUTH.SIGNUP(role), {
-      email,
-      role,
-    });
+  userSignup(
+    email: string,
+    role: string
+  ): Observable<ApiResponse<{ email: string; role: string }>> {
+    const payload = { email, role };
+    return this._http.post<ApiResponse<{ email: string; role: string }>>(
+      API_ENDPOINTS.AUTH.SIGNUP(role),
+      payload
+    );
   }
 
   //request OTP
-  requestOTP(payload: IRegisterData): Observable<any> {
-    return this._http.post<OtpRequestUserDataDTO>(
+  requestOTP(
+    payload: IRegisterData
+  ): Observable<ApiResponse<{ email: string; role: string }>> {
+    return this._http.post<ApiResponse<{ email: string; role: string }>>(
       API_ENDPOINTS.AUTH.REQUEST_OTP(payload.role),
       payload
     );
   }
 
-  resendOTP(payload: { email: string; role: string }): Observable<any> {
-    return this._http.post(
+  resendOTP(
+    email: string,
+    role: string
+  ): Observable<ApiResponse<{ email: string; role: string }>> {
+    const payload = { email, role };
+    return this._http.post<ApiResponse<{ email: string; role: string }>>(
       API_ENDPOINTS.AUTH.RESEND_OTP(payload.role),
       payload
     );
   }
 
   //verify OTP
-  verifyOTP(payload: {
-    otp: string;
-    email: string;
-    role: string;
-  }): Observable<any> {
-    return this._http.post(
+  verifyOTP(
+    otp: string,
+    email: string,
+    role: string
+  ): Observable<ApiResponse<{ email: string; role: string }>> {
+    const payload = { otp, email, role };
+    return this._http.post<ApiResponse<{ email: string; role: string }>>(
       API_ENDPOINTS.AUTH.VERIFY_OTP(payload.role),
       payload
     );
@@ -154,25 +172,29 @@ export class AuthService {
 
   //forgot password
 
-  forgotPassword(payload: {
-    email: string;
-    role: 'user' | 'company';
-  }): Observable<any> {
-    return this._http.post(
+  forgotPassword(
+    email: string,
+    role: 'user' | 'company'
+  ): Observable<ApiResponse<null>> {
+    const payload = { email, role };
+    return this._http.post<ApiResponse<null>>(
       API_ENDPOINTS.AUTH.FORGOT_PASSWORD(payload.role),
       payload
     );
   }
 
   //reset password
-
   resetPassword(
-    payload: {
-      newPassword: string;
-      resetPasswordToken: string;
-    },
+    newPassword: string,
+    resetPasswordToken: string,
     role: string
-  ): Observable<any> {
-    return this._http.post(API_ENDPOINTS.AUTH.RESET_PASSWORD(role), payload);
+  ): Observable<ApiResponse<null>> {
+    return this._http.post<ApiResponse<null>>(
+      API_ENDPOINTS.AUTH.RESET_PASSWORD(role),
+      {
+        newPassword,
+        resetPasswordToken,
+      }
+    );
   }
 }

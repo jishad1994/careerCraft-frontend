@@ -49,11 +49,11 @@ export class AuthEffects {
         mergeMap(({ email, password, role }) =>
           this._authService.login({ email, password, role }).pipe(
             map((response) => {
-              if (!response.success || !response.data?.user) {
+              if (!response.success || !response.data) {
                 throw new Error(response.message || 'Login failed');
               }
 
-              return loginSuccess({ user: response.data?.user });
+              return loginSuccess({ user: response.data });
             }),
             catchError((error) => {
               const message =
@@ -164,15 +164,5 @@ export class AuthEffects {
       { dispatch: false }
     );
   }
-  // loadUser$ = createEffect(() =>
-  //   this.actions$.pipe(
-  //     ofType(loadUserRequest),
-  //     mergeMap(() =>
-  //       this.authService.getCurrentUser().pipe( // you need to implement this API
-  //         map((user) => loadUserSuccess({ user })),
-  //         catchError(() => of(loadUserFailure({ error: 'Failed to load user' })))
-  //       )
-  //     )
-  //   )
-  // );
+
 }
