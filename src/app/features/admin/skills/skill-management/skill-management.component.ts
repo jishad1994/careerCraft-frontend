@@ -46,6 +46,7 @@ export class SkillManagementComponent implements OnInit {
 
     this._route.queryParams.subscribe((params) => {
       this.page = params['page'] ? +params['page'] : 1;
+      this.search = params['search'] ? params['search'] : '';
       this.loadSkills();
     });
   }
@@ -76,7 +77,7 @@ export class SkillManagementComponent implements OnInit {
 
   goToSkill(id: string) {
     this._router.navigate(['/admin/dashboard/skills-management', id], {
-      queryParams: { page: this.page },
+      queryParams: { page: this.page, search: this.search },
     });
   }
 

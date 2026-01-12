@@ -17,7 +17,8 @@ import { FormsModule } from '@angular/forms';
 export class SkillDetailsComponent implements OnInit {
   skill: Skill | null = null;
   id!: string;
-  page!: number;
+  page: number = 1;
+  search: string = '';
   destroy$ = new Subject<void>();
   constructor(
     private _skillService: SkillService,
@@ -30,6 +31,7 @@ export class SkillDetailsComponent implements OnInit {
     this.id = this._route.snapshot.params['id'];
     this._route.queryParams.subscribe((params) => {
       this.page = params['page'] ? +params['page'] : 1;
+      this.search = params['search'] ? params['search'] : '';
     });
     this.loadSkill();
   }
@@ -61,7 +63,7 @@ export class SkillDetailsComponent implements OnInit {
           next: () => {
             this._snackBar.open('Skill updated', 'close', { duration: 2000 });
             this._router.navigate(['/admin/dashboard/skills-management'], {
-              queryParams: { page: this.page },
+              queryParams: { page: this.page, search: this.search },
             });
           },
           error: (err) => {
@@ -121,7 +123,7 @@ export class SkillDetailsComponent implements OnInit {
 
   goBack(): void {
     this._router.navigate(['/admin/dashboard/skills-management'], {
-      queryParams: { page: this.page },
+      queryParams: { page: this.page, search: this.search },
     });
   }
 }
