@@ -15,6 +15,8 @@ import { CommonModule } from '@angular/common';
 import {
   TableAction,
   TableColumn,
+
+  
 } from '../../../models/reusable-table-items.interface';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
@@ -50,7 +52,7 @@ export class CompaniesTableComponent implements OnInit, OnDestroy {
     },
     {
       key: 'isBlocked',
-      label: 'Status',
+      label: 'status',
       type: 'badge',
       transform: (value: boolean) => (value ? 'Blocked' : 'Active'),
     },
