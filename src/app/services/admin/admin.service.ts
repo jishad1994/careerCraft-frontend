@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, Query } from '@angular/core';
-import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 import { API_ENDPOINTS } from '../../constants/api-endpoints.constants';
 import { ApiResponse } from '../../models/api-response.model';
