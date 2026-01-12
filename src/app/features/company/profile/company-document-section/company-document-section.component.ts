@@ -12,7 +12,7 @@ import { CompanyProfileService } from '../../../../services/company/profile/comp
 import { FormBuilder } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
-import { IDocuments } from '../../../../models/user-profile.model';
+import { IDocuments } from '../../../../models/user/user-profile.model';
 
 @Component({
   selector: 'app-company-document-section',

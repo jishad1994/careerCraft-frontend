@@ -46,6 +46,16 @@ export const API_ENDPOINTS = {
 
     GET_COMPANIES: (page: number, limit: number, search?: string) =>
       `${baseUrl}${adminBaseUrl}/getCompanies?page=${page}&limit=${limit}&search=${search}`,
+    GET_COMPANY_BY_ID: (id: string) =>
+      `${baseUrl}${adminBaseUrl}/companies/${id}`,
+
+    VERIFY_COMPANY: (id: string) =>
+      `${baseUrl}${adminBaseUrl}/companies/${id}/verify`,
+
+    REJECT_COMPANY_VERIFICATION: (id: string) =>
+      `${baseUrl}${adminBaseUrl}/companies/${id}/reject-verification`,
+
+    GET_COMPANY_DOCUMENT_URL: `${baseUrl}${adminBaseUrl}/documents/signed-url`,
 
     BLOCK_OR_UNBLOCK_COMPANY: (id: string, action: string) =>
       `${baseUrl}${adminBaseUrl}/companies/${id}/${action}`,

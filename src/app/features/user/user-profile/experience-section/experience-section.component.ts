@@ -7,7 +7,7 @@ import {
   Output,
 } from '@angular/core';
 import { UserProfileService } from '../../../../services/user/profile/user-profile.service';
-import { Experience, UserProfile } from '../../../../models/user-profile.model';
+import { Experience, UserProfile } from '../../../../models/user/user-profile.model';
 import {
   FormBuilder,
   FormGroup,

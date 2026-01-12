@@ -3,8 +3,14 @@ import { Injectable, Query } from '@angular/core';
 import { Observable } from 'rxjs';
 import { API_ENDPOINTS } from '../../constants/api-endpoints.constants';
 import { ApiResponse } from '../../models/api-response.model';
-import { CompanyProfile, ICompanyListItem } from '../../models/company/company-profile.model';
-import { IUserListItem, UserProfile } from '../../models/user-profile.model';
+import {
+  CompanyProfile,
+  ICompanyListItem,
+} from '../../models/company/company-profile.model';
+import {
+  IUserListItem,
+  UserProfile,
+} from '../../models/user/user-profile.model';
 
 @Injectable({
   providedIn: 'root',
@@ -31,12 +37,39 @@ export class AdminService {
       API_ENDPOINTS.ADMIN.GET_COMPANIES(page, limit, query)
     );
   }
-  /**
-   *
-   * @param id
-   * @param flag
-   * @returns
-   */
+
+  getCompanyById(id: string): Observable<ApiResponse<CompanyProfile>> {
+    return this._http.get<ApiResponse<CompanyProfile>>(
+      API_ENDPOINTS.ADMIN.GET_COMPANY_BY_ID(id)
+    );
+  }
+
+  verifyCompany(id: string): Observable<ApiResponse<CompanyProfile>> {
+    return this._http.patch<ApiResponse<CompanyProfile>>(
+      API_ENDPOINTS.ADMIN.VERIFY_COMPANY(id),
+      {}
+    );
+  }
+
+  rejectCompanyVerification(
+    id: string,
+    comment: string
+  ): Observable<ApiResponse<void>> {
+    return this._http.post<ApiResponse<void>>(
+      API_ENDPOINTS.ADMIN.REJECT_COMPANY_VERIFICATION(id),
+      { comment }
+    );
+  }
+
+  getDocumentSignedUrl(
+    documentKey: string
+  ): Observable<ApiResponse<{ url: string }>> {
+    return this._http.post<ApiResponse<{ url: string }>>(
+      API_ENDPOINTS.ADMIN.GET_COMPANY_DOCUMENT_URL,
+      { documentKey }
+    );
+  }
+
   blockOrUnblockCompany(
     id: string,
     flag: boolean

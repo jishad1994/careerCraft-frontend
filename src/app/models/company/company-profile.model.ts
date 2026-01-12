@@ -1,4 +1,4 @@
-import { IDocuments, IPublicFileAsset } from '../user-profile.model';
+import { IDocuments, IPublicFileAsset } from '../user/user-profile.model';
 
 export class IAddress {
   city!: string;
@@ -17,25 +17,29 @@ export interface IBannerImage {
 }
 
 export interface CompanyProfile {
-  id: string;
+   _id: string;
   name: string;
   email: string;
-  role: 'company';
   phone?: string;
-  profilePicture?: IProfilePicture;
+  profilePicture?: string;
+  bannerImage?: string;
+  provider: 'google' | 'local';
+  role: 'company';
   isBlocked: boolean;
   isVerified: boolean;
-  documents: IDocuments[];
   website?: string;
   location?: string;
   industry?: string;
   GSTIN?: string;
   address?: IAddress[];
-  logo?: string;
-  bannerImage?: IBannerImage;
   description?: string;
+  numberOfEmployees?: number;
+  documents: IDocuments[];
+  subscriptionStatus?: 'active' | 'expired' | 'pending';
+  subscriptionStart?: Date;
+  subscriptionEnd?: Date;
   createdAt: Date;
-  updatedAt: string;
+  updatedAt: Date;
 }
 
 export interface BasicCompanyUpdate {

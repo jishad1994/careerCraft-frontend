@@ -3,7 +3,7 @@ import {
   Education,
   Experience,
   UserProfile,
-} from '../../../models/user-profile.model';
+} from '../../../models/user/user-profile.model';
 import {
   FormArray,
   FormBuilder,

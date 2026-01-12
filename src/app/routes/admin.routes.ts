@@ -40,6 +40,13 @@ export const ADMIN_ROUTES: Routes = [
           ).then((m) => m.CompaniesTableComponent),
       },
       {
+        path: 'companies/:id',
+        loadComponent: () =>
+          import(
+            '../features/admin/company-details/company-details.component'
+          ).then((m) => m.CompanyDetailsComponent),
+      },
+      {
         path: 'skills-management',
         loadComponent: () =>
           import(

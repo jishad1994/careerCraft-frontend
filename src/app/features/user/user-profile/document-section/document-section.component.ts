@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { IDocuments, UserProfile } from '../../../../models/user-profile.model';
+import { IDocuments, UserProfile } from '../../../../models/user/user-profile.model';
 import { Subject, takeUntil } from 'rxjs';
 import { UserProfileService } from '../../../../services/user/profile/user-profile.service';
 import { MatSnackBar } from '@angular/material/snack-bar';

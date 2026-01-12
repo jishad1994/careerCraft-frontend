@@ -10,7 +10,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { UserProfileService } from '../../../../services/user/profile/user-profile.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SkillService } from '../../../../services/skill/skill.service';
-import { UserProfile } from '../../../../models/user-profile.model';
+import { UserProfile } from '../../../../models/user/user-profile.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 

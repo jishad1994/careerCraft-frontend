@@ -6,7 +6,7 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { UserProfile } from '../../../../models/user-profile.model';
+import { UserProfile } from '../../../../models/user/user-profile.model';
 import {
   FormBuilder,
   FormGroup,

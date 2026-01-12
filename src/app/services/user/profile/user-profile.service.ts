@@ -5,7 +5,7 @@ import {
   Education,
   Experience,
   UserProfile,
-} from '../../../models/user-profile.model';
+} from '../../../models/user/user-profile.model';
 import { API_ENDPOINTS } from '../../../constants/api-endpoints.constants';
 import { ApiResponse } from '../../../models/api-response.model';
 

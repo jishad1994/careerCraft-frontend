@@ -1,5 +1,5 @@
-import { IAddress } from './company/company-profile.model';
-import { Skill } from './skill.model';
+import { IAddress } from '../company/company-profile.model';
+import { Skill } from '../skill.model';
 
 export interface IPublicFileAsset {
   key: string;

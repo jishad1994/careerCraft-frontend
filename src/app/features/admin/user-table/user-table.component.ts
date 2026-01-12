@@ -3,7 +3,7 @@ import { ReusableTableComponent } from '../../../shared/components/reusable-tabl
 import { AdminService } from '../../../services/admin/admin.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormControl, FormsModule } from '@angular/forms';
-import { IUserListItem, UserProfile } from '../../../models/user-profile.model';
+import { IUserListItem, UserProfile } from '../../../models/user/user-profile.model';
 import {
   ApiResponse,
   PaginationMeta,

@@ -8,7 +8,7 @@ import {
   Output,
   SimpleChanges,
 } from '@angular/core';
-import { UserProfile } from '../../../../models/user-profile.model';
+import { UserProfile } from '../../../../models/user/user-profile.model';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,

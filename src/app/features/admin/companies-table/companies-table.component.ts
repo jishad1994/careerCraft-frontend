@@ -145,9 +145,7 @@ export class CompaniesTableComponent implements OnInit, OnDestroy {
   }
 
   viewCompany(company: ICompanyListItem) {
-    console.log('View company:', company);
-    // Uncomment when you have detail page ready
-    // this._router.navigate(['/admin/companies', company._id]);
+    this._router.navigate(['/admin/companies', company._id]);
   }
 
   blockCompany(company: ICompanyListItem) {
