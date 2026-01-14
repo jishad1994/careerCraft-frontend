@@ -4,6 +4,7 @@ import { Job, JobSearchFilters } from '../../../models/job/job.model';
 import { Observable } from 'rxjs';
 import { ApiResponse } from '../../../models/api-response.model';
 import { API_ENDPOINTS } from '../../../constants/api-endpoints.constants';
+import { Skill } from '../../../models/skill.model';
 
 @Injectable({
   providedIn: 'root',
@@ -61,4 +62,5 @@ export class UserJobService {
       {}
     );
   }
+  
 }

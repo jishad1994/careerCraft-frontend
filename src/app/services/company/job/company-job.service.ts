@@ -4,6 +4,7 @@ import { ApiResponse } from '../../../models/api-response.model';
 import { Observable } from 'rxjs';
 import { CreateJobDto, Job, UpdateJobDto } from '../../../models/job/job.model';
 import { API_ENDPOINTS } from '../../../constants/api-endpoints.constants';
+import { Skill } from '../../../models/skill.model';
 
 @Injectable({
   providedIn: 'root',
@@ -64,6 +65,13 @@ export class CompanyJobService {
   deleteJob(jobId: string): Observable<ApiResponse<null>> {
     return this._http.delete<ApiResponse<null>>(
       API_ENDPOINTS.COMPANY.JOBS.DELETE_JOB(jobId)
+    );
+  }
+
+  searchSkills(query: string): Observable<ApiResponse<Skill[]>> {
+    return this._http.get<ApiResponse<Skill[]>>(
+      API_ENDPOINTS.COMPANY.JOBS.SEARCH_SKILLS(query, 1, 10),
+      
     );
   }
 }

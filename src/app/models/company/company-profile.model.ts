@@ -21,7 +21,7 @@ export interface CompanyProfile {
   name: string;
   email: string;
   phone?: string;
-  profilePicture?: string;
+  profilePicture?: IPublicFileAsset;
   bannerImage?: string;
   provider: 'google' | 'local';
   role: 'company';

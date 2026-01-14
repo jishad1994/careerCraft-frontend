@@ -137,8 +137,7 @@ export class UserTableComponent implements OnInit, OnDestroy {
   }
 
   viewUser(user: IUserListItem) {
-    console.log('View user:', user);
-    // this._router.navigate(['/admin/users', user._id]);
+    this._router.navigate(['/admin/dashboard/users', user._id]);
   }
 
   blockUser(user: IUserListItem) {

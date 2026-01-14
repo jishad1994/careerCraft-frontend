@@ -1,8 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { CompanyProfile } from '../../../models/company/company-profile.model';
-import { Subject, takeUntil } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AdminService } from '../../../services/admin/admin.service';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -10,12 +9,15 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatDialogModule, MatDialog } from '@angular/material/dialog';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatListModule } from '@angular/material/list';
+import { Subject, takeUntil } from 'rxjs';
+import { AdminService } from '../../../services/admin/admin.service';
+import { UserProfile } from '../../../models/user/user-profile.model';
 
 @Component({
-  selector: 'app-company-details',
+  selector: 'app-user-details',
+  standalone: true,
   imports: [
     CommonModule,
     FormsModule,
@@ -25,16 +27,17 @@ import { FormsModule } from '@angular/forms';
     MatIconModule,
     MatProgressSpinnerModule,
     MatDividerModule,
-    MatDialogModule,
+    MatTabsModule,
+    MatListModule,
   ],
-  templateUrl: './company-details.component.html',
-  styleUrl: './company-details.component.css',
+  templateUrl: './user-details.component.html',
+  styleUrl: './user-details.component.css',
 })
-export class CompanyDetailsComponent implements OnInit, OnDestroy {
-  company: CompanyProfile | null = null;
+export class UserDetailsComponent implements OnInit, OnDestroy {
+  user: UserProfile | null = null;
   loading = false;
-  companyId: string = '';
-  rejectionComment = '';
+  userId: string = '';
+  blockComment = '';
   showCommentBox = false;
   destroy$ = new Subject<void>();
 
@@ -42,14 +45,13 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
     private _route: ActivatedRoute,
     private _router: Router,
     private _adminService: AdminService,
-    private _snackBar: MatSnackBar,
-    private _dialog: MatDialog
+    private _snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
-    this.companyId = this._route.snapshot.paramMap.get('id') || '';
-    if (this.companyId) {
-      this.loadCompanyDetails();
+    this.userId = this._route.snapshot.paramMap.get('id') || '';
+    if (this.userId) {
+      this.loadUserDetails();
     }
   }
 
@@ -58,54 +60,26 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  loadCompanyDetails(): void {
+  loadUserDetails(): void {
     this.loading = true;
     this._adminService
-      .getCompanyById(this.companyId)
+      .getUserById(this.userId)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
           if (response.success && response.data) {
-            this.company = response.data;
+            this.user = response.data;
           }
           this.loading = false;
         },
         error: (error) => {
           this._snackBar.open(
-            error.error?.message || 'Failed to load company details',
+            error.error?.message || 'Failed to load user details',
             'Close',
             { duration: 3000 }
           );
           this.loading = false;
-          this._router.navigate(['/admin/dashboard/companies']);
-        },
-      });
-  }
-
-  verifyCompany(): void {
-    if (!this.company) return;
-
-    const confirmed = confirm(
-      `Are you sure you want to verify ${this.company.name}?`
-    );
-    if (!confirmed) return;
-
-    this._adminService
-      .verifyCompany(this.companyId)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (response) => {
-          this._snackBar.open('Company verified successfully', 'Close', {
-            duration: 2000,
-          });
-          this.loadCompanyDetails();
-        },
-        error: (error) => {
-          this._snackBar.open(
-            error.error?.message || 'Failed to verify company',
-            'Close',
-            { duration: 3000 }
-          );
+          this._router.navigate(['/admin/dashboard/users']);
         },
       });
   }
@@ -113,35 +87,33 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
   toggleCommentBox(): void {
     this.showCommentBox = !this.showCommentBox;
     if (!this.showCommentBox) {
-      this.rejectionComment = '';
+      this.blockComment = '';
     }
   }
 
-  rejectVerification(): void {
-    if (!this.rejectionComment.trim()) {
-      this._snackBar.open('Please provide a reason for rejection', 'Close', {
+  blockUserWithComment(): void {
+    if (!this.blockComment.trim()) {
+      this._snackBar.open('Please provide a reason for blocking', 'Close', {
         duration: 2000,
       });
       return;
     }
 
     this._adminService
-      .rejectCompanyVerification(this.companyId, this.rejectionComment)
+      .blockUserWithComment(this.userId, this.blockComment)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
-          this._snackBar.open(
-            'Verification rejected and company notified',
-            'Close',
-            { duration: 2000 }
-          );
+          this._snackBar.open('User blocked successfully', 'Close', {
+            duration: 2000,
+          });
           this.showCommentBox = false;
-          this.rejectionComment = '';
-          this.loadCompanyDetails();
+          this.blockComment = '';
+          this.loadUserDetails();
         },
         error: (error) => {
           this._snackBar.open(
-            error.error?.message || 'Failed to reject verification',
+            error.error?.message || 'Failed to block user',
             'Close',
             { duration: 3000 }
           );
@@ -149,14 +121,45 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
       });
   }
 
-  downloadDocument(documentKey: string, fileName: string): void {
+  unblockUser(): void {
+    if (!this.user) return;
+
+    const confirmed = confirm(
+      `Are you sure you want to unblock ${this.user.firstName} ${this.user.lastName}?`
+    );
+    if (!confirmed) return;
+
+    this._adminService
+      .blockOrUnblockUser(this.userId, false)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this._snackBar.open('User unblocked successfully', 'Close', {
+            duration: 2000,
+          });
+          this.loadUserDetails();
+        },
+        error: (error) => {
+          this._snackBar.open(
+            error.error?.message || 'Failed to unblock user',
+            'Close',
+            { duration: 3000 }
+          );
+        },
+      });
+  }
+
+  downloadDocument(
+    documentKey: string,
+    fileName: string,
+    type: 'resume' | 'certificate'
+  ): void {
     this._adminService
       .getDocumentSignedUrl(documentKey)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
           if (response.success && response.data?.url) {
-            // Open in new tab or trigger download
             const link = document.createElement('a');
             link.href = response.data.url;
             link.target = '_blank';
@@ -194,64 +197,8 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
       });
   }
 
-  blockCompany(): void {
-    if (!this.company) return;
-
-    const confirmed = confirm(
-      `Are you sure you want to block ${this.company.name}?`
-    );
-    if (!confirmed) return;
-
-    this._adminService
-      .blockOrUnblockCompany(this.companyId, true)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (response) => {
-          this._snackBar.open('Company blocked successfully', 'Close', {
-            duration: 2000,
-          });
-          this.loadCompanyDetails();
-        },
-        error: (error) => {
-          this._snackBar.open(
-            error.error?.message || 'Failed to block company',
-            'Close',
-            { duration: 3000 }
-          );
-        },
-      });
-  }
-
-  unblockCompany(): void {
-    if (!this.company) return;
-
-    const confirmed = confirm(
-      `Are you sure you want to unblock ${this.company.name}?`
-    );
-    if (!confirmed) return;
-
-    this._adminService
-      .blockOrUnblockCompany(this.companyId, false)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (response) => {
-          this._snackBar.open('Company unblocked successfully', 'Close', {
-            duration: 2000,
-          });
-          this.loadCompanyDetails();
-        },
-        error: (error) => {
-          this._snackBar.open(
-            error.error?.message || 'Failed to unblock company',
-            'Close',
-            { duration: 3000 }
-          );
-        },
-      });
-  }
-
   goBack(): void {
-    this._router.navigate(['/admin/companies']);
+    this._router.navigate(['/admin/dashboard/users']);
   }
 
   formatDate(date: Date | string | undefined): string {
@@ -261,6 +208,28 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
       month: 'long',
       day: 'numeric',
     });
+  }
+
+  formatDateRange(
+    startDate: Date | string | undefined,
+    endDate: Date | string | undefined,
+    isCurrent: boolean
+  ): string {
+    const start = startDate
+      ? new Date(startDate).toLocaleDateString('en-US', {
+          month: 'short',
+          year: 'numeric',
+        })
+      : 'N/A';
+    const end = isCurrent
+      ? 'Present'
+      : endDate
+      ? new Date(endDate).toLocaleDateString('en-US', {
+          month: 'short',
+          year: 'numeric',
+        })
+      : 'N/A';
+    return `${start} - ${end}`;
   }
 
   formatFileSize(bytes: number | undefined): string {
@@ -278,5 +247,20 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
     if (mimeType.includes('excel') || mimeType.includes('spreadsheet'))
       return 'table_chart';
     return 'description';
+  }
+
+  getFullName(): string {
+    if (!this.user) return '';
+    return `${this.user.firstName} ${this.user.lastName || ''}`.trim();
+  }
+
+  toInitials(firstName: string, lastName: string | undefined): string {
+    const firstletter = firstName.charAt(0).toUpperCase();
+
+    const lastletter = lastName
+      ? lastName.charAt(0).toUpperCase()
+      : firstName.charAt(1).toUpperCase();
+
+    return firstletter + lastletter;
   }
 }

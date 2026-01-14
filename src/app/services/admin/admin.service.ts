@@ -28,6 +28,12 @@ export class AdminService {
     );
   }
 
+  getUserById(id: string): Observable<ApiResponse<UserProfile>> {
+    return this._http.get<ApiResponse<UserProfile>>(
+      API_ENDPOINTS.ADMIN.GET_USER_BY_ID(id)
+    );
+  }
+
   getCompanies(
     page: number = 1,
     limit: number = 10,
@@ -89,6 +95,16 @@ export class AdminService {
     return this._http.patch<ApiResponse<IUserListItem>>(
       API_ENDPOINTS.ADMIN.BLOCK_OR_UNBLOCK_USER(id, action),
       {}
+    );
+  }
+
+  blockUserWithComment(
+    id: string,
+    comment: string
+  ): Observable<ApiResponse<UserProfile>> {
+    return this._http.post<ApiResponse<UserProfile>>(
+      API_ENDPOINTS.ADMIN.BLOCK_USER_WITH_COMMENT(id),
+      { comment }
     );
   }
 }

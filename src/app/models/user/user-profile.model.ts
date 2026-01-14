@@ -11,7 +11,7 @@ export interface Education {
   fieldOfStudy: string;
   startDate: string;
   endDate?: string;
-  isCurrent?: boolean;
+  isCurrent: boolean;
   grade?: string;
 }
 
@@ -47,10 +47,12 @@ export interface UserProfile {
   about: string;
   provider: string;
   isBlocked: boolean;
+  isVerified: boolean;
   skills: PopulatedSkill[];
   education: Education[];
   experience: Experience[];
   certificates: IDocuments[];
+  resumeURL: IDocuments[];
   location: string;
   address: IAddress;
   createdAt: string;

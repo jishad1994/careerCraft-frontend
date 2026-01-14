@@ -44,6 +44,11 @@ export const API_ENDPOINTS = {
     GET_USERS: (page: number, limit: number, search?: string) =>
       `${baseUrl}${adminBaseUrl}/getUsers?page=${page}&limit=${limit}&search=${search}`,
 
+    GET_USER_BY_ID: (id: string) => `${baseUrl}${adminBaseUrl}/users/${id}`,
+
+    BLOCK_USER_WITH_COMMENT: (id: string) =>
+      `${baseUrl}${adminBaseUrl}/users/${id}/block-with-comment`,
+
     GET_COMPANIES: (page: number, limit: number, search?: string) =>
       `${baseUrl}${adminBaseUrl}/getCompanies?page=${page}&limit=${limit}&search=${search}`,
     GET_COMPANY_BY_ID: (id: string) =>
@@ -172,6 +177,8 @@ export const API_ENDPOINTS = {
 
       DELETE_JOB: (jobId: string) =>
         `${baseUrl}${companyBaseUrl}/jobs/${jobId}`,
+      SEARCH_SKILLS: (query: string, page?: number, limit?: number) =>
+        `${baseUrl}${companyBaseUrl}/jobs/search-skills?query=${query}&page=${page}&limit=${limit}`,
     },
   },
 

@@ -1,23 +1,33 @@
-import { Component, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  FormArray,
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { CompanyJobService } from '../../../../services/company/job/company-job.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { Subject, takeUntil } from 'rxjs';
+import { Skill } from '../../../../models/skill.model';
 
 @Component({
   selector: 'app-create-job',
-  imports: [CommonModule,FormsModule,ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './create-job.component.html',
-  styleUrl: './create-job.component.css'
+  styleUrl: './create-job.component.css',
 })
-export class CreateJobComponent implements OnInit {
-jobForm!: FormGroup;
+export class CreateJobComponent implements OnInit, OnDestroy {
+  jobForm!: FormGroup;
   submitting = false;
   skillSearch = '';
   skillSearchResults: any[] = [];
   selectedSkills: any[] = [];
+  destroy$ = new Subject<void>();
 
   constructor(
     private _fb: FormBuilder,
@@ -29,6 +39,10 @@ jobForm!: FormGroup;
 
   ngOnInit() {
     this.initForm();
+  }
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   initForm() {
@@ -56,6 +70,7 @@ jobForm!: FormGroup;
       }),
       responsibilities: this._fb.array([this._fb.control('')]),
       requirements: this._fb.array([this._fb.control('')]),
+      skills: this._fb.array([this._fb.control('')]),
     });
   }
 
@@ -65,6 +80,10 @@ jobForm!: FormGroup;
 
   get requirements() {
     return this.jobForm.get('requirements') as FormArray;
+  }
+
+  get skills() {
+    return this.jobForm.get('skills') as FormArray;
   }
 
   addResponsibility() {
@@ -93,33 +112,40 @@ jobForm!: FormGroup;
       return;
     }
 
-    this._http.get<any>(`http://localhost:3000/api/skills/search?q=${this.skillSearch}`)
+    this._jobService
+      .searchSkills(this.skillSearch)
+      .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
           this.skillSearchResults = response.data.filter(
-            (skill: any) => !this.selectedSkills.find(s => s._id === skill._id)
+            (skill: Skill) =>
+              !this.selectedSkills.find((s) => s._id === skill._id)
           );
         },
         error: () => {
           this.skillSearchResults = [];
-        }
+        },
       });
   }
 
-  addSkill(skill: any) {
+  addSkill(skill: Skill) {
     this.selectedSkills.push(skill);
     this.skillSearch = '';
     this.skillSearchResults = [];
   }
 
   removeSkill(skill: any) {
-    this.selectedSkills = this.selectedSkills.filter(s => s._id !== skill._id);
+    this.selectedSkills = this.selectedSkills.filter(
+      (s) => s._id !== skill._id
+    );
   }
 
   onSubmit() {
     if (this.jobForm.invalid) {
       this.jobForm.markAllAsTouched();
-      this._snackBar.open('Please fill all required fields', 'Close', { duration: 3000 });
+      this._snackBar.open('Please fill all required fields', 'Close', {
+        duration: 3000,
+      });
       return;
     }
 
@@ -141,9 +167,11 @@ jobForm!: FormGroup;
     const formValue = this.jobForm.value;
     const jobData = {
       ...formValue,
-      responsibilities: formValue.responsibilities.filter((r: string) => r.trim()),
+      responsibilities: formValue.responsibilities.filter((r: string) =>
+        r.trim()
+      ),
       requirements: formValue.requirements.filter((r: string) => r.trim()),
-      skills: this.selectedSkills.map(s => s._id),
+      skills: this.selectedSkills.map((s) => s._id),
       status,
     };
 
@@ -163,7 +191,7 @@ jobForm!: FormGroup;
           'Close',
           { duration: 3000 }
         );
-      }
+      },
     });
   }
 

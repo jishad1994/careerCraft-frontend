@@ -12,8 +12,7 @@ export const ADMIN_ROUTES: Routes = [
       import('../pages/admin/admin-dahboard/admin-dashboard.component').then(
         (m) => m.AdminDashboardComponent
       ),
-    // canActivate: [ RoleGuard],
-    // canActivateChild: [RoleGuard],
+
     data: { role: 'admin' },
     children: [
       { path: '', redirectTo: 'users', pathMatch: 'full' },
@@ -30,6 +29,13 @@ export const ADMIN_ROUTES: Routes = [
         loadComponent: () =>
           import('../features/admin/user-table/user-table.component').then(
             (m) => m.UserTableComponent
+          ),
+      },
+      {
+        path: 'users/:id',
+        loadComponent: () =>
+          import('../features/admin/user-details/user-details.component').then(
+            (m) => m.UserDetailsComponent
           ),
       },
       {
