@@ -1,1 +1,356 @@
-<p>edit-job works!</p>
+<div class="min-h-screen bg-gray-50 py-8">
+  <div class="max-w-4xl mx-auto px-4">
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="flex justify-center items-center py-20">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+    </div>
+
+    <!-- Edit Form -->
+    <div *ngIf="!loading">
+
+      <!-- Header -->
+      <div class="mb-6">
+        <button (click)="goBack()" class="text-blue-600 hover:text-blue-700 flex items-center gap-2 mb-4">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+          </svg>
+          <span class="font-medium">Back to Job Details</span>
+        </button>
+        <h1 class="text-3xl font-bold text-gray-900">Edit Job</h1>
+        <p class="text-gray-600 mt-1">Update job details and requirements</p>
+      </div>
+
+      <!-- Form -->
+      <form [formGroup]="jobForm" (ngSubmit)="onSubmit()" class="bg-white rounded-lg shadow-sm p-6 space-y-6">
+
+        <!-- Basic Information -->
+        <div>
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">Basic Information</h2>
+
+          <div class="space-y-4">
+            <!-- Job Title -->
+            <div>
+              <label for="title" class="block text-sm font-medium text-gray-700 mb-1">
+                Job Title <span class="text-red-500">*</span>
+              </label>
+              <input type="text" id="title" formControlName="title" placeholder="e.g., Senior Frontend Developer"
+                [class.border-red-500]="isFieldInvalid('title')"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+              <p *ngIf="isFieldInvalid('title')" class="mt-1 text-sm text-red-600">
+                {{ getFieldError('title') }}
+              </p>
+            </div>
+
+            <!-- Job Description -->
+            <div>
+              <label for="description" class="block text-sm font-medium text-gray-700 mb-1">
+                Job Description <span class="text-red-500">*</span>
+              </label>
+              <textarea id="description" formControlName="description" rows="6"
+                placeholder="Describe the role, team, and what makes this opportunity unique..."
+                [class.border-red-500]="isFieldInvalid('description')"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
+              <p *ngIf="isFieldInvalid('description')" class="mt-1 text-sm text-red-600">
+                {{ getFieldError('description') }}
+              </p>
+              <p class="mt-1 text-sm text-gray-500">
+                Minimum 50 characters. Current: {{ jobForm.get('description')?.value?.length || 0 }}
+              </p>
+            </div>
+
+            <!-- Employment Type, Work Mode & Openings -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label for="employmentType" class="block text-sm font-medium text-gray-700 mb-1">
+                  Employment Type <span class="text-red-500">*</span>
+                </label>
+                <select id="employmentType" formControlName="employmentType"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                  <option value="">Select type</option>
+                  <option *ngFor="let type of employmentTypes" [value]="type.value">
+                    {{ type.label }}
+                  </option>
+                </select>
+              </div>
+
+              <div>
+                <label for="workMode" class="block text-sm font-medium text-gray-700 mb-1">
+                  Work Mode <span class="text-red-500">*</span>
+                </label>
+                <select id="workMode" formControlName="workMode"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                  <option value="">Select mode</option>
+                  <option *ngFor="let mode of workModes" [value]="mode.value">
+                    {{ mode.label }}
+                  </option>
+                </select>
+              </div>
+
+              <div>
+                <label for="openings" class="block text-sm font-medium text-gray-700 mb-1">
+                  Number of Openings <span class="text-red-500">*</span>
+                </label>
+                <input type="number" id="openings" formControlName="openings" min="1"
+                  [class.border-red-500]="isFieldInvalid('openings')"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Location Information -->
+        <div formGroupName="location">
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">Location</h2>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label for="country" class="block text-sm font-medium text-gray-700 mb-1">
+                Country <span class="text-red-500">*</span>
+              </label>
+              <input type="text" id="country" formControlName="country" placeholder="e.g., United Arab Emirates"
+                [class.border-red-500]="isFieldInvalid('location.country')"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+            </div>
+
+            <div>
+              <label for="state" class="block text-sm font-medium text-gray-700 mb-1">
+                State/Province
+              </label>
+              <input type="text" id="state" formControlName="state" placeholder="Optional"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+            </div>
+
+            <div>
+              <label for="city" class="block text-sm font-medium text-gray-700 mb-1">
+                City <span class="text-red-500">*</span>
+              </label>
+              <input type="text" id="city" formControlName="city" placeholder="e.g., Dubai"
+                [class.border-red-500]="isFieldInvalid('location.city')"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Experience -->
+        <div formGroupName="experience">
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">Experience Required</h2>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label for="expMin" class="block text-sm font-medium text-gray-700 mb-1">
+                Minimum (years) <span class="text-red-500">*</span>
+              </label>
+              <input type="number" id="expMin" formControlName="min" min="0" placeholder="0"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+            </div>
+
+            <div>
+              <label for="expMax" class="block text-sm font-medium text-gray-700 mb-1">
+                Maximum (years)
+              </label>
+              <input type="number" id="expMax" formControlName="max" min="0" placeholder="Optional"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Salary Information -->
+        <div formGroupName="salary">
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">Salary Range (Optional)</h2>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label for="salaryMin" class="block text-sm font-medium text-gray-700 mb-1">
+                Minimum
+              </label>
+              <input type="number" id="salaryMin" formControlName="min" min="0" placeholder="e.g., 5000"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+            </div>
+
+            <div>
+              <label for="salaryMax" class="block text-sm font-medium text-gray-700 mb-1">
+                Maximum
+              </label>
+              <input type="number" id="salaryMax" formControlName="max" min="0" placeholder="e.g., 8000"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+            </div>
+
+            <div>
+              <label for="period" class="block text-sm font-medium text-gray-700 mb-1">
+                Period
+              </label>
+              <select id="period" formControlName="period"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                <option *ngFor="let period of salaryPeriods" [value]="period.value">
+                  {{ period.label }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <label class="flex items-center gap-2 mt-3 cursor-pointer">
+            <input type="checkbox" formControlName="isHidden"
+              class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" />
+            <span class="text-sm text-gray-700">Hide salary from public</span>
+          </label>
+        </div>
+
+        <!-- Responsibilities -->
+        <div>
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">Responsibilities</h2>
+
+          <div formArrayName="responsibilities" class="space-y-2">
+            <div *ngFor="let resp of responsibilities.controls; let i = index" class="flex gap-2">
+              <input type="text" [formControlName]="i"
+                class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                placeholder="e.g., Design and implement new features" />
+              <button type="button" (click)="removeResponsibility(i)"
+                class="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <button type="button" (click)="addResponsibility()"
+            class="mt-2 text-blue-600 hover:text-blue-700 text-sm flex items-center gap-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            Add Responsibility
+          </button>
+        </div>
+
+        <!-- Requirements -->
+        <div>
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">Requirements</h2>
+
+          <div formArrayName="requirements" class="space-y-2">
+            <div *ngFor="let req of requirements.controls; let i = index" class="flex gap-2">
+              <input type="text" [formControlName]="i"
+                class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                placeholder="e.g., 5+ years experience with React" />
+              <button type="button" (click)="removeRequirement(i)"
+                class="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <button type="button" (click)="addRequirement()"
+            class="mt-2 text-blue-600 hover:text-blue-700 text-sm flex items-center gap-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            Add Requirement
+          </button>
+        </div>
+
+        <!-- Required Skills -->
+        <div>
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">Required Skills</h2>
+
+          <div class="relative">
+            <input type="text" [(ngModel)]="skillSearch"   [ngModelOptions]="{standalone: true}" (input)="searchSkills()"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              placeholder="Search and add skills..." />
+
+            <!-- Search Results Dropdown -->
+            <div *ngIf="skillSearchResults.length > 0"
+              class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+              <button *ngFor="let skill of skillSearchResults" type="button" (click)="addSkill(skill)"
+                class="w-full px-4 py-2 text-left hover:bg-blue-50 flex items-center justify-between transition-colors">
+                <span class="font-medium text-gray-900">{{ skill.name }}</span>
+                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Selected Skills -->
+          <div *ngIf="selectedSkills.length > 0" class="mt-4">
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Selected Skills ({{ selectedSkills.length }})
+            </label>
+            <div class="flex flex-wrap gap-2">
+              <span *ngFor="let skill of selectedSkills"
+                class="px-3 py-1.5 bg-blue-50 text-blue-700 rounded-full text-sm flex items-center gap-2 border border-blue-200">
+                {{ skill.name }}
+                <button type="button" (click)="removeSkill(skill)" class="hover:text-red-600 transition-colors">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    </path>
+                  </svg>
+                </button>
+              </span>
+            </div>
+          </div>
+
+          <p *ngIf="selectedSkills.length === 0" class="text-sm text-gray-500 italic mt-2">
+            No skills selected. Search and add skills above.
+          </p>
+        </div>
+
+        <!-- Application Deadline -->
+        <div>
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">Application Deadline</h2>
+
+          <div>
+            <label for="expiresAt" class="block text-sm font-medium text-gray-700 mb-1">
+              Deadline Date
+            </label>
+            <input type="date" id="expiresAt" formControlName="expiresAt"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+            <p class="mt-1 text-sm text-gray-500">
+              Leave empty for no deadline (defaults to 30 days from posting)
+            </p>
+          </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="flex flex-col sm:flex-row gap-3 pt-4 border-t">
+          <button type="submit" [disabled]="submitting"
+            class="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+            <svg *ngIf="submitting" class="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+              </path>
+            </svg>
+            <span>{{ submitting ? 'Updating...' : 'Update Job' }}</span>
+          </button>
+
+          <button type="button" (click)="onCancel()" [disabled]="submitting"
+            class="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed">
+            Cancel
+          </button>
+        </div>
+
+        <!-- Info Notice -->
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div class="flex gap-3">
+            <svg class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <div class="text-sm text-blue-800">
+              <p class="font-medium mb-1">About Editing</p>
+              <p>
+                Only jobs in draft status can be edited. After updating, you can change the status to "Active" from the
+                job details page to make it visible to candidates.
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </form>
+    </div>
+
+  </div>
+</div>

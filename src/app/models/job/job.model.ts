@@ -1,6 +1,6 @@
 // models/job.model.ts
 
-import { Skill } from "../skill.model";
+import { Skill } from '../skill.model';
 
 export interface Job {
   _id: string;
@@ -15,7 +15,12 @@ export interface Job {
   description: string;
   responsibilities: string[];
   requirements: string[];
-  employmentType: 'full-time' | 'part-time' | 'contract' | 'internship' | 'freelance';
+  employmentType:
+    | 'full-time'
+    | 'part-time'
+    | 'contract'
+    | 'internship'
+    | 'freelance';
   workMode: 'onsite' | 'remote' | 'hybrid';
   experience: {
     min: number;
@@ -45,8 +50,6 @@ export interface Job {
   updatedAt: Date;
 }
 
-
-
 export interface JobSearchFilters {
   keyword?: string;
   location?: string;
@@ -57,6 +60,7 @@ export interface JobSearchFilters {
   experienceMin?: number;
   experienceMax?: number;
   skills?: string[];
+  status?: string;
 }
 
 export interface CreateJobDto {
@@ -82,8 +86,20 @@ export interface CreateJobDto {
     state?: string;
     city: string;
   };
+  expiresAt?: Date;
   skills: string[];
   openings: number;
+}
+
+export interface JobStatistics {
+  total: number;
+  active: number;
+  draft: number;
+  paused: number;
+  closed: number;
+  totalApplications: number;
+  totalViews: number;
+  verified: number;
 }
 
 export interface UpdateJobDto extends Partial<CreateJobDto> {}

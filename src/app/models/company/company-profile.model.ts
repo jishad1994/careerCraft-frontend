@@ -22,7 +22,7 @@ export interface CompanyProfile {
   email: string;
   phone?: string;
   profilePicture?: IPublicFileAsset;
-  bannerImage?: string;
+  bannerImage?: IPublicFileAsset;
   provider: 'google' | 'local';
   role: 'company';
   isBlocked: boolean;

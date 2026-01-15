@@ -174,6 +174,9 @@ export const API_ENDPOINTS = {
 
       UPDATE_JOB_STATUS: (jobId: string) =>
         `${baseUrl}${companyBaseUrl}/jobs/${jobId}/status`,
+      
+      GET_JOB_STATISTICS: 
+        `${baseUrl}${companyBaseUrl}/jobs/statistics`,
 
       DELETE_JOB: (jobId: string) =>
         `${baseUrl}${companyBaseUrl}/jobs/${jobId}`,

@@ -24,6 +24,21 @@ export const COMPANY_ROUTES: Routes = [
             '../features/company/jobs/job-list/company-job-list.component'
           ).then((m) => m.CompanyJobListComponent),
       },
+
+      {
+        path: 'jobs/:id',
+        loadComponent: () =>
+          import(
+            '../features/company/jobs/company-job-view/company-job-view.component'
+          ).then((m) => m.CompanyJobViewComponent),
+      },
+      {
+        path: 'jobs/:id/edit',
+        loadComponent: () =>
+          import('../features/company/jobs/edit-job/edit-job.component').then(
+            (m) => m.EditJobComponent
+          ),
+      },
       {
         path: 'jobs/create',
         loadComponent: () =>

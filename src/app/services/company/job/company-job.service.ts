@@ -1,8 +1,14 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ApiResponse } from '../../../models/api-response.model';
-import { Observable } from 'rxjs';
-import { CreateJobDto, Job, UpdateJobDto } from '../../../models/job/job.model';
+import { filter, Observable } from 'rxjs';
+import {
+  CreateJobDto,
+  Job,
+  JobSearchFilters,
+  JobStatistics,
+  UpdateJobDto,
+} from '../../../models/job/job.model';
 import { API_ENDPOINTS } from '../../../constants/api-endpoints.constants';
 import { Skill } from '../../../models/skill.model';
 
@@ -22,12 +28,20 @@ export class CompanyJobService {
   getCompanyJobs(
     page: number = 1,
     limit: number = 10,
-    search?: string
+    filters: JobSearchFilters
   ): Observable<ApiResponse<Job[]>> {
-    const params = new HttpParams()
+    let params = new HttpParams()
       .set('page', page.toString())
-      .set('limit', limit.toString())
-      .set('search', search ? search.toString() : '');
+      .set('limit', limit.toString());
+    if (filters.keyword) params = params.set('keyword', filters.keyword);
+    if (filters.location) params = params.set('location', filters.location);
+    if (filters.employmentType)
+      params = params.set('employmentType', filters.employmentType);
+    if (filters.workMode) params = params.set('workMode', filters.workMode);
+    if (filters.skills && filters.skills.length > 0)
+      params = params.set('skills', filters.skills.join(','));
+    if (filters.status)
+      params = params.set('status', filters.status.toString());
     return this._http.get<ApiResponse<Job[]>>(
       API_ENDPOINTS.COMPANY.JOBS.GET_COMPANY_JOBS,
       { params }
@@ -70,8 +84,13 @@ export class CompanyJobService {
 
   searchSkills(query: string): Observable<ApiResponse<Skill[]>> {
     return this._http.get<ApiResponse<Skill[]>>(
-      API_ENDPOINTS.COMPANY.JOBS.SEARCH_SKILLS(query, 1, 10),
-      
+      API_ENDPOINTS.COMPANY.JOBS.SEARCH_SKILLS(query, 1, 10)
+    );
+  }
+  
+  getJobStatistics(): Observable<ApiResponse<JobStatistics>> {
+    return this._http.get<ApiResponse<JobStatistics>>(
+      API_ENDPOINTS.COMPANY.JOBS.GET_JOB_STATISTICS
     );
   }
 }
