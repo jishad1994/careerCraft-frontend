@@ -60,7 +60,7 @@ export class UserJobSearchComponent {
   }
 
   viewJob(slug: string) {
-    this.router.navigate(['/jobs', slug]);
+    this.router.navigate(['user/jobs', slug]);
   }
 
   clearFilters() {

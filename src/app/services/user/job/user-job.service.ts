@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { ApiResponse } from '../../../models/api-response.model';
 import { API_ENDPOINTS } from '../../../constants/api-endpoints.constants';
 import { Skill } from '../../../models/skill.model';
+import { IJobApplication } from '../../../models/job-application/job-application.model';
 
 @Injectable({
   providedIn: 'root',
@@ -56,11 +57,13 @@ export class UserJobService {
     );
   }
 
-  applyForJob(jobId: string): Observable<ApiResponse<any>> {
+  applyForJob(jobData: FormData): Observable<ApiResponse<any>> {
     return this._http.post<ApiResponse<any>>(
-      API_ENDPOINTS.USER.JOB.APPLY_FOR_JOB(jobId),
-      {}
+      API_ENDPOINTS.USER.JOB.APPLY_FOR_JOB,
+      jobData
     );
   }
+
+  
   
 }

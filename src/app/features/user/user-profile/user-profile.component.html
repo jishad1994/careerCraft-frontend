@@ -78,13 +78,16 @@
 
                     <app-basic-profile [profile]="profile" (updatedBasicInfo)="onUpdated($event)"></app-basic-profile>
 
+                    <app-resume-section [profile]="profile" (updatedProfile)="onUpdated($event)"></app-resume-section>
+                    
+                    <app-document-section [profile]="profile"
+                        (updatedProfile)="onUpdated($event)"></app-document-section>
+
                     <app-education-section [profile]="profile"
                         (updatedEducation)="onUpdated($event)"></app-education-section>
 
-                    <!-- Skills Section -->
                     <app-skills-section [profile]="profile" (updatedUser)="onUpdated($event)"></app-skills-section>
 
-                    <!-- Experience Section -->
                     <app-experience-section [profile]="profile"
                         (updatedExperience)="onUpdated($event)"></app-experience-section>
 

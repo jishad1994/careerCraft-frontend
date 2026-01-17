@@ -19,10 +19,12 @@ import { BasicProfileComponent } from './basic-profile/basic-profile.component';
 import { EducationSectionComponent } from "./education-section/education-section.component";
 import { ExperienceSectionComponent } from './experience-section/experience-section.component';
 import { SkillsSectionComponent } from "./skills-section/skills-section.component";
+import { DocumentSectionComponent } from './document-section/document-section.component';
+import { ResumeSectionComponent } from './resume-section/resume-section.component';
 
 @Component({
   selector: 'app-user-profile',
-  imports: [CommonModule, ReactiveFormsModule, BasicProfileComponent, EducationSectionComponent, ExperienceSectionComponent, SkillsSectionComponent],
+  imports: [CommonModule, ReactiveFormsModule, ResumeSectionComponent,BasicProfileComponent, EducationSectionComponent, DocumentSectionComponent,ExperienceSectionComponent, SkillsSectionComponent],
   templateUrl: './user-profile.component.html',
   styleUrl: './user-profile.component.css',
 })

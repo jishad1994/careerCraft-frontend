@@ -1,0 +1,259 @@
+<div class="min-h-screen bg-gray-50 py-8">
+  <div class="max-w-5xl mx-auto px-4">
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="flex justify-center items-center py-20">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+    </div>
+
+    <!-- Application Details -->
+    <div *ngIf="!loading && application">
+
+      <!-- Back Button -->
+      <button (click)="goBack()" class="flex items-center gap-2 text-blue-600 hover:text-blue-700 mb-6">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        <span class="font-medium">Back to My Applications</span>
+      </button>
+
+      <!-- Header Card -->
+      <div class="bg-white rounded-lg shadow-sm p-6 mb-6 border border-gray-200">
+        <div class="flex justify-between items-start mb-4">
+          <div class="flex-1">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ application.job.title }}</h1>
+            <p class="text-xl text-gray-700 mb-1">{{ application.company.name }}</p>
+            <p class="text-gray-600">
+              {{ application.job.location.city }}, {{ application.job.location.country }}
+            </p>
+          </div>
+
+          <!-- Status Badge -->
+          <div [class]="getStatusClass(application.status)"
+            class="px-4 py-2 text-lg font-semibold rounded-full border-2 flex items-center gap-2">
+            <span>{{ getStatusIcon(application.status) }}</span>
+            <span>{{ application.status | titlecase }}</span>
+          </div>
+        </div>
+
+        <!-- Application Date Info -->
+        <div class="flex flex-wrap gap-4 text-sm text-gray-600 pt-4 border-t border-gray-200">
+          <span class="flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>
+            Applied {{ getTimeAgo(application.appliedAt) }} ({{ formatDate(application.appliedAt) }})
+          </span>
+
+          <span *ngIf="application.viewedAt" class="flex items-center gap-2 text-green-600">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+              </path>
+            </svg>
+            Viewed by employer on {{ formatDate(application.viewedAt) }}
+          </span>
+
+          <span *ngIf="!application.viewedAt" class="flex items-center gap-2 text-gray-500">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21">
+              </path>
+            </svg>
+            Not yet viewed
+          </span>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex gap-3 mt-4">
+          <button (click)="viewJob()"
+            class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
+            View Job Posting
+          </button>
+          <button *ngIf="canWithdraw()" (click)="openWithdrawConfirm()"
+            class="px-6 py-2 border border-red-300 text-red-700 rounded-lg hover:bg-red-50 transition-colors font-medium">
+            Withdraw Application
+          </button>
+        </div>
+      </div>
+
+      <!-- Application Details Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+
+        <!-- Resume Details -->
+        <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">Resume</h2>
+          <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
+            <div class="flex items-center gap-3">
+              <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z">
+                </path>
+              </svg>
+              <div>
+                <p class="font-medium text-gray-900">{{ application.resume.fileName }}</p>
+                <p class="text-sm text-gray-500">Uploaded {{ formatDate(application.resume.uploadedAt) }}</p>
+              </div>
+            </div>
+            <button (click)="downloadResume()"
+              class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm">
+              Download
+            </button>
+          </div>
+        </div>
+
+        <!-- Cover Letter -->
+        <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">Cover Letter</h2>
+          <div *ngIf="application.coverLetter">
+            <!-- Text Cover Letter -->
+            <div *ngIf="application.coverLetter.type === 'text'" class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+              <p class="text-gray-700 text-sm whitespace-pre-line">{{ application.coverLetter.content }}</p>
+            </div>
+
+            <!-- Document Cover Letter -->
+            <div *ngIf="application.coverLetter.type === 'document'"
+              class="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
+              <div class="flex items-center gap-3">
+                <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                  </path>
+                </svg>
+                <div>
+                  <p class="font-medium text-gray-900">{{ application.coverLetter.fileName }}</p>
+                  <p class="text-sm text-gray-500">Cover Letter Document</p>
+                </div>
+              </div>
+              <button (click)="downloadCoverLetter()"
+                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm">
+                Download
+              </button>
+            </div>
+          </div>
+          <p *ngIf="!application.coverLetter" class="text-gray-500 italic text-sm">No cover letter submitted</p>
+        </div>
+      </div>
+
+      <!-- Additional Information -->
+      <div class="bg-white rounded-lg shadow-sm p-6 mb-6 border border-gray-200">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">Additional Information</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Expected Salary -->
+          <div *ngIf="application.expectedSalary">
+            <h3 class="text-sm font-medium text-gray-700 mb-1">Expected Salary</h3>
+            <p class="text-gray-900 font-medium">
+              {{ application.expectedSalary.currency }}
+              {{ application.expectedSalary.amount.toLocaleString() }} / {{ application.expectedSalary.period }}
+            </p>
+          </div>
+
+          <!-- Available From -->
+          <div *ngIf="application.availableFrom">
+            <h3 class="text-sm font-medium text-gray-700 mb-1">Available From</h3>
+            <p class="text-gray-900">{{ formatDate(application.availableFrom) }}</p>
+          </div>
+
+          <!-- Notice Period -->
+          <div *ngIf="application.noticePeriod">
+            <h3 class="text-sm font-medium text-gray-700 mb-1">Notice Period</h3>
+            <p class="text-gray-900">{{ application.noticePeriod }} days</p>
+          </div>
+
+          <!-- Portfolio URL -->
+          <div *ngIf="application.portfolioUrl">
+            <h3 class="text-sm font-medium text-gray-700 mb-1">Portfolio</h3>
+            <a [href]="application.portfolioUrl" target="_blank"
+              class="text-blue-600 hover:text-blue-700 hover:underline break-all">
+              {{ application.portfolioUrl }}
+            </a>
+          </div>
+
+          <!-- LinkedIn -->
+          <div *ngIf="application.linkedinUrl">
+            <h3 class="text-sm font-medium text-gray-700 mb-1">LinkedIn Profile</h3>
+            <a [href]="application.linkedinUrl" target="_blank"
+              class="text-blue-600 hover:text-blue-700 hover:underline break-all">
+              {{ application.linkedinUrl }}
+            </a>
+          </div>
+
+          <!-- GitHub -->
+          <div *ngIf="application.githubUrl">
+            <h3 class="text-sm font-medium text-gray-700 mb-1">GitHub Profile</h3>
+            <a [href]="application.githubUrl" target="_blank"
+              class="text-blue-600 hover:text-blue-700 hover:underline break-all">
+              {{ application.githubUrl }}
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Status History -->
+      <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">Application Timeline</h2>
+
+        <div class="space-y-4">
+          <div *ngFor="let history of application.statusHistory; let i = index" class="flex gap-4">
+            <!-- Timeline Line -->
+            <div class="flex flex-col items-center">
+              <div [class]="getStatusClass(history.status)"
+                class="w-10 h-10 rounded-full border-2 flex items-center justify-center flex-shrink-0">
+                <span class="text-lg">{{ getStatusIcon(history.status) }}</span>
+              </div>
+              <div *ngIf="i < application.statusHistory.length - 1" class="w-0.5 h-full bg-gray-300 my-1"></div>
+            </div>
+
+            <!-- Content -->
+            <div class="flex-1 pb-6">
+              <div class="flex justify-between items-start mb-1">
+                <h3 class="font-semibold text-gray-900">{{ history.status | titlecase }}</h3>
+                <span class="text-sm text-gray-500">{{ formatDateTime(history.changedAt) }}</span>
+              </div>
+              <p *ngIf="history.notes" class="text-sm text-gray-600 mt-1">{{ history.notes }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Withdraw Confirmation Modal -->
+    <div *ngIf="showWithdrawConfirm && application"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div class="bg-white rounded-lg max-w-md w-full p-6">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+            <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+              </path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900">Withdraw Application</h3>
+        </div>
+
+        <p class="text-gray-700 mb-6">
+          Are you sure you want to withdraw your application for <strong>{{ application?.job.title }}</strong> at
+          <strong>{{ application?.company.name }}</strong>? This action cannot be undone.
+        </p>
+
+        <div class="flex gap-3">
+          <button (click)="withdrawApplication()" [disabled]="withdrawing"
+            class="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed">
+            {{ withdrawing ? 'Withdrawing...' : 'Yes, Withdraw' }}
+          </button>
+          <button (click)="closeWithdrawConfirm()" [disabled]="withdrawing"
+            class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium disabled:opacity-50">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

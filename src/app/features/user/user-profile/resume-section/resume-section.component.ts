@@ -1,22 +1,19 @@
-import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {
-  IDocuments,
-  UserProfile,
-} from '../../../../models/user/user-profile.model';
+import { IDocuments, UserProfile } from '../../../../models/user/user-profile.model';
 import { Subject, takeUntil } from 'rxjs';
 import { UserProfileService } from '../../../../services/user/profile/user-profile.service';
+import { FormBuilder, FormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-document-section',
-  imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './document-section.component.html',
-  styleUrl: './document-section.component.css',
+  selector: 'app-resume-section',
+  imports: [CommonModule,FormsModule],
+  templateUrl: './resume-section.component.html',
+  styleUrl: './resume-section.component.css'
 })
-export class DocumentSectionComponent {
-  @Input() profile: UserProfile | null = null;
+export class ResumeSectionComponent {
+@Input() profile: UserProfile | null = null;
   @Output() updatedProfile = new EventEmitter<UserProfile>();
 
   uploadingDocument = false;
@@ -26,7 +23,6 @@ export class DocumentSectionComponent {
 
   constructor(
     private _userProfileService: UserProfileService,
-    private fb: FormBuilder,
     private _snackBar: MatSnackBar
   ) {}
 
@@ -72,7 +68,7 @@ export class DocumentSectionComponent {
   uploadDocument(file: File): void {
     this.uploadingDocument = true;
     this._userProfileService
-      .uploadCertificate(file)
+      .uploadResume(file)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
@@ -80,7 +76,7 @@ export class DocumentSectionComponent {
             this.updatedProfile.emit(response.data as UserProfile);
           }
           this.uploadingDocument = false;
-          this._snackBar.open('Document uploaded successfully', 'close', {
+          this._snackBar.open('Resume uploaded successfully', 'close', {
             duration: 2000,
           });
         },
@@ -94,11 +90,11 @@ export class DocumentSectionComponent {
   }
 
   deleteDocument(documentkey: string): void {
-    if (!confirm('Delete this document?')) return;
+    if (!confirm('Delete this resume?')) return;
 
     this.loading = true;
     this._userProfileService
-      .deleteCertificate(documentkey)
+      .deleteResume(documentkey)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
@@ -106,7 +102,7 @@ export class DocumentSectionComponent {
             this.updatedProfile.emit(response.data as UserProfile);
           }
           this.loading = false;
-          this._snackBar.open('Document deleted successfully', 'close', {
+          this._snackBar.open('Resume deleted successfully', 'close', {
             duration: 2000,
           });
         },

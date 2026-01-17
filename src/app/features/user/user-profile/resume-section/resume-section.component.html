@@ -1,0 +1,84 @@
+
+        <!-- Loading State -->
+        <div *ngIf="loading && !profile" class="flex items-center justify-center min-h-[400px]">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        </div>
+        <div *ngIf="profile" class="space-y-4">
+            <!-- Documents Section -->
+            <div class="bg-white rounded-lg shadow-sm p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-semibold text-gray-900">Resumes</h2>
+                    <button (click)="onSelectDocument()" [disabled]="uploadingDocument"
+                        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors flex items-center gap-2">
+                        <svg *ngIf="!uploadingDocument" class="w-5 h-5" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
+                            </path>
+                        </svg>
+                        <div *ngIf="uploadingDocument"
+                            class="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                        <span>Upload Resume</span>
+                    </button>
+                    <input type="file" id="documentInput" accept=".pdf,.jpg,.jpeg,.png"
+                        (change)="onDocumentSelected($event)" class="hidden">
+                </div>
+
+                <p class="text-sm text-gray-500 mb-4">Accepted formats: PDF, JPEG, PNG (Max 10MB)</p>
+
+                <div *ngIf="profile.resumeURL.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div *ngFor="let doc of profile.resumeURL"
+                        class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
+                        <div class="flex items-center gap-3 flex-1 min-w-0">
+                            <!-- Document Icon -->
+                            <div class="flex-shrink-0">
+                                <svg *ngIf="getDocumentIcon(doc) === 'pdf'" class="w-10 h-10 text-red-500"
+                                    fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                                <svg *ngIf="getDocumentIcon(doc) === 'image'" class="w-10 h-10 text-blue-500"
+                                    fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+
+                            <!-- Document Name -->
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-gray-900 truncate">{{ getDocumentName(doc) }}</p>
+                                <a [href]="doc" target="_blank" class="text-xs text-blue-600 hover:underline">View
+                                    Resume</a>
+                            </div>
+                        </div>
+
+                        <!-- Delete Button -->
+                        <button (click)="deleteDocument(doc.key)"
+                            class="flex-shrink-0 ml-4 text-red-600 hover:text-red-700">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                </path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div *ngIf="profile.certificates.length === 0" class="text-center py-12">
+                    <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                        </path>
+                    </svg>
+                    <p class="text-gray-500">No Resumes uploaded yet</p>
+                    <p class="text-sm text-gray-400 mt-1">Upload your resumes</p>
+                </div>
+            </div>
+
+
+
+        </div>
+        

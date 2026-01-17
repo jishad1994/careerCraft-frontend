@@ -90,7 +90,7 @@ export class UserProfileService {
   }
   updateExperience(
     index: number,
-    experience: Experience,
+    experience: Experience
   ): Observable<ApiResponse<UserProfile>> {
     return this._http.put<ApiResponse<UserProfile>>(
       API_ENDPOINTS.USER.PROFILE.EXPERIENCE.UPDATE,
@@ -106,16 +106,31 @@ export class UserProfileService {
   uploadCertificate(file: File): Observable<ApiResponse<UserProfile>> {
     const formData = new FormData();
 
-    formData.append('certifcate', file);
+    formData.append('certificate', file);
 
     return this._http.post<ApiResponse<UserProfile>>(
       API_ENDPOINTS.USER.PROFILE.CERTIFICATES.ADD,
       formData
     );
   }
+  uploadResume(file: File): Observable<ApiResponse<UserProfile>> {
+    const formData = new FormData();
+
+    formData.append('resume', file);
+
+    return this._http.post<ApiResponse<UserProfile>>(
+      API_ENDPOINTS.USER.PROFILE.RESUMES.ADD,
+      formData
+    );
+  }
   deleteCertificate(documentKey: string): Observable<ApiResponse<UserProfile>> {
     return this._http.delete<ApiResponse<UserProfile>>(
       API_ENDPOINTS.USER.PROFILE.CERTIFICATES.DELETE(documentKey)
+    );
+  }
+  deleteResume(documentKey: string): Observable<ApiResponse<UserProfile>> {
+    return this._http.delete<ApiResponse<UserProfile>>(
+      API_ENDPOINTS.USER.PROFILE.RESUMES.DELETE(documentKey)
     );
   }
 }

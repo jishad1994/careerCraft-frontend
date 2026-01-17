@@ -5,6 +5,7 @@ export interface IPublicFileAsset {
   key: string;
   location: string;
 }
+
 export interface Education {
   type: string;
   institution: string;
@@ -23,6 +24,7 @@ export interface Experience {
   isCurrent: boolean;
   description: string;
 }
+export interface IResume extends IDocuments {}
 
 interface PopulatedSkill {
   id: string;
@@ -43,12 +45,15 @@ export interface UserProfile {
   email: string;
   phone: string;
   role: string;
-  profilePicture?: { key: string; location: string };
+  profilePicture?: IPublicFileAsset;
   about: string;
   provider: string;
   isBlocked: boolean;
   isVerified: boolean;
   skills: PopulatedSkill[];
+  portfolioUrl?: string;
+  linkedinUrl?: string;
+  githubUrl?: string;
   education: Education[];
   experience: Experience[];
   certificates: IDocuments[];

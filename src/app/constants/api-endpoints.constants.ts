@@ -123,7 +123,13 @@ export const API_ENDPOINTS = {
         ADD: `${baseUrl}${userBaseUrl}/me/certificates`,
 
         DELETE: (documentKey: string) =>
-          `${baseUrl}${userBaseUrl}/me/certificates/${documentKey}`,
+          `${baseUrl}${userBaseUrl}/me/certificates?documentKey=${documentKey}`,
+      },
+      RESUMES: {
+        ADD: `${baseUrl}${userBaseUrl}/me/resumes`,
+
+        DELETE: (documentKey: string) =>
+          `${baseUrl}${userBaseUrl}/me/resumes?documentKey=${documentKey}`,
       },
     },
 
@@ -136,8 +142,20 @@ export const API_ENDPOINTS = {
       GET_JOB_BY_SLUG: (slug: string) =>
         `${baseUrl}${userBaseUrl}/jobs/slug/${slug}`,
 
-      APPLY_FOR_JOB: (jobId: string) =>
-        `${baseUrl}${userBaseUrl}/jobs/${jobId}/apply`,
+      APPLY_FOR_JOB: `${baseUrl}${userBaseUrl}/jobs/apply`,
+    },
+
+    APPLICATION: {
+      GET_STATUS: (jobId: string) =>
+        `${baseUrl}${userBaseUrl}/applications/get-status/${jobId}`,
+
+      GET_USER_APPLICATIONS: (page: number, limit: number, status: string) =>
+        `${baseUrl}${userBaseUrl}/applications?page=${page}&limit=${page}&status=${status}`,
+
+      GET_APPLICATION_BY_ID: (id: string) =>
+        `${baseUrl}${userBaseUrl}/applications/${id}`,
+      WITHDRAW: (id: string) =>
+        `${baseUrl}${userBaseUrl}/applications/${id}`,
     },
   },
 
@@ -174,9 +192,8 @@ export const API_ENDPOINTS = {
 
       UPDATE_JOB_STATUS: (jobId: string) =>
         `${baseUrl}${companyBaseUrl}/jobs/${jobId}/status`,
-      
-      GET_JOB_STATISTICS: 
-        `${baseUrl}${companyBaseUrl}/jobs/statistics`,
+
+      GET_JOB_STATISTICS: `${baseUrl}${companyBaseUrl}/jobs/statistics`,
 
       DELETE_JOB: (jobId: string) =>
         `${baseUrl}${companyBaseUrl}/jobs/${jobId}`,

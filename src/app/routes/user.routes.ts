@@ -25,11 +25,26 @@ export const USER_ROUTES: Routes = [
           ),
       },
       {
+        path: 'jobs/:slug',
+        loadComponent: () =>
+          import(
+            '../features/user/jobs/user-job-view/user-job-view.component'
+          ).then((m) => m.UserJobViewComponent),
+      },
+      {
         path: 'jobs',
         loadComponent: () =>
           import(
             '../features/user/jobs/job-search/user-job-search.component'
           ).then((m) => m.UserJobSearchComponent),
+      },
+
+      {
+        path: 'my-applications',
+        loadChildren: () =>
+          import('./user/applications.routes').then(
+            (m) => m.userJobApplicationRoutes
+          ),
       },
 
       { path: '**', redirectTo: 'home' },
