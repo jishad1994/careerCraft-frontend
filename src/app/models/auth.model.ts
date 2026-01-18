@@ -1,3 +1,5 @@
+import { IPublicFileAsset } from "./user/user-profile.model";
+
 export interface AuthUser {
   id: string;
   name?: string;
@@ -5,7 +7,7 @@ export interface AuthUser {
   lastName?: string;
   email: string;
   role: 'user' | 'company';
-  profilePicture?: string;
+  profilePicture?: IPublicFileAsset;
 }
 
 export interface AuthState {

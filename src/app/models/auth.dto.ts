@@ -1,4 +1,5 @@
 import { AuthUser } from './auth.model';
+import { IPublicFileAsset } from './user/user-profile.model';
 
 export interface AuthResponseUserDTO {
   id: string;
@@ -7,7 +8,7 @@ export interface AuthResponseUserDTO {
   name?: string;
   firstName?: string;
   lastName?: string;
-  profilePicture?: string;
+  profilePicture?:IPublicFileAsset;
 }
 
 export interface LoginResponseDTO {

@@ -6,7 +6,7 @@ import { FooterComponent } from '../../shared/components/footer/footer.component
 
 @Component({
   selector: 'app-common-landing-page',
-  imports: [CommonModule,FormsModule,HeaderComponent,FooterComponent],
+  imports: [CommonModule,FormsModule,],
   templateUrl: './common-landing-page.component.html',
   styleUrl: './common-landing-page.component.css'
 })

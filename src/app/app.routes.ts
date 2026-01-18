@@ -18,13 +18,9 @@ import { CommonLandingPageComponent } from './pages/common-landing-page/common-l
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: '/home',
-    pathMatch: 'full',
-  },
 
-  {
-    path: 'home',
-    component: CommonLandingPageComponent,
+    loadChildren: () =>
+      import('../app/routes/public.routes').then((m) => m.publicRoutes),
   },
 
   {

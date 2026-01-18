@@ -4,8 +4,8 @@ export const USER_ROUTES: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('../layouts/main-layout/main-layout.component').then(
-        (m) => m.MainLayoutComponent
+      import('../layouts/user/user-layout/user-layout.component').then(
+        (m) => m.UserLayoutComponent
       ),
 
     children: [

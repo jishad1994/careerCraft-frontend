@@ -24,6 +24,13 @@ export const COMPANY_ROUTES: Routes = [
             '../features/company/jobs/job-list/company-job-list.component'
           ).then((m) => m.CompanyJobListComponent),
       },
+      {
+        path: 'jobs/create',
+        loadComponent: () =>
+          import(
+            '../features/company/jobs/create-job/create-job.component'
+          ).then((m) => m.CreateJobComponent),
+      },
 
       {
         path: 'jobs/:id',
@@ -40,11 +47,18 @@ export const COMPANY_ROUTES: Routes = [
           ),
       },
       {
-        path: 'jobs/create',
+        path: 'applications',
         loadComponent: () =>
           import(
-            '../features/company/jobs/create-job/create-job.component'
-          ).then((m) => m.CreateJobComponent),
+            '../features/company/applications/applications-list/company-applications-list.component'
+          ).then((m) => m.CompanyApplicationsListComponent),
+      },
+      {
+        path: 'applications/:id',
+        loadComponent: () =>
+          import(
+            '../features/company/applications/application-view/company-application-view.component'
+          ).then((m) => m.CompanyApplicationViewComponent),
       },
     ],
   },

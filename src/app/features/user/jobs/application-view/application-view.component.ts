@@ -114,8 +114,8 @@ export class ApplicationViewComponent {
   }
 
   downloadResume() {
-    if (this.application?.resume.fileUrl) {
-      window.open(this.application.resume.fileUrl, '_blank');
+    if (this.application?.resume.signedURL) {
+      window.open(this.application.resume.signedURL, '_blank');
     }
   }
 

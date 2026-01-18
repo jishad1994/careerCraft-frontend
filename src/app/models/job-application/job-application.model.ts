@@ -14,9 +14,9 @@ export interface IJobApplication {
 
   resume: {
     fileName: string;
-    fileUrl: string;
     fileKey: string;
-    uploadedAt: Date;
+    signedURL?: string;
+    uploadedAt?: Date;
   };
 
   coverLetter: {

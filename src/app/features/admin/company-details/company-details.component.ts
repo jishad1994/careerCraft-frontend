@@ -251,7 +251,7 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
   }
 
   goBack(): void {
-    this._router.navigate(['/admin/companies']);
+    this._router.navigate(['/admin/dashboard/companies']);
   }
 
   formatDate(date: Date | string | undefined): string {

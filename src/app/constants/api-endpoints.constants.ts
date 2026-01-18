@@ -154,8 +154,7 @@ export const API_ENDPOINTS = {
 
       GET_APPLICATION_BY_ID: (id: string) =>
         `${baseUrl}${userBaseUrl}/applications/${id}`,
-      WITHDRAW: (id: string) =>
-        `${baseUrl}${userBaseUrl}/applications/${id}`,
+      WITHDRAW: (id: string) => `${baseUrl}${userBaseUrl}/applications/${id}`,
     },
   },
 
@@ -199,6 +198,26 @@ export const API_ENDPOINTS = {
         `${baseUrl}${companyBaseUrl}/jobs/${jobId}`,
       SEARCH_SKILLS: (query: string, page?: number, limit?: number) =>
         `${baseUrl}${companyBaseUrl}/jobs/search-skills?query=${query}&page=${page}&limit=${limit}`,
+    },
+
+    APPLICATIONS: {
+      GET_BY_ID: (id: string) =>
+        `${baseUrl}${companyBaseUrl}/applications/${id}`,
+      GET_ALL: (page: number, limit: number, jobId: string, status: string) =>
+        `${baseUrl}${companyBaseUrl}/applications?page=${page}&limit=${limit}&jobId=${jobId}&status=${status}`,
+      GET_BY_JOB: (
+        jobId: string,
+        page: number,
+        limit: number,
+        status: string
+      ) =>
+        `${baseUrl}${companyBaseUrl}/jobs/${jobId}/applications?page=${page}&limit=${limit}&status=${status}`,
+      UPDATE_STATUS: (id: string) =>
+        `${baseUrl}${companyBaseUrl}/applications/${id}/update-status`,
+      MARK_AS_VIEWED: (id: string) =>
+        `${baseUrl}${companyBaseUrl}/applications/${id}/mark-viewed`,
+      ADD_NOTES: (id: string) =>
+        `${baseUrl}${companyBaseUrl}/applications/${id}/add-notes`,
     },
   },
 

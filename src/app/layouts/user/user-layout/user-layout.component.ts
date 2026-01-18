@@ -1,85 +1,94 @@
 import { Component } from '@angular/core';
-import { CompanySideBarComponent } from '../../../features/company/side-bar/company-side-bar.component';
+import { environment } from '../../../environments/environment';
+import { map, Subject, takeUntil } from 'rxjs';
+import { AuthUser } from '../../../models/auth.model';
 import {
   HeaderComponent,
   NavItem,
 } from '../../../shared/components/header/header.component';
+import { AuthStateService } from '../../../services/authState/auth-state.service';
+import { AuthService } from '../../../services/auth/auth.service';
+import {
+  Router,
+  RouterLink,
+  RouterModule,
+  RouterOutlet,
+} from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import {
   FooterComponent,
   FooterSection,
   SocialLink,
 } from '../../../shared/components/footer/footer.component';
-import { Router, RouterOutlet } from '@angular/router';
-import { map, Subject, takeUntil } from 'rxjs';
-import { environment } from '../../../environments/environment';
-import { AuthUser } from '../../../models/auth.model';
-import { AuthStateService } from '../../../services/authState/auth-state.service';
-import { AuthService } from '../../../services/auth/auth.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-company-layout',
+  selector: 'app-user-layout',
   imports: [
-    CompanySideBarComponent,
     HeaderComponent,
     FooterComponent,
+    CommonModule,
+    RouterLink,
+    RouterModule,
+    FormsModule,
     RouterOutlet,
-    CommonModule
   ],
-  templateUrl: './company-layout.component.html',
-  styleUrl: './company-layout.component.css',
+  templateUrl: './user-layout.component.html',
+  styleUrl: './user-layout.component.css',
 })
-export class CompanyLayoutComponent {
+export class UserLayoutComponent {
   destroy$ = new Subject<void>();
+
   logoUrl = environment.logUrl;
-  logoRoute = '/company/dashboard';
+  logoRoute = '/user/home';
   currentUser: AuthUser | null = null;
   showFooter: boolean = true;
 
+  // Navigation Items for User
   navItems: NavItem[] = [
     {
-      label: 'Post Job',
-      route: '/company/dashboard/jobs/create',
+      label: 'Browse Jobs',
+      route: '/user/jobs',
     },
     {
-      label: 'My Jobs',
-      route: '/company/dashboard/jobs',
+      label: 'My Applications',
+      route: '/user/my-applications',
     },
     {
-      label: 'Applications',
-      route: '/company/dashboard/applications',
+      label: 'Saved Jobs',
+      route: '/user/saved',
     },
     {
-      label: 'Messages',
-      route: '/company/messages',
+      label: 'Companies',
+      route: '/companies',
     },
   ];
 
-  // Company User Dropdown Menu Items
+  // User Dropdown Menu Items
   userMenuItems: NavItem[] = [
     {
-      label: 'Company Profile',
-      route: '/company/dashboard/profile',
-      icon: 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4',
+      label: 'My Profile',
+      route: '/user/profile',
+      icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z',
     },
     {
-      label: 'Billing & Plans',
-      route: '/company/billing',
-      icon: 'M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z',
+      label: 'Resume',
+      route: '/user/resume',
+      icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z',
     },
     {
       label: 'Settings',
-      route: '/company/settings',
+      route: '/user/settings',
       icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z',
     },
     {
-      label: 'divider',
+      label: 'divider', // Special item for divider
       route: '',
     },
     {
-      label: 'Help Center',
-      route: '/company/help',
+      label: 'Help & Support',
+      route: '/help',
       icon: 'M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
     },
   ];
@@ -104,10 +113,11 @@ export class CompanyLayoutComponent {
                 if (state.user) {
                   return {
                     id: state.user.id,
-                    name: state.user.name || 'Company',
+                    firstName: state.user.firstName || 'User',
+                    lastName: state.user.lastName || 'User',
                     email: state.user.email || '',
-                    role: state.user.role,
                     profilePicture: state.user.profilePicture,
+                    role: state.user.role,
                   };
                 }
                 return null;
@@ -117,18 +127,29 @@ export class CompanyLayoutComponent {
               this.currentUser = user;
             });
         },
-        error: () => {
-          this._snackBar.open('User session expired', 'close', {
-            duration: 3000,
+        error: (error) => {
+          this._snackBar.open('User session expired.', 'close', {
+            duration: 300,
           });
+
+          this._router.navigate(['/home']);
         },
       });
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   onSearch(query: string): void {
-    this._router.navigate(['/company/search'], {
-      queryParams: { q: query },
+    this._router.navigate(['user/jobs'], {
+      queryParams: { search: query },
     });
+  }
+
+  get userName(): string {
+    return this.currentUser?.firstName ?? '';
   }
 
   onLogout(): void {
@@ -150,10 +171,37 @@ export class CompanyLayoutComponent {
       });
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
+  //for footer seciton
+  // Footer sections
+  footerSections: FooterSection[] = [
+    {
+      title: 'For Job Seekers',
+      links: [
+        { label: 'Browse Jobs', route: '/jobs' },
+        { label: 'Companies', route: '/companies' },
+        { label: 'Career Resources', route: '/resources' },
+        { label: 'Resume Builder', route: '/resume-builder' },
+      ],
+    },
+    // {
+    //   title: 'For Employers',
+    //   links: [
+    //     { label: 'Post a Job', route: '/post-job' },
+    //     { label: 'Search Candidates', route: '/candidates' },
+    //     { label: 'Pricing', route: '/pricing' },
+    //     { label: 'Enterprise Solutions', route: '/enterprise' }
+    //   ]
+    // },
+    // {
+    //   title: 'Company',
+    //   links: [
+    //     { label: 'About Us', route: '/about' },
+    //     { label: 'Contact', route: '/contact' },
+    //     { label: 'Blog', route: '/blog' },
+    //     { label: 'Help Center', route: '/help' }
+    //   ]
+    // }
+  ];
 
   // Social links
   socialLinks: SocialLink[] = [
@@ -176,37 +224,6 @@ export class CompanyLayoutComponent {
       label: 'Instagram',
       url: 'https://instagram.com',
       icon: 'M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678c-3.405 0-6.162 2.76-6.162 6.162 0 3.405 2.76 6.162 6.162 6.162 3.405 0 6.162-2.76 6.162-6.162 0-3.405-2.76-6.162-6.162-6.162zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405c0 .795-.646 1.44-1.44 1.44-.795 0-1.44-.646-1.44-1.44 0-.794.646-1.439 1.44-1.439.793-.001 1.44.645 1.44 1.439z',
-    },
-  ];
-
-  // Footer sections
-  footerSections: FooterSection[] = [
-    {
-      title: 'For Job Seekers',
-      links: [
-        { label: 'Browse Jobs', route: '/jobs' },
-        { label: 'Companies', route: '/companies' },
-        { label: 'Career Resources', route: '/resources' },
-        { label: 'Resume Builder', route: '/resume-builder' },
-      ],
-    },
-    {
-      title: 'For Employers',
-      links: [
-        { label: 'Post a Job', route: '/post-job' },
-        { label: 'Search Candidates', route: '/candidates' },
-        { label: 'Pricing', route: '/pricing' },
-        { label: 'Enterprise Solutions', route: '/enterprise' },
-      ],
-    },
-    {
-      title: 'Company',
-      links: [
-        { label: 'About Us', route: '/about' },
-        { label: 'Contact', route: '/contact' },
-        { label: 'Blog', route: '/blog' },
-        { label: 'Help Center', route: '/help' },
-      ],
     },
   ];
 }

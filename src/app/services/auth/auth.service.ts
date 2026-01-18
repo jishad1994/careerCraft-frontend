@@ -77,11 +77,9 @@ export class AuthService {
   }
 
   //Login
-  login(payload: {
-    email: string;
-    password: string;
-    role: string;
-  }): Observable<ApiResponse<AuthResponseUserDTO>> {
+  login(
+    payload: LoginRequestDTO
+  ): Observable<ApiResponse<AuthResponseUserDTO>> {
     return this._http
       .post<ApiResponse<AuthResponseUserDTO>>(
         API_ENDPOINTS.AUTH.LOGIN(payload.role),
@@ -116,9 +114,8 @@ export class AuthService {
       .pipe(
         tap((response) => {
           if (response.success) {
-            localStorage.clear();
             this._authStateService.logout();
-            this._router.navigate(['/home']);
+           
           }
         })
       );
@@ -165,7 +162,7 @@ export class AuthService {
   ): Observable<ApiResponse<{ email: string; role: string }>> {
     const payload = { otp, email, role };
     return this._http.post<ApiResponse<{ email: string; role: string }>>(
-      API_ENDPOINTS.AUTH.VERIFY_OTP(payload.role),
+      API_ENDPOINTS.AUTH.VERIFY_OTP(role),
       payload
     );
   }
