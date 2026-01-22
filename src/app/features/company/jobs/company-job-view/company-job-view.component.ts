@@ -2,13 +2,13 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CompanyJobService } from '../../../../services/company/job/company-job.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Job } from '../../../../models/job/job.model';
+import { Job, JobStatus } from '../../../../models/job/job.model';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-company-job-view',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './company-job-view.component.html',
   styleUrl: './company-job-view.component.css',
 })
@@ -98,8 +98,8 @@ export class CompanyJobViewComponent {
     });
   }
 
-  getStatusClass(status: string): string {
-    const classes: any = {
+  getStatusClass(status: JobStatus): string {
+    const classes: Record<JobStatus, string> = {
       draft: 'bg-gray-100 text-gray-800 border-gray-300',
       active: 'bg-green-100 text-green-800 border-green-300',
       paused: 'bg-yellow-100 text-yellow-800 border-yellow-300',
@@ -119,6 +119,13 @@ export class CompanyJobViewComponent {
       month: 'long',
       day: 'numeric',
     });
+  }
+  ViewApplicants(id: string): void {
+    this.router.navigate(['company/dashboard/applications', id]);
+  }
+
+  get hasApplications() {
+    return !!this.job && this.job.applicationsCount > 0;
   }
 
   formatSalary(): string {

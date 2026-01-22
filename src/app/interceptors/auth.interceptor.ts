@@ -4,15 +4,17 @@ import {
   HttpResponse,
 } from '@angular/common/http';
 
-import { inject, Inject } from '@angular/core';
+import { inject } from '@angular/core';
 import { AuthService } from '../services/auth/auth.service';
 import { catchError, switchMap, tap, throwError } from 'rxjs';
 import { API_ENDPOINTS } from '../constants/api-endpoints.constants';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 
 export const authInterceptor: HttpInterceptorFn = function (req, next) {
-  //add cookies for all requests
   const authReq = req.clone({ withCredentials: true });
+
+  const router = inject(Router);
 
   const authService = inject(AuthService);
 
@@ -44,6 +46,7 @@ export const authInterceptor: HttpInterceptorFn = function (req, next) {
           })
         );
       }
+      
       // Other errors
       return throwError(() => error);
     })

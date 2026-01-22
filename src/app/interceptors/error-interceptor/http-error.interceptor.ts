@@ -4,10 +4,13 @@ import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ApiResponse } from '../../models/api-response.model';
 import { catchError, throwError } from 'rxjs';
+import { API_ENDPOINTS } from '../../constants/api-endpoints.constants';
+import { AuthService } from '../../services/auth/auth.service';
 
 export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
   const snackBar = inject(MatSnackBar);
+  const authService = inject(AuthService);
 
   return next(req).pipe(
     catchError((err: HttpErrorResponse) => {
@@ -15,6 +18,7 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
         success: false,
         message: err.error?.message || 'Something went wrong',
         data: null,
+
         pagination: undefined,
         errors: err.error?.errors || null,
         statusCode: err.status,
@@ -25,6 +29,18 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
         snackBar.open(normalizedError.message || 'Access denied', 'Close', {
           duration: 3000,
         });
+        authService.logout();
+        router.navigate(['/blocked']);
+      }
+      if (
+        err.status === 401 &&
+        req.url.includes(API_ENDPOINTS.AUTH.REFRESH())
+      ) {
+        snackBar.open('session has expired', 'Close', {
+          duration: 3000,
+        });
+
+        router.navigate(['auth/login']);
       }
 
       // 404 / 400: Not found / invalid request

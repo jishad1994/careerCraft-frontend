@@ -1,13 +1,12 @@
-import { AuthUser } from './auth.model';
 import { IPublicFileAsset } from './user/user-profile.model';
 
 export interface AuthResponseUserDTO {
   id: string;
-  email: string;
-  role: 'user' | 'company';
   name?: string;
   firstName?: string;
   lastName?: string;
+  email: string;
+  role: 'user' | 'company'|'admin';
   profilePicture?:IPublicFileAsset;
 }
 

@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { AuthState, AuthUser } from '../../models/auth.model';
+import { AuthState, } from '../../models/auth.model';
 import { TitleStrategy } from '@angular/router';
+import { AuthResponseUserDTO } from '../../models/auth.dto';
 
 @Injectable({
   providedIn: 'root',
@@ -22,7 +23,7 @@ export class AuthStateService {
     return this._authState.value;
   }
 
-  login(user: AuthUser) {
+  login(user: AuthResponseUserDTO) {
     const newState: AuthState = {
       isLoggedIn: true,
       user,
@@ -47,8 +48,8 @@ export class AuthStateService {
     this._authState.next(newState);
   }
 
-  updateUser(userData: Partial<AuthUser>): void {
-    const updatedUser = { ...this.authState.user, ...userData } as AuthUser;
+  updateUser(userData: Partial<AuthResponseUserDTO>): void {
+    const updatedUser = { ...this.authState.user, ...userData } as AuthResponseUserDTO;
     this.updateState({ ...this.authState, user: updatedUser });
   }
 }

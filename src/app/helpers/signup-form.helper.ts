@@ -94,7 +94,7 @@ export class SignupFormHelper {
     });
   }
 
-  prepareFormDataForSubmission(formValue: SignupFormData): any {
+  prepareFormDataForSubmission(formValue: SignupFormData) {
     const formData = { ...formValue, phone: String(formValue.phone) };
 
     if (formData.role === 'company') {

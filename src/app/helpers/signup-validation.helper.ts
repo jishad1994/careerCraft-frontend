@@ -1,6 +1,7 @@
 // src/app/helpers/signup-validation.helper.ts
 import { Injectable } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, ValidationErrors } from '@angular/forms';
+import { FormValidators } from '../validators/form.validators';
 
 export interface ValidationError {
   field: string;
@@ -132,7 +133,7 @@ export class SignupValidationHelper {
     return patternMessages[fieldName] || 'Invalid format';
   }
 
-  private getFirstErrorType(errors: any): string {
+  private getFirstErrorType(errors: ValidationErrors): string {
     return Object.keys(errors)[0];
   }
 }

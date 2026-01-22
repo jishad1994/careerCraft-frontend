@@ -1,7 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
-import { IJobApplication } from '../../../../models/job-application/job-application.model';
+import {
+  IJobApplication,
+  JobApplicationStatusTypes,
+} from '../../../../models/job-application/job-application.model';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { UserJobService } from '../../../../services/user/job/user-job.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -130,8 +133,8 @@ export class ApplicationViewComponent {
     return ['pending', 'reviewing'].includes(this.application.status);
   }
 
-  getStatusClass(status: string): string {
-    const classes: any = {
+  getStatusClass(status: JobApplicationStatusTypes): string {
+    const classes: Record<JobApplicationStatusTypes, string> = {
       pending: 'bg-yellow-100 text-yellow-800 border-yellow-300',
       reviewing: 'bg-blue-100 text-blue-800 border-blue-300',
       shortlisted: 'bg-purple-100 text-purple-800 border-purple-300',
@@ -144,8 +147,8 @@ export class ApplicationViewComponent {
     return classes[status] || 'bg-gray-100 text-gray-800 border-gray-300';
   }
 
-  getStatusIcon(status: string): string {
-    const icons: any = {
+  getStatusIcon(status: JobApplicationStatusTypes): string {
+    const icons: Record<JobApplicationStatusTypes, string> = {
       pending: '⏳',
       reviewing: '👁️',
       shortlisted: '⭐',

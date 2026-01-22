@@ -16,8 +16,8 @@ import { map, Subject, take, takeUntil } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthStateService } from '../../../services/authState/auth-state.service';
 import { AuthService } from '../../../services/auth/auth.service';
-import { AuthUser } from '../../../models/auth.model';
 import { HoverScaleDirective } from '../../../custom-directives/hover-scale.directive';
+import { AuthResponseUserDTO } from '../../../models/auth.dto';
 
 export interface NavItem {
   label: string;
@@ -39,7 +39,7 @@ export class HeaderComponent  {
   @Input() logoText: string = '';
   @Input() navItems: NavItem[] = [];
   @Input() userMenuItems: NavItem[] = [];
-  @Input() user: AuthUser | null = null;
+  @Input() user: AuthResponseUserDTO | null = null;
   @Input() userName: string = '';
   @Input() showSearch: boolean = true;
   @Input() searchPlaceholder: string = '';

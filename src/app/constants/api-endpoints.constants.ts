@@ -71,6 +71,8 @@ export const API_ENDPOINTS = {
     JOB: {
       GET_ALL_JOBS: `${baseUrl}${adminBaseUrl}/jobs`,
 
+      GET_JOB_BY_ID: (id: string) => `${baseUrl}${adminBaseUrl}/jobs/${id}`,
+
       VERIFY_JOB: (jobId: string) =>
         `${baseUrl}${adminBaseUrl}/jobs/${jobId}/verify`,
 
@@ -80,6 +82,9 @@ export const API_ENDPOINTS = {
       UNBLOCK_JOB: (jobId: string) =>
         `${baseUrl}${adminBaseUrl}/jobs/${jobId}/unblock`,
       DELETE_JOB: (jobId: string) => `${baseUrl}${adminBaseUrl}/jobs/${jobId}`,
+
+      GET_APPLICATIONS_BY_JOB: (jobId: string, page: number, limit: number) =>
+        `${baseUrl}${adminBaseUrl}/jobs/${jobId}/applications?page=${page}&limit=${limit}`,
     },
   },
 

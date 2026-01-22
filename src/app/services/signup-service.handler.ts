@@ -66,11 +66,11 @@ export class SignupServiceHandler {
     this._snackBar.open(`${message}`, 'close', { duration: 2000 });
   }
 
-  handleSignupError(error: any, role: 'user' | 'company'): void {
-    const errorMessage =
-      role === 'company'
-        ? 'Company registration error:'
-        : 'User registration error:';
-    console.error(errorMessage, error);
-  }
+  // handleSignupError(error: any, role: 'user' | 'company'): void {
+  //   const errorMessage =
+  //     role === 'company'
+  //       ? 'Company registration error:'
+  //       : 'User registration error:';
+  //   console.error(errorMessage, error);
+  // }
 }

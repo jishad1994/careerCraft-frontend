@@ -5,7 +5,7 @@ import { API_ENDPOINTS } from '../../../constants/api-endpoints.constants';
 import { Observable } from 'rxjs';
 import {
   IJobApplication,
-  JobApplicationStatus,
+  JobApplicationStatusResponse,
 } from '../../../models/job-application/job-application.model';
 
 @Injectable({
@@ -16,8 +16,8 @@ export class UserJobApplicationService {
 
   checkApplicationStatus(
     jobId: string
-  ): Observable<ApiResponse<JobApplicationStatus>> {
-    return this._http.get<ApiResponse<JobApplicationStatus>>(
+  ): Observable<ApiResponse<JobApplicationStatusResponse>> {
+    return this._http.get<ApiResponse<JobApplicationStatusResponse>>(
       API_ENDPOINTS.USER.APPLICATION.GET_STATUS(jobId)
     );
   }

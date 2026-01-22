@@ -43,4 +43,12 @@ export const routes: Routes = [
     loadChildren: () =>
       import('./routes/admin.routes').then((m) => m.ADMIN_ROUTES),
   },
+
+  {
+    path: 'blocked',
+    loadComponent: () =>
+      import(
+        '../app/shared/components/account-restricted/account-restricted.component'
+      ).then((m) => m.AccountRestrictedComponent),
+  },
 ];

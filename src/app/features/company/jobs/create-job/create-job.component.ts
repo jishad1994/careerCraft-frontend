@@ -25,8 +25,8 @@ export class CreateJobComponent implements OnInit, OnDestroy {
   jobForm!: FormGroup;
   submitting = false;
   skillSearch = '';
-  skillSearchResults: any[] = [];
-  selectedSkills: any[] = [];
+  skillSearchResults: Skill[] = [];
+  selectedSkills: Skill[] = [];
   destroy$ = new Subject<void>();
 
   constructor(
@@ -134,7 +134,7 @@ export class CreateJobComponent implements OnInit, OnDestroy {
     this.skillSearchResults = [];
   }
 
-  removeSkill(skill: any) {
+  removeSkill(skill: Skill) {
     this.selectedSkills = this.selectedSkills.filter(
       (s) => s._id !== skill._id
     );

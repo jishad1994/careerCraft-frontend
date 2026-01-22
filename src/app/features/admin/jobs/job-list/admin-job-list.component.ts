@@ -1,14 +1,16 @@
 import { Component } from '@angular/core';
 import { PaginationMeta } from '../../../../models/api-response.model';
-import { Job } from '../../../../models/job/job.model';
+import { Job, JobStatus } from '../../../../models/job/job.model';
 import { AdminJobService } from '../../../../services/admin/job/admin-job.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { withHttpTransferCacheOptions } from '@angular/platform-browser';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-admin-job-list',
-  imports: [CommonModule,FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './admin-job-list.component.html',
   styleUrl: './admin-job-list.component.css',
 })
@@ -24,6 +26,7 @@ export class AdminJobListComponent {
 
   constructor(
     private _jobService: AdminJobService,
+    private _router: Router,
     private snackBar: MatSnackBar
   ) {}
 
@@ -49,9 +52,7 @@ export class AdminJobListComponent {
       )
       .subscribe({
         next: (response) => {
-          if (response.data){
-
-
+          if (response.data) {
             this.jobs = response.data;
             this.pagination = response.pagination || null;
             this.loading = false;
@@ -145,8 +146,12 @@ export class AdminJobListComponent {
     });
   }
 
-  getStatusClass(status: string): string {
-    const classes: any = {
+  viewJob(job: Job): void {
+    this._router.navigate(['admin/dashboard/jobs', job._id]);
+  }
+
+  getStatusClass(status: JobStatus): string {
+    const classes: Record<JobStatus, string> = {
       draft: 'bg-gray-100 text-gray-800',
       active: 'bg-green-100 text-green-800',
       paused: 'bg-yellow-100 text-yellow-800',

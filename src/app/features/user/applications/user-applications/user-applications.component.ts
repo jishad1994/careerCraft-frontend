@@ -1,6 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { PaginationMeta } from '../../../../models/api-response.model';
-import { IJobApplication } from '../../../../models/job-application/job-application.model';
+import {
+  IJobApplication,
+  JobApplicationStatusTypes,
+} from '../../../../models/job-application/job-application.model';
 import { UserJobService } from '../../../../services/user/job/user-job.service';
 import { Router, RouterModule } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -48,7 +51,6 @@ export class UserApplicationsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.loadApplications();
-   
   }
 
   ngOnDestroy() {
@@ -68,7 +70,7 @@ export class UserApplicationsComponent implements OnInit, OnDestroy {
             this.applications = response.data;
             this.pagination = response.pagination || null;
           }
-           this.loadStatistics();
+          this.loadStatistics();
           this.loading = false;
         },
         error: (error) => {
@@ -140,8 +142,8 @@ export class UserApplicationsComponent implements OnInit, OnDestroy {
     this.router.navigate(['user/jobs', jobSlug]);
   }
 
-  getStatusClass(status: string): string {
-    const classes: any = {
+  getStatusClass(status: JobApplicationStatusTypes): string {
+    const classes: Record<JobApplicationStatusTypes, string> = {
       pending: 'bg-yellow-100 text-yellow-800 border-yellow-300',
       reviewing: 'bg-blue-100 text-blue-800 border-blue-300',
       shortlisted: 'bg-purple-100 text-purple-800 border-purple-300',
@@ -154,8 +156,8 @@ export class UserApplicationsComponent implements OnInit, OnDestroy {
     return classes[status] || 'bg-gray-100 text-gray-800 border-gray-300';
   }
 
-  getStatusIcon(status: string): string {
-    const icons: any = {
+  getStatusIcon(status: JobApplicationStatusTypes): string {
+    const icons: Record<JobApplicationStatusTypes, string> = {
       pending: '⏳',
       reviewing: '👁️',
       shortlisted: '⭐',
@@ -194,7 +196,7 @@ export class UserApplicationsComponent implements OnInit, OnDestroy {
     return ['pending', 'reviewing'].includes(status);
   }
 
-  currentPageLimit(pagination:PaginationMeta):number{
-   return Math.min(pagination.page * pagination.limit, pagination.totalItems)
+  currentPageLimit(pagination: PaginationMeta): number {
+    return Math.min(pagination.page * pagination.limit, pagination.totalItems);
   }
 }

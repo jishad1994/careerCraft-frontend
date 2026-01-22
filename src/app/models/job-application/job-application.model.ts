@@ -2,10 +2,20 @@ import { CompanyProfile } from '../company/company-profile.model';
 import { Job } from '../job/job.model';
 import { UserProfile } from '../user/user-profile.model';
 
-export interface JobApplicationStatus {
+export interface JobApplicationStatusResponse {
   hasApplied: boolean;
   application?: IJobApplication;
 }
+
+export type JobApplicationStatusTypes =
+  | 'pending'
+  | 'reviewing'
+  | 'shortlisted'
+  | 'interviewed'
+  | 'offered'
+  | 'rejected'
+  | 'withdrawn'
+  | 'hired';
 export interface IJobApplication {
   _id: string;
   job: Job;
@@ -15,8 +25,8 @@ export interface IJobApplication {
   resume: {
     fileName: string;
     fileKey: string;
+    uploadedAt: Date;
     signedURL?: string;
-    uploadedAt?: Date;
   };
 
   coverLetter: {
@@ -47,18 +57,10 @@ export interface IJobApplication {
     answer: string;
   }>;
 
-  status:
-    | 'pending'
-    | 'reviewing'
-    | 'shortlisted'
-    | 'interviewed'
-    | 'offered'
-    | 'rejected'
-    | 'withdrawn'
-    | 'hired';
+  status: JobApplicationStatusTypes;
 
   statusHistory: Array<{
-    status: string;
+    status: JobApplicationStatusTypes;
     changedAt: Date;
     changedBy?: string;
     notes?: string;

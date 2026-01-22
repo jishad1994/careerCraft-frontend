@@ -1,5 +1,5 @@
 import { createAction, props, StoreRootModule } from '@ngrx/store';
-import { AuthUser } from '../../models/auth.model';
+import { AuthResponseUserDTO } from '../../models/auth.dto';
 
 //normal login actions
 export const loginRequest = createAction(
@@ -8,7 +8,7 @@ export const loginRequest = createAction(
 );
 export const loginSuccess = createAction(
   '[Auth] Login Success',
-  props<{ user: AuthUser }>()
+  props<{ user: AuthResponseUserDTO }>()
 );
 
 //google login actions
@@ -30,7 +30,7 @@ export const googleLoginFailure = createAction(
 
 export const googleLoginSuccess = createAction(
   '[Auth] google login success',
-  props<{ user: AuthUser }>()
+  props<{ user: AuthResponseUserDTO }>()
 );
 
 
@@ -54,7 +54,7 @@ export const loadUserRequest = createAction('[Auth] Load User Request');
 
 export const loadUserSuccess = createAction(
   '[Auth] Load User Success',
-  props<{ user: AuthUser }>()
+  props<{ user: AuthResponseUserDTO }>()
 );
 
 export const loadUserFailure = createAction(

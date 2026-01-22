@@ -33,6 +33,7 @@ interface PopulatedSkill {
 export interface IDocuments {
   originalName: string;
   key: string;
+  signedURL?: string;
   mimeType: string;
   size: number;
   uploadedAt: Date;

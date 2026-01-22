@@ -29,7 +29,6 @@ import { FormsModule } from '@angular/forms';
     HeaderComponent,
     FooterComponent,
     CommonModule,
-    RouterLink,
     RouterModule,
     FormsModule,
     RouterOutlet,

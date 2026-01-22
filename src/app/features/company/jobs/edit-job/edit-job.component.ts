@@ -204,7 +204,7 @@ export class EditJobComponent {
     }
 
     if (job.skills && job.skills.length > 0) {
-      this.selectedSkills = job.skills.map((skill: any) => ({
+      this.selectedSkills = job.skills.map((skill: Skill) => ({
         _id: typeof skill === 'object' ? skill._id : skill,
         name: typeof skill === 'object' ? skill.name : skill,
       }));
@@ -378,7 +378,7 @@ export class EditJobComponent {
       return this.selectedSkills.length > 0;
 
     const originalSkillIds = this.originalJob.skills
-      .map((s: any) => (typeof s === 'string' ? s : s._id))
+      .map((s: Skill) => (typeof s === 'string' ? s : s._id))
       .sort();
 
     const currentSkillIds = this.selectedSkills.map((s) => s._id).sort();

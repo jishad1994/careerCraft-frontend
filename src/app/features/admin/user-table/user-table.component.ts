@@ -120,7 +120,7 @@ export class UserTableComponent implements OnInit, OnDestroy {
     this.loadUsers();
   }
 
-  onActionClick(event: { type: string; row: any }) {
+  onActionClick(event: { type: string; row: IUserListItem }) {
     const { type, row } = event;
 
     switch (type) {

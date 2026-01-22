@@ -58,6 +58,7 @@ export class LoginPageComponent implements OnDestroy {
           }
         },
         error: (error) => {
+          this.loading = false;
           this._snackBar.open('Login Failed', 'close', { duration: 2000 });
         },
       });
@@ -78,7 +79,8 @@ export class LoginPageComponent implements OnDestroy {
                   duration: 2000,
                 });
 
-                const path = this.roleRoutes[res.user?.role] || '/auth/login';
+                const path =
+                  this.roleRoutes[res.data.user?.role] || '/auth/login';
                 this._router.navigate([path]);
               }
             },

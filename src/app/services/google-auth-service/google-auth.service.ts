@@ -1,11 +1,13 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { API_ENDPOINTS } from '../../constants/api-endpoints.constants';
 import { AuthStateService } from '../authState/auth-state.service';
-import { tap } from 'rxjs';
+import { catchError, Observable, tap, throwError } from 'rxjs';
+import { ApiResponse } from '../../models/api-response.model';
+import { AuthResponseUserDTO } from '../../models/auth.dto';
 
 declare const google: any;
 @Injectable({
@@ -20,19 +22,25 @@ export class GoogleAuthService {
     private _authStateService: AuthStateService
   ) {}
 
-  handleCredentialResponse(credential: string, role: 'user' | 'company') {
+  handleCredentialResponse(
+    credential: string,
+    role: 'user' | 'company'
+  ): Observable<ApiResponse<{ user: AuthResponseUserDTO }>> {
     // credential is google ID token
     return this._http
-      .post(
+      .post<ApiResponse<{ user: AuthResponseUserDTO }>>(
         API_ENDPOINTS.AUTH.GOOGLE_AUTH(role),
-        { credential, role },
-        { withCredentials: true }
+        { credential, role }
       )
       .pipe(
         tap((res: any) => {
           if (res.success) {
             this._authStateService.login(res.user);
           }
+        }),
+        catchError((error: HttpErrorResponse) => {
+          this._authStateService.logout();
+          return throwError(error);
         })
       );
   }

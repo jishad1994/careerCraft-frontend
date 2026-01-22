@@ -50,14 +50,14 @@ export const COMPANY_ROUTES: Routes = [
         path: 'applications',
         loadComponent: () =>
           import(
-            '../features/company/applications/applications-list/company-applications-list.component'
+            '../features/company/applications/company-applications-list/company-applications-list.component'
           ).then((m) => m.CompanyApplicationsListComponent),
       },
       {
         path: 'applications/:id',
         loadComponent: () =>
           import(
-            '../features/company/applications/application-view/company-application-view.component'
+            '../features/company/applications/company-application-view/company-application-view.component'
           ).then((m) => m.CompanyApplicationViewComponent),
       },
     ],

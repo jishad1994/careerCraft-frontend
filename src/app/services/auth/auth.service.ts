@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import {
@@ -20,7 +20,6 @@ import {
   RefreshTokenResponseDTO,
   SignupRequestDTO,
 } from '../../models/auth.dto';
-import { AuthUser } from '../../models/auth.model';
 import { AuthStateService } from '../authState/auth-state.service';
 import { Router } from '@angular/router';
 import { ApiResponse } from '../../models/api-response.model';
@@ -95,7 +94,6 @@ export class AuthService {
         }),
         catchError((error) => {
           this._authStateService.logout();
-          console.log('login api error: ', error);
           return throwError(() => error);
         })
       );
@@ -115,8 +113,11 @@ export class AuthService {
         tap((response) => {
           if (response.success) {
             this._authStateService.logout();
-           
           }
+        }),
+        catchError((error) => {
+          console.log(error.message);
+          return throwError(error);
         })
       );
   }

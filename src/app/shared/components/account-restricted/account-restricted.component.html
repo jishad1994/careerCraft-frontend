@@ -1,0 +1,63 @@
+<div class="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+  <div class="max-w-md w-full bg-white rounded-2xl shadow-lg p-8 text-center">
+    
+    <!-- Icon -->
+    <div class="flex justify-center mb-6">
+      <div class="h-16 w-16 rounded-full bg-red-100 flex items-center justify-center">
+        <svg
+          class="h-8 w-8 text-red-600"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M12 9v2m0 4h.01M4.93 4.93l14.14 14.14M6.34 6.34A9 9 0 1117.66 17.66"
+          />
+        </svg>
+      </div>
+    </div>
+
+    <!-- Title -->
+    <h1 class="text-2xl font-semibold text-gray-800 mb-2">
+      Account Restricted
+    </h1>
+
+    <!-- Message -->
+    <p class="text-gray-600 mb-6 leading-relaxed">
+      Your account has been temporarily restricted due to policy or administrative
+      reasons. You currently don’t have access to this platform.
+    </p>
+
+    <!-- Support info -->
+    <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
+      <p class="text-sm text-gray-700">
+        If you believe this is a mistake, please contact our support team for
+        further assistance.
+      </p>
+      <p class="text-sm text-gray-900 font-medium mt-2">
+        support&#64;careerCraft.com
+      </p>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex flex-col gap-3">
+      <button
+        (click)="logout()"
+        class="w-full py-2.5 rounded-lg bg-gray-900 text-white font-medium hover:bg-gray-800 transition"
+      >
+        Logout
+      </button>
+
+      <button
+        (click)="goToHome()"
+        class="w-full py-2.5 rounded-lg border border-gray-300 text-gray-700 font-medium hover:bg-gray-100 transition"
+      >
+        Go to Home
+      </button>
+    </div>
+
+  </div>
+</div>

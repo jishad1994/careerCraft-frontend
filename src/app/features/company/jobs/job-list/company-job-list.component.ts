@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Job, JobSearchFilters } from '../../../../models/job/job.model';
+import {
+  Job,
+  JobSearchFilters,
+  JobStatus,
+} from '../../../../models/job/job.model';
 import { PaginationMeta } from '../../../../models/api-response.model';
 import { CompanyJobService } from '../../../../services/company/job/company-job.service';
 import { Router } from '@angular/router';
@@ -182,8 +186,8 @@ export class CompanyJobListComponent implements OnInit {
     });
   }
 
-  getStatusClass(status: string): string {
-    const classes: any = {
+  getStatusClass(status: JobStatus): string {
+    const classes: Record<JobStatus, string> = {
       draft: 'bg-gray-100 text-gray-800',
       active: 'bg-green-100 text-green-800',
       paused: 'bg-yellow-100 text-yellow-800',

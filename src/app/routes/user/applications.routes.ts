@@ -5,7 +5,7 @@ export const userJobApplicationRoutes: Routes = [
     path: '',
     loadComponent: () =>
       import(
-        '../../features/user/jobs/user-applications/user-applications.component'
+        '../../features/user/applications/user-applications/user-applications.component'
       ).then((m) => m.UserApplicationsComponent),
   },
 
@@ -13,7 +13,9 @@ export const userJobApplicationRoutes: Routes = [
     path: ':id',
     loadComponent: () =>
       import(
-        '../../features/user/jobs/application-view/application-view.component'
+        '../../features/user/applications/application-view/application-view.component'
       ).then((m) => m.ApplicationViewComponent),
   },
+
+  
 ];

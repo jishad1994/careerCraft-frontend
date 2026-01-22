@@ -15,8 +15,6 @@ import { CommonModule } from '@angular/common';
 import {
   TableAction,
   TableColumn,
-
-  
 } from '../../../models/reusable-table-items.interface';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
@@ -128,7 +126,7 @@ export class CompaniesTableComponent implements OnInit, OnDestroy {
     this.loadCompanies();
   }
 
-  onActionClick(event: { type: string; row: any }) {
+  onActionClick(event: { type: string; row: ICompanyListItem }) {
     const { type, row } = event;
 
     switch (type) {
@@ -145,6 +143,7 @@ export class CompaniesTableComponent implements OnInit, OnDestroy {
   }
 
   viewCompany(company: ICompanyListItem) {
+    
     this._router.navigate(['/admin/dashboard/companies', company._id]);
   }
 

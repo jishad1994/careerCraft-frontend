@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { ApiResponse } from '../../../models/api-response.model';
 import { Job } from '../../../models/job/job.model';
 import { API_ENDPOINTS } from '../../../constants/api-endpoints.constants';
+import { IJobApplication } from '../../../models/job-application/job-application.model';
 
 @Injectable({
   providedIn: 'root',
@@ -28,6 +29,12 @@ export class AdminJobService {
     return this._http.get<ApiResponse<Job[]>>(
       API_ENDPOINTS.ADMIN.JOB.GET_ALL_JOBS,
       { params }
+    );
+  }
+
+  getJobById(id: string): Observable<ApiResponse<Job>> {
+    return this._http.get<ApiResponse<Job>>(
+      API_ENDPOINTS.ADMIN.JOB.GET_JOB_BY_ID(id)
     );
   }
 
@@ -56,6 +63,18 @@ export class AdminJobService {
 
   // Delete job
   deleteJob(jobId: string): Observable<ApiResponse<null>> {
-    return this._http.delete<ApiResponse<null>>(API_ENDPOINTS.ADMIN.JOB.DELETE_JOB(jobId));
+    return this._http.delete<ApiResponse<null>>(
+      API_ENDPOINTS.ADMIN.JOB.DELETE_JOB(jobId)
+    );
+  }
+
+  getApplicationsByJob(
+    jobId: string,
+    page: number,
+    limit: number
+  ): Observable<ApiResponse<IJobApplication[]>> {
+    return this._http.get<ApiResponse<IJobApplication[]>>(
+      API_ENDPOINTS.ADMIN.JOB.GET_APPLICATIONS_BY_JOB(jobId, page, limit)
+    );
   }
 }

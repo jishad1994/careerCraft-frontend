@@ -25,6 +25,20 @@ export const ADMIN_ROUTES: Routes = [
           ).then((m) => m.AdminJobListComponent),
       },
       {
+        path: 'jobs/:id',
+        loadComponent: () =>
+          import(
+            '../features/admin/jobs/admin-job-view/admin-job-view.component'
+          ).then((m) => m.AdminJobViewComponent),
+      },
+      {
+        path: 'jobs/:id/applications',
+        loadComponent: () =>
+          import(
+            '../features/admin/applications/admin-applications/admin-applications.component'
+          ).then((m) => m.AdminApplicationsComponent),
+      },
+      {
         path: 'users',
         loadComponent: () =>
           import('../features/admin/user-table/user-table.component').then(

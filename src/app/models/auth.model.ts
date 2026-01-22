@@ -1,18 +1,11 @@
-import { IPublicFileAsset } from "./user/user-profile.model";
+import { AuthResponseUserDTO } from './auth.dto';
+import { IPublicFileAsset } from './user/user-profile.model';
 
-export interface AuthUser {
-  id: string;
-  name?: string;
-  firstName?: string;
-  lastName?: string;
-  email: string;
-  role: 'user' | 'company';
-  profilePicture?: IPublicFileAsset;
-}
+export interface AuthUser extends AuthResponseUserDTO {}
 
 export interface AuthState {
   isLoggedIn: boolean;
-  user: AuthUser | null;
+  user: AuthResponseUserDTO | null;
   loading: boolean;
   error: string | null;
 }

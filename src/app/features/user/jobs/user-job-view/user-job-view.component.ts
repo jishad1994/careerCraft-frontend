@@ -70,7 +70,6 @@ export class UserJobViewComponent {
         this.loadJob();
         this.loadUserProfile();
       }
-     
     });
   }
 
@@ -104,7 +103,7 @@ export class UserJobViewComponent {
           if (response.data) {
             this.job = response.data;
           }
-           this.checkApplicationStatus();
+          this.checkApplicationStatus();
           this.loading = false;
         },
         error: (error) => {
@@ -215,8 +214,9 @@ export class UserJobViewComponent {
     }
   }
 
-  onCoverLetterFileSelect(event: any) {
-    const file = event.target.files[0];
+  onCoverLetterFileSelect(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+
     if (file) {
       // Validate file type
       const allowedTypes = [
@@ -244,8 +244,8 @@ export class UserJobViewComponent {
     }
   }
 
-  onResumeFileSelect(event: any) {
-    const file = event.target.files[0];
+  onResumeFileSelect(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
     if (file) {
       // Validate file type (PDF only)
       if (file.type !== 'application/pdf') {

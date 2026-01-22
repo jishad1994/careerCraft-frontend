@@ -1,0 +1,66 @@
+<div class="max-w-5xl mx-auto p-6">
+
+    <!-- Header -->
+    <div class="mb-6">
+        <h1 class="text-2xl font-semibold text-gray-900">
+            Job Applications
+        </h1>
+        <p class="text-sm text-gray-500 mt-1">
+            Review candidates who applied for this job
+        </p>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="loading" class="text-center py-10 text-gray-500">
+        Loading applications...
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!loading && applications.length === 0" class="text-center py-12 text-gray-500">
+        No applications found.
+    </div>
+
+    <!-- Applications List -->
+    <div class="space-y-4">
+        <div *ngFor="let app of applications" (click)="viewApplication(app._id)"
+            class="bg-white border rounded-xl p-5 cursor-pointer hover:shadow-md transition flex justify-between items-center">
+            <!-- Applicant Info -->
+            <div>
+                <h3 class="text-lg font-medium text-gray-900">
+                    {{ app.applicant.firstName || 'Unnamed Candidate' }}
+                </h3>
+                <p class="text-sm text-gray-500">
+                    Applied on {{ app.appliedAt | date:'mediumDate' }}
+                </p>
+            </div>
+
+            <!-- Status -->
+            <span class="px-3 py-1 rounded-full text-xs font-medium" [ngClass]="{
+          'bg-yellow-100 text-yellow-700': app.status === 'pending',
+          'bg-blue-100 text-blue-700': app.status === 'reviewing',
+          'bg-purple-100 text-purple-700': app.status === 'shortlisted',
+          'bg-green-100 text-green-700': app.status === 'hired',
+          'bg-red-100 text-red-700': app.status === 'rejected'
+        }">
+                {{ app.status | titlecase }}
+            </span>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="flex justify-between items-center mt-8">
+        <button (click)="prevPage()" [disabled]="page === 1"
+            class="px-4 py-2 rounded-lg border text-sm disabled:opacity-50 hover:bg-gray-50">
+            Previous
+        </button>
+
+        <span class="text-sm text-gray-600">
+            Page {{ page }}
+        </span>
+
+        <button (click)="nextPage()" [disabled]="applications.length < limit"
+            class="px-4 py-2 rounded-lg border text-sm disabled:opacity-50 hover:bg-gray-50">
+            Next
+        </button>
+    </div>
+</div>
