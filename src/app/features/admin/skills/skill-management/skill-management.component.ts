@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Skill } from '../../../../models/skill.model';
 import { SkillService } from '../../../../services/skill/skill.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subject, takeUntil } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
 import {
@@ -28,7 +28,7 @@ export class SkillManagementComponent implements OnInit {
 
   hasMore = '';
   skillForm!: FormGroup;
-
+  searchSubject$ = new Subject<string>();
   destroy$ = new Subject<void>();
 
   constructor(
@@ -36,7 +36,7 @@ export class SkillManagementComponent implements OnInit {
     private _router: Router,
     private _route: ActivatedRoute,
     private _snackBar: MatSnackBar,
-    private fb: FormBuilder
+    private fb: FormBuilder,
   ) {}
   ngOnInit(): void {
     this.skillForm = this.fb.group({
@@ -49,6 +49,13 @@ export class SkillManagementComponent implements OnInit {
       this.search = params['search'] ? params['search'] : '';
       this.loadSkills();
     });
+
+    this.searchSubject$
+      .pipe(debounceTime(500), distinctUntilChanged(), takeUntil(this.destroy$))
+      .subscribe((searchQuery) => {
+        this.page = 1;
+        ((this.search = searchQuery), this.loadSkills());
+      });
   }
 
   loadSkills() {
@@ -70,9 +77,8 @@ export class SkillManagementComponent implements OnInit {
       });
   }
 
-  onSearch() {
-    this.page = 1;
-    this.loadSkills();
+  onInputChange() {
+    this.searchSubject$.next(this.search);
   }
 
   goToSkill(id: string) {
@@ -118,7 +124,7 @@ export class SkillManagementComponent implements OnInit {
 
   deleteSkill(id: string) {
     const confirmDelete = confirm(
-      'Are you sure you want to delete this skill?'
+      'Are you sure you want to delete this skill?',
     );
     if (!confirmDelete) return;
 

@@ -4,6 +4,7 @@ import { ApiResponse } from '../../../models/api-response.model';
 import {
   BasicCompanyUpdate,
   CompanyProfile,
+  IAddress,
 } from '../../../models/company/company-profile.model';
 import { Observable } from 'rxjs';
 import { API_ENDPOINTS } from '../../../constants/api-endpoints.constants';
@@ -27,6 +28,14 @@ export class CompanyProfileService {
     return this._http.put<ApiResponse<CompanyProfile>>(
       API_ENDPOINTS.COMPANY.PROFILE.UPDATE_PROFILE,
       data
+    );
+  }
+  updateAddress(
+    addresses: IAddress[]
+  ): Observable<ApiResponse<CompanyProfile>> {
+    return this._http.put<ApiResponse<CompanyProfile>>(
+      API_ENDPOINTS.COMPANY.PROFILE.UPDATE_COMPANY_ADDRESS,
+      addresses
     );
   }
 
@@ -76,5 +85,9 @@ export class CompanyProfileService {
     return this._http.delete<ApiResponse<CompanyProfile>>(
       API_ENDPOINTS.COMPANY.PROFILE.DELETE_DOCUMENT(documentKey)
     );
+  }
+
+  reapplyForVerification(): Observable<ApiResponse<CompanyProfile>> {
+    return this._http.patch<ApiResponse<CompanyProfile>>(API_ENDPOINTS.COMPANY.PROFILE.REAPPLY_FOR_VERIFICATION, {});
   }
 }

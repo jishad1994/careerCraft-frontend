@@ -12,7 +12,9 @@
       <app-company-basic-profile [profile]="profile"
         (updatedProfile)="onChildUpdated($event)"></app-company-basic-profile>
 
-
+      <!-- Address Section -->
+      <app-company-address-section [profile]="profile" (updatedProfile)="onChildUpdated($event)">
+      </app-company-address-section>
 
       <app-company-document-section [profile]="profile"
         (updatedProfile)="onChildUpdated($event)"></app-company-document-section>

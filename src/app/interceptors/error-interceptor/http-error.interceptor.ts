@@ -18,7 +18,6 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
         success: false,
         message: err.error?.message || 'Something went wrong',
         data: null,
-
         pagination: undefined,
         errors: err.error?.errors || null,
         statusCode: err.status,

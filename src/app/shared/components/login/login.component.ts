@@ -11,11 +11,12 @@ import { AuthService } from '../../../services/auth/auth.service';
 import { Route, Router } from '@angular/router';
 import { PASSWORD_REGEX } from '../../../constants/form.constants';
 import { RouterLink } from '@angular/router';
+import { NoSpaceDirective } from '../../../custom-directives/no-space.directive';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink,NoSpaceDirective],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })

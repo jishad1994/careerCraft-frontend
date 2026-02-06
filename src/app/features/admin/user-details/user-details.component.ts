@@ -12,7 +12,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatListModule } from '@angular/material/list';
 import { Subject, takeUntil } from 'rxjs';
-import { AdminService } from '../../../services/admin/admin.service';
+import { AdminService } from '../../../services/admin/user-management/admin.service';
 import { UserProfile } from '../../../models/user/user-profile.model';
 
 @Component({

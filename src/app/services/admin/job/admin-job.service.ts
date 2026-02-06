@@ -5,6 +5,7 @@ import { ApiResponse } from '../../../models/api-response.model';
 import { Job } from '../../../models/job/job.model';
 import { API_ENDPOINTS } from '../../../constants/api-endpoints.constants';
 import { IJobApplication } from '../../../models/job-application/job-application.model';
+import { ADMIN_API_END_POINTS } from '../../../constants/admin-endpoints.constants';
 
 @Injectable({
   providedIn: 'root',
@@ -16,7 +17,7 @@ export class AdminJobService {
     page: number = 1,
     limit: number = 10,
     status?: string,
-    isVerified?: boolean
+    isVerified?: boolean,
   ): Observable<ApiResponse<Job[]>> {
     let params = new HttpParams()
       .set('page', page.toString())
@@ -27,54 +28,54 @@ export class AdminJobService {
       params = params.set('isVerified', isVerified.toString());
 
     return this._http.get<ApiResponse<Job[]>>(
-      API_ENDPOINTS.ADMIN.JOB.GET_ALL_JOBS,
-      { params }
+      ADMIN_API_END_POINTS.JOB.GET_ALL_JOBS,
+      { params },
     );
   }
 
   getJobById(id: string): Observable<ApiResponse<Job>> {
     return this._http.get<ApiResponse<Job>>(
-      API_ENDPOINTS.ADMIN.JOB.GET_JOB_BY_ID(id)
+      ADMIN_API_END_POINTS.JOB.GET_JOB_BY_ID(id),
     );
   }
 
   verifyJob(jobId: string): Observable<ApiResponse<Job>> {
     return this._http.patch<ApiResponse<Job>>(
-      API_ENDPOINTS.ADMIN.JOB.VERIFY_JOB(jobId),
-      {}
+      ADMIN_API_END_POINTS.JOB.VERIFY_JOB(jobId),
+      {},
     );
   }
 
   // Block job
   blockJob(jobId: string): Observable<ApiResponse<Job>> {
     return this._http.patch<ApiResponse<Job>>(
-      API_ENDPOINTS.ADMIN.JOB.BLOCK_JOB(jobId),
-      {}
+      ADMIN_API_END_POINTS.JOB.BLOCK_JOB(jobId),
+      {},
     );
   }
 
   // Unblock job
   unblockJob(jobId: string): Observable<ApiResponse<Job>> {
     return this._http.patch<ApiResponse<Job>>(
-      API_ENDPOINTS.ADMIN.JOB.UNBLOCK_JOB(jobId),
-      {}
+      ADMIN_API_END_POINTS.JOB.UNBLOCK_JOB(jobId),
+      {},
     );
   }
 
   // Delete job
   deleteJob(jobId: string): Observable<ApiResponse<null>> {
     return this._http.delete<ApiResponse<null>>(
-      API_ENDPOINTS.ADMIN.JOB.DELETE_JOB(jobId)
+      ADMIN_API_END_POINTS.JOB.DELETE_JOB(jobId),
     );
   }
 
   getApplicationsByJob(
     jobId: string,
     page: number,
-    limit: number
+    limit: number,
   ): Observable<ApiResponse<IJobApplication[]>> {
     return this._http.get<ApiResponse<IJobApplication[]>>(
-      API_ENDPOINTS.ADMIN.JOB.GET_APPLICATIONS_BY_JOB(jobId, page, limit)
+      ADMIN_API_END_POINTS.JOB.GET_APPLICATIONS_BY_JOB(jobId, page, limit),
     );
   }
 }

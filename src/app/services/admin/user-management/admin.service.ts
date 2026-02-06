@@ -1,16 +1,17 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, Query } from '@angular/core';
 import { Observable } from 'rxjs';
-import { API_ENDPOINTS } from '../../constants/api-endpoints.constants';
-import { ApiResponse } from '../../models/api-response.model';
+import { ApiResponse } from '../../../models/api-response.model';
 import {
   CompanyProfile,
+  CompanyVerificationStatus,
   ICompanyListItem,
-} from '../../models/company/company-profile.model';
+} from '../../../models/company/company-profile.model';
 import {
   IUserListItem,
   UserProfile,
-} from '../../models/user/user-profile.model';
+} from '../../../models/user/user-profile.model';
+import { ADMIN_API_END_POINTS } from '../../../constants/admin-endpoints.constants';
 
 @Injectable({
   providedIn: 'root',
@@ -21,90 +22,92 @@ export class AdminService {
   getUsers(
     page: number = 1,
     limit: number = 10,
-    query?: string
+    query?: string,
   ): Observable<ApiResponse<IUserListItem[]>> {
     return this._http.get<ApiResponse<IUserListItem[]>>(
-      API_ENDPOINTS.ADMIN.GET_USERS(page, limit, query)
+      ADMIN_API_END_POINTS.USER_MANAGEMENT.GET_USERS(page, limit, query),
     );
   }
 
   getUserById(id: string): Observable<ApiResponse<UserProfile>> {
     return this._http.get<ApiResponse<UserProfile>>(
-      API_ENDPOINTS.ADMIN.GET_USER_BY_ID(id)
+      ADMIN_API_END_POINTS.USER_MANAGEMENT.GET_USER_BY_ID(id),
     );
   }
 
   getCompanies(
     page: number = 1,
     limit: number = 10,
-    query?: string
+    query?: string,
+    verificationStatus?: string,
   ): Observable<ApiResponse<ICompanyListItem[]>> {
     return this._http.get<ApiResponse<ICompanyListItem[]>>(
-      API_ENDPOINTS.ADMIN.GET_COMPANIES(page, limit, query)
+      ADMIN_API_END_POINTS.USER_MANAGEMENT.GET_COMPANIES(page, limit, query, verificationStatus),
     );
   }
 
   getCompanyById(id: string): Observable<ApiResponse<CompanyProfile>> {
     return this._http.get<ApiResponse<CompanyProfile>>(
-      API_ENDPOINTS.ADMIN.GET_COMPANY_BY_ID(id)
+      ADMIN_API_END_POINTS.USER_MANAGEMENT.GET_COMPANY_BY_ID(id),
     );
   }
 
   verifyCompany(id: string): Observable<ApiResponse<CompanyProfile>> {
     return this._http.patch<ApiResponse<CompanyProfile>>(
-      API_ENDPOINTS.ADMIN.VERIFY_COMPANY(id),
-      {}
+      ADMIN_API_END_POINTS.USER_MANAGEMENT.VERIFY_COMPANY(id),
+      {},
     );
   }
 
   rejectCompanyVerification(
     id: string,
-    comment: string
+    code: string,
+    description?: string,
   ): Observable<ApiResponse<void>> {
     return this._http.post<ApiResponse<void>>(
-      API_ENDPOINTS.ADMIN.REJECT_COMPANY_VERIFICATION(id),
-      { comment }
+      ADMIN_API_END_POINTS.USER_MANAGEMENT.REJECT_COMPANY_VERIFICATION(id),
+      { code, description },
     );
   }
 
   getDocumentSignedUrl(
-    documentKey: string
+    documentKey: string,
   ): Observable<ApiResponse<{ url: string }>> {
     return this._http.post<ApiResponse<{ url: string }>>(
-      API_ENDPOINTS.ADMIN.GET_COMPANY_DOCUMENT_URL,
-      { documentKey }
+      ADMIN_API_END_POINTS.USER_MANAGEMENT.GET_COMPANY_DOCUMENT_URL,
+      { documentKey },
     );
   }
 
   blockOrUnblockCompany(
     id: string,
-    flag: boolean
+    flag: boolean,
   ): Observable<ApiResponse<ICompanyListItem>> {
     const action = flag ? 'block' : 'unblock';
     return this._http.patch<ApiResponse<ICompanyListItem>>(
-      API_ENDPOINTS.ADMIN.BLOCK_OR_UNBLOCK_COMPANY(id, action),
-      {}
+      ADMIN_API_END_POINTS.USER_MANAGEMENT.BLOCK_OR_UNBLOCK_COMPANY(id, action),
+      {},
     );
   }
 
   blockOrUnblockUser(
     id: string,
-    flag: boolean
+    flag: boolean,
   ): Observable<ApiResponse<IUserListItem>> {
     const action = flag ? 'block' : 'unblock';
     return this._http.patch<ApiResponse<IUserListItem>>(
-      API_ENDPOINTS.ADMIN.BLOCK_OR_UNBLOCK_USER(id, action),
-      {}
+      ADMIN_API_END_POINTS.USER_MANAGEMENT.BLOCK_OR_UNBLOCK_USER(id, action),
+      {},
     );
   }
 
   blockUserWithComment(
     id: string,
-    comment: string
+    comment: string,
   ): Observable<ApiResponse<UserProfile>> {
     return this._http.post<ApiResponse<UserProfile>>(
-      API_ENDPOINTS.ADMIN.BLOCK_USER_WITH_COMMENT(id),
-      { comment }
+      ADMIN_API_END_POINTS.USER_MANAGEMENT.BLOCK_USER_WITH_COMMENT(id),
+      { comment },
     );
   }
 }

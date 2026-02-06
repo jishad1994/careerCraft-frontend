@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AdminService } from '../../../services/admin/admin.service';
+import { AdminService } from '../../../services/admin/user-management/admin.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ReusableTableComponent } from '../../../shared/components/reusable-table/reusable-table.component';
 import { FormsModule } from '@angular/forms';
@@ -8,7 +8,9 @@ import {
   PaginationMeta,
 } from '../../../models/api-response.model';
 import {
+  COMPANY_VERIFICATION_STATUS,
   CompanyProfile,
+  CompanyVerificationStatus,
   ICompanyListItem,
 } from '../../../models/company/company-profile.model';
 import { CommonModule } from '@angular/common';
@@ -36,6 +38,15 @@ export class CompaniesTableComponent implements OnInit, OnDestroy {
   pageLimit = 10;
   searchQuery = '';
 
+  selectedStatus: string = 'all';
+
+  verificationStatusOptions = [ 
+    { label: 'All', value: 'all' },
+    { label: 'Pending', value: COMPANY_VERIFICATION_STATUS.PENDING },
+    { label: 'Verified', value: COMPANY_VERIFICATION_STATUS.APPROVED },
+    { label: 'Rejected', value: COMPANY_VERIFICATION_STATUS.REJECTED },
+  ];
+
   columns: TableColumn[] = [
     { key: 'name', label: 'Company Name', type: 'text' },
     { key: 'email', label: 'Email', type: 'text' },
@@ -43,14 +54,14 @@ export class CompaniesTableComponent implements OnInit, OnDestroy {
     { key: 'industry', label: 'Industry', type: 'text' },
     { key: 'location', label: 'Location', type: 'text' },
     {
-      key: 'isVerified',
-      label: 'Verified',
+      key: 'verificationStatus',
+      label: 'Verification Status',
       type: 'badge',
-      transform: (value: boolean) => (value ? 'Verified' : 'Unverified'),
+      transform: (value: string) => value,
     },
     {
       key: 'isBlocked',
-      label: 'status',
+      label: 'IsBlocked',
       type: 'badge',
       transform: (value: boolean) => (value ? 'Blocked' : 'Active'),
     },
@@ -79,7 +90,7 @@ export class CompaniesTableComponent implements OnInit, OnDestroy {
   constructor(
     private _adminService: AdminService,
     private _snackBar: MatSnackBar,
-    private _router: Router
+    private _router: Router,
   ) {}
 
   ngOnInit() {
@@ -94,7 +105,12 @@ export class CompaniesTableComponent implements OnInit, OnDestroy {
     this.loading = true;
 
     this._adminService
-      .getCompanies(this.currentPage, this.pageLimit, this.searchQuery)
+      .getCompanies(
+        this.currentPage,
+        this.pageLimit,
+        this.searchQuery,
+        this.selectedStatus === 'all' ? '' : this.selectedStatus,
+      )
       .subscribe({
         next: (response) => {
           if (response.data) {
@@ -107,7 +123,7 @@ export class CompaniesTableComponent implements OnInit, OnDestroy {
           this._snackBar.open(
             error.error?.message || 'Failed to load companies',
             'Close',
-            { duration: 3000 }
+            { duration: 3000 },
           );
           this.loading = false;
         },
@@ -116,6 +132,11 @@ export class CompaniesTableComponent implements OnInit, OnDestroy {
 
   onPageChange(page: number) {
     this.currentPage = page;
+    this.loadCompanies();
+  }
+
+  onStatusFilterChange() {
+    this.currentPage = 1;
     this.loadCompanies();
   }
 
@@ -143,7 +164,6 @@ export class CompaniesTableComponent implements OnInit, OnDestroy {
   }
 
   viewCompany(company: ICompanyListItem) {
-    
     this._router.navigate(['/admin/dashboard/companies', company._id]);
   }
 
@@ -163,7 +183,7 @@ export class CompaniesTableComponent implements OnInit, OnDestroy {
         this._snackBar.open(
           error.error?.message || 'Failed to block company',
           'Close',
-          { duration: 3000 }
+          { duration: 3000 },
         );
       },
     });
@@ -185,7 +205,7 @@ export class CompaniesTableComponent implements OnInit, OnDestroy {
         this._snackBar.open(
           error.error?.message || 'Failed to unblock company',
           'Close',
-          { duration: 3000 }
+          { duration: 3000 },
         );
       },
     });

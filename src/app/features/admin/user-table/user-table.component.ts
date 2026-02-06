@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ReusableTableComponent } from '../../../shared/components/reusable-table/reusable-table.component';
-import { AdminService } from '../../../services/admin/admin.service';
+import { AdminService } from '../../../services/admin/user-management/admin.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormControl, FormsModule } from '@angular/forms';
 import { IUserListItem, UserProfile } from '../../../models/user/user-profile.model';

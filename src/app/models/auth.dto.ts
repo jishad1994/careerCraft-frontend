@@ -10,39 +10,12 @@ export interface AuthResponseUserDTO {
   profilePicture?:IPublicFileAsset;
 }
 
-export interface LoginResponseDTO {
-  success: boolean;
-  message: string;
-  data: { user: AuthResponseUserDTO };
-  accessToken?: string;
-}
-export interface RefreshTokenResponseDTO {
-  success: boolean;
-  message: string;
-  data: AuthResponseUserDTO;
-}
-
-export interface LogoutResponseDTO {
-  success: boolean;
-  message: string;
-}
-
-export interface LoginRequestDTO {
+export interface ILoginCredentials {
   email: string;
   password: string;
   role: string;
 }
 
-export interface OtpRequestUserDataDTO {
-  name?: string;
-  firstName?: string;
-  lastName?: string;
-  email: string;
-  phone: string;
-  password: string;
-}
 
-export interface SignupRequestDTO {
-  email: string;
-  role: string;
-}
+
+

@@ -5,6 +5,167 @@
 
 <div *ngIf="profile" class="space-y-4">
 
+
+    <!-- profile  completion details -->
+    <!-- <div *ngIf="profile.profileCompletion< 100"
+        class="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-600 rounded-lg p-6 shadow-sm">
+        <div class="flex items-start justify-between">
+            <div class="flex-1">
+                <div class="flex items-center gap-3 mb-3">
+                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <h3 class="text-lg font-semibold text-gray-900">Complete Your Company Profile</h3>
+                </div>
+                <p class="text-sm text-gray-600 mb-4">
+                    A complete profile helps to get verified by Admin and job seekers learn more about your company and
+                    increases application rates
+                    by up to 3x.
+                </p>
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="font-medium" [ngClass]="getCompletionTextColor()">
+                            {{ profile.profileCompletion}}% Complete
+
+                        </span> -->
+    <!-- <button (click)="toggleCompletionDetails()"
+                            class="text-blue-600 hover:text-blue-700 font-medium">
+                            {{ showCompletionDetails ? 'Hide' : 'Show' }} Details
+                        </button> -->
+    <!-- </div>
+                    <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                        <div [ngClass]="getCompletionColor()"
+                            class="h-full transition-all duration-500 ease-out rounded-full"
+                            [style.width.%]="profile.profileCompletion"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> -->
+
+    <div *ngIf="isCompanyRejected" class="bg-red-50 border-l-4 border-red-500 rounded-lg p-6 shadow-sm">
+        <div class="flex items-start justify-between gap-4">
+            <div class="flex items-start gap-3 flex-1">
+                <svg class="w-6 h-6 text-red-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+                    </path>
+                </svg>
+                <div class="flex-1">
+                    <h3 class="text-lg font-semibold text-red-900 mb-2">Verification Rejected</h3>
+                    <p class="text-sm text-red-700 mb-3">
+                        Your company verification request has been rejected. Please review the rejection reasons, update
+                        your profile accordingly, and reapply for verification.
+                    </p>
+
+                    <p class="text-sm text-red-700 mb-3" *ngIf="latestRejectionReason as reason">
+                        <span class="font-medium">Reason:</span>
+                        {{ getRejectionMessage(reason) }}
+                    </p>
+
+                    <p *ngIf="latestRejectionReason" class="text-xs text-red-600">
+                        Rejected on: {{ latestRejectionReason.rejectedAt | date:'medium' }}
+                    </p>
+
+                    <p class="text-sm text-red-700 mb-3" *ngIf="!latestRejectionReason">
+                        Your company verification request has been rejected. Please update your profile and reapply for
+                        verification.
+                    </p>
+
+
+                    <!-- Requirements Check -->
+                    <div class="space-y-2 mb-4">
+                        <p class="text-sm font-medium text-red-800">Reapplication Requirements:</p>
+                        <div class="flex items-center gap-2 text-sm">
+                            <svg class="w-4 h-4" [class.text-green-600]="profile.profileCompletion >= 80"
+                                [class.text-red-600]="profile.profileCompletion < 80" fill="currentColor"
+                                viewBox="0 0 20 20">
+                                <path *ngIf="profile.profileCompletion >= 80" fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                    clip-rule="evenodd"></path>
+                                <path *ngIf="profile.profileCompletion < 80" fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                            <span [class.text-green-700]="profile.profileCompletion >= 80"
+                                [class.text-red-700]="profile.profileCompletion < 80">
+                                Profile completion: {{ profile.profileCompletion }}% (minimum 80% required)
+                            </span>
+                        </div>
+                        <div class="flex items-center gap-2 text-sm">
+                            <svg class="w-4 h-4"
+                                [class.text-green-600]="profile.documents && profile.documents.length > 0"
+                                [class.text-red-600]="!profile.documents || profile.documents.length === 0"
+                                fill="currentColor" viewBox="0 0 20 20">
+                                <path *ngIf="profile.documents && profile.documents.length > 0" fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                    clip-rule="evenodd"></path>
+                                <path *ngIf="!profile.documents || profile.documents.length === 0" fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                            <span [class.text-green-700]="profile.documents && profile.documents.length > 0"
+                                [class.text-red-700]="!profile.documents || profile.documents.length === 0">
+                                Documents: {{ profile.documents.length || 0 }} uploaded (at least 1 required)
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reapply Button -->
+            <button (click)="reapplyForVerification()" [disabled]="!canReapplyVerification || reapplyingVerification"
+                class="flex-shrink-0 px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2 font-medium shadow-sm">
+                <svg *ngIf="!reapplyingVerification" class="w-5 h-5" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <div *ngIf="reapplyingVerification" class="animate-spin rounded-full h-5 w-5 border-b-2 border-white">
+                </div>
+                {{ reapplyingVerification ? 'Submitting...' : 'Reapply for Verification' }}
+            </button>
+        </div>
+    </div>
+
+    <!-- Profile Completion Alert (if not rejected and not complete) -->
+    <div *ngIf="!isCompanyRejected && profile.profileCompletion < 100"
+        class="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-600 rounded-lg p-6 shadow-sm">
+        <div class="flex items-start justify-between">
+            <div class="flex-1">
+                <div class="flex items-center gap-3 mb-3">
+                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <h3 class="text-lg font-semibold text-gray-900">Complete Your Company Profile</h3>
+                </div>
+                <p class="text-sm text-gray-600 mb-4">
+                    A complete profile helps to get verified by Admin and job seekers learn more about your company and
+                    increases application rates by up to 3x.
+                </p>
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="font-medium" [ngClass]="getCompletionTextColor()">
+                            {{ profile.profileCompletion }}% Complete
+                        </span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                        <div [ngClass]="getCompletionColor()"
+                            class="h-full transition-all duration-500 ease-out rounded-full"
+                            [style.width.%]="profile.profileCompletion"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
     <!-- Header with Banner and Profile Picture -->
     <div class="bg-white rounded-lg shadow-sm overflow-hidden">
 
@@ -82,7 +243,8 @@
                                 d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
                         </svg>
                         <div *ngIf="uploadingImage"
-                            class="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
+                            class="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600">
+                        </div>
                     </button>
 
                     <!-- Profile Picture Menu -->
@@ -116,14 +278,14 @@
                 </div>
 
                 <!-- Verified Badge -->
-                <span *ngIf="profile.isVerified"
-                    class="ml-4 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                <span *ngIf="profile.verificationStatus"
+                    class="ml-4 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {{getVerificationStatusBadgeClass}}">
                     <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd"
                             d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                             clip-rule="evenodd"></path>
                     </svg>
-                    Verified
+                    {{isCompanyVerified?'Verified':`Verification ${profile.verificationStatus}`}}   
                 </span>
             </div>
 

@@ -7,7 +7,7 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { AdminService } from '../../../services/admin/admin.service';
+import { AdminService } from '../../../services/admin/user-management/admin.service';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { PaginationMeta } from '../../../models/api-response.model';

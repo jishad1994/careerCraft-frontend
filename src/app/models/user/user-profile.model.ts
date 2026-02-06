@@ -24,6 +24,7 @@ export interface Experience {
   isCurrent: boolean;
   description: string;
 }
+
 export interface IResume extends IDocuments {}
 
 interface PopulatedSkill {
@@ -57,6 +58,7 @@ export interface UserProfile {
   githubUrl?: string;
   education: Education[];
   experience: Experience[];
+  totalExperienceYears: number;
   certificates: IDocuments[];
   resumeURL: IDocuments[];
   location: string;

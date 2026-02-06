@@ -1,8 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { CompanyProfile } from '../../../models/company/company-profile.model';
+import {
+  COMPANY_VERIFICATION_STATUS,
+  CompanyProfile,
+  CompanyRejectionCodes,
+  RejectionReasonDTO,
+} from '../../../models/company/company-profile.model';
 import { Subject, takeUntil } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AdminService } from '../../../services/admin/admin.service';
+import { AdminService } from '../../../services/admin/user-management/admin.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -11,11 +16,16 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-company-details',
+  standalone: true,
   imports: [
     CommonModule,
     FormsModule,
@@ -26,6 +36,10 @@ import { FormsModule } from '@angular/forms';
     MatProgressSpinnerModule,
     MatDividerModule,
     MatDialogModule,
+    MatSelectModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatTooltipModule,
   ],
   templateUrl: './company-details.component.html',
   styleUrl: './company-details.component.css',
@@ -33,29 +47,60 @@ import { FormsModule } from '@angular/forms';
 export class CompanyDetailsComponent implements OnInit, OnDestroy {
   company: CompanyProfile | null = null;
   loading = false;
-  companyId: string = '';
-  rejectionComment = '';
+  companyId = '';
   showCommentBox = false;
-  destroy$ = new Subject<void>();
+  private readonly destroy$ = new Subject<void>();
+
+  rejectionCodes = Object.values(CompanyRejectionCodes);
+  selectedRejectionCode?: CompanyRejectionCodes;
+  rejectionComment = '';
 
   constructor(
-    private _route: ActivatedRoute,
-    private _router: Router,
-    private _adminService: AdminService,
-    private _snackBar: MatSnackBar,
-    private _dialog: MatDialog
+    private readonly _route: ActivatedRoute,
+    private readonly _router: Router,
+    private readonly _adminService: AdminService,
+    private readonly _snackBar: MatSnackBar,
+    private readonly _dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
     this.companyId = this._route.snapshot.paramMap.get('id') || '';
     if (this.companyId) {
       this.loadCompanyDetails();
+    } else {
+      this._router.navigate(['/admin/dashboard/companies']);
     }
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  get isCompanyVerified(): boolean {
+    return (
+      this.company?.verificationStatus === COMPANY_VERIFICATION_STATUS.APPROVED
+    );
+  }
+
+  get isCompanyRejected(): boolean {
+    return (
+      this.company?.verificationStatus === COMPANY_VERIFICATION_STATUS.REJECTED
+    );
+  }
+
+  get isCompanyPending(): boolean {
+    return (
+      this.company?.verificationStatus === COMPANY_VERIFICATION_STATUS.PENDING
+    );
+  }
+
+  get sortedRejectionHistory(): RejectionReasonDTO[] {
+    if (!this.company?.rejectionReasons) return [];
+    return [...this.company.rejectionReasons].sort(
+      (a, b) =>
+        new Date(b.rejectedAt).getTime() - new Date(a.rejectedAt).getTime()
+    );
   }
 
   loadCompanyDetails(): void {
@@ -94,7 +139,7 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
       .verifyCompany(this.companyId)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (response) => {
+        next: () => {
           this._snackBar.open('Company verified successfully', 'Close', {
             duration: 2000,
           });
@@ -113,30 +158,33 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
   toggleCommentBox(): void {
     this.showCommentBox = !this.showCommentBox;
     if (!this.showCommentBox) {
+      this.selectedRejectionCode = undefined;
       this.rejectionComment = '';
     }
   }
 
   rejectVerification(): void {
-    if (!this.rejectionComment.trim()) {
-      this._snackBar.open('Please provide a reason for rejection', 'Close', {
+    if (!this.selectedRejectionCode) {
+      this._snackBar.open('Please select a rejection reason', 'Close', {
         duration: 2000,
       });
       return;
     }
 
+    const code = this.selectedRejectionCode;
+    const description = this.rejectionComment || undefined;
+
     this._adminService
-      .rejectCompanyVerification(this.companyId, this.rejectionComment)
+      .rejectCompanyVerification(this.companyId, code, description)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (response) => {
+        next: () => {
           this._snackBar.open(
             'Verification rejected and company notified',
             'Close',
             { duration: 2000 }
           );
-          this.showCommentBox = false;
-          this.rejectionComment = '';
+          this.toggleCommentBox();
           this.loadCompanyDetails();
         },
         error: (error) => {
@@ -156,12 +204,13 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (response) => {
           if (response.success && response.data?.url) {
-            // Open in new tab or trigger download
             const link = document.createElement('a');
             link.href = response.data.url;
             link.target = '_blank';
             link.download = fileName;
+            document.body.appendChild(link);
             link.click();
+            document.body.removeChild(link);
           }
         },
         error: (error) => {
@@ -206,7 +255,7 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
       .blockOrUnblockCompany(this.companyId, true)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (response) => {
+        next: () => {
           this._snackBar.open('Company blocked successfully', 'Close', {
             duration: 2000,
           });
@@ -234,7 +283,7 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
       .blockOrUnblockCompany(this.companyId, false)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (response) => {
+        next: () => {
           this._snackBar.open('Company unblocked successfully', 'Close', {
             duration: 2000,
           });
@@ -263,6 +312,17 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
+  formatDateTime(date: Date | string | undefined): string {
+    if (!date) return 'N/A';
+    return new Date(date).toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  }
+
   formatFileSize(bytes: number | undefined): string {
     if (!bytes) return '0 KB';
     const kb = bytes / 1024;
@@ -278,5 +338,9 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
     if (mimeType.includes('excel') || mimeType.includes('spreadsheet'))
       return 'table_chart';
     return 'description';
+  }
+
+  getRejectionCodeLabel(code: string): string {
+    return code.replaceAll('_', ' ');
   }
 }

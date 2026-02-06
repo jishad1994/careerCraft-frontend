@@ -13,12 +13,7 @@ import { IRegisterData } from '../../models/auth.interface';
 import { API_ENDPOINTS } from '../../constants/api-endpoints.constants';
 import {
   AuthResponseUserDTO,
-  LoginRequestDTO,
-  LoginResponseDTO,
-  LogoutResponseDTO,
-  OtpRequestUserDataDTO,
-  RefreshTokenResponseDTO,
-  SignupRequestDTO,
+  ILoginCredentials,
 } from '../../models/auth.dto';
 import { AuthStateService } from '../authState/auth-state.service';
 import { Router } from '@angular/router';
@@ -77,7 +72,7 @@ export class AuthService {
 
   //Login
   login(
-    payload: LoginRequestDTO
+    payload: ILoginCredentials
   ): Observable<ApiResponse<AuthResponseUserDTO>> {
     return this._http
       .post<ApiResponse<AuthResponseUserDTO>>(

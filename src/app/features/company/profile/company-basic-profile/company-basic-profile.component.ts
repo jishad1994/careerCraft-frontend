@@ -6,8 +6,17 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { CompanyProfile } from '../../../../models/company/company-profile.model';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  COMPANY_VERIFICATION_STATUS,
+  CompanyProfile,
+  RejectionReasonDTO,
+} from '../../../../models/company/company-profile.model';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CompanyProfileService } from '../../../../services/company/profile/company-profile.service';
@@ -15,7 +24,8 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-company-basic-profile',
-  imports: [CommonModule,ReactiveFormsModule],
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './company-basic-profile.component.html',
   styleUrl: './company-basic-profile.component.css',
 })
@@ -29,15 +39,16 @@ export class CompanyBasicProfileComponent implements OnInit, OnDestroy {
   showImageMenu = false;
   showBannerMenu = false;
   editBasicInfo = false;
+  reapplyingVerification = false;
 
   basicInfoForm!: FormGroup;
 
-  destroy$ = new Subject<void>();
+  private readonly destroy$ = new Subject<void>();
 
   constructor(
-    private _fb: FormBuilder,
-    private _snackBar: MatSnackBar,
-    private _companyProfileService: CompanyProfileService
+    private readonly fb: FormBuilder,
+    private readonly snackBar: MatSnackBar,
+    private readonly companyProfileService: CompanyProfileService,
   ) {}
 
   ngOnInit(): void {
@@ -50,8 +61,36 @@ export class CompanyBasicProfileComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  get isCompanyVerified(): boolean {
+    return (
+      this.profile?.verificationStatus === COMPANY_VERIFICATION_STATUS.APPROVED
+    );
+  }
+
+  get isCompanyRejected(): boolean {
+    return (
+      this.profile?.verificationStatus === COMPANY_VERIFICATION_STATUS.REJECTED
+    );
+  }
+
+  get isCompanyPending(): boolean {
+    return (
+      this.profile?.verificationStatus === COMPANY_VERIFICATION_STATUS.PENDING
+    );
+  }
+
+  get canReapplyVerification(): boolean {
+    return (
+      this.isCompanyRejected &&
+      this.profile !== null &&
+      this.profile.profileCompletion >= 80 &&
+      this.profile.documents &&
+      this.profile.documents.length > 0
+    );
+  }
+
   initForm(): void {
-    this.basicInfoForm = this._fb.group({
+    this.basicInfoForm = this.fb.group({
       name: ['', Validators.required],
       phone: [''],
       website: [''],
@@ -63,6 +102,19 @@ export class CompanyBasicProfileComponent implements OnInit, OnDestroy {
     });
   }
 
+ get getVerificationStatusBadgeClass(): string {
+    switch (this.profile?.verificationStatus) {
+      case COMPANY_VERIFICATION_STATUS.APPROVED:  
+        return 'bg-green-100 text-green-800';
+      case COMPANY_VERIFICATION_STATUS.REJECTED:
+        return 'bg-red-100 text-red-800';
+      case COMPANY_VERIFICATION_STATUS.PENDING:
+        return 'bg-yellow-100 text-yellow-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  }
+
   saveBasicInfo(): void {
     if (this.basicInfoForm.invalid) {
       this.basicInfoForm.markAllAsTouched();
@@ -70,7 +122,7 @@ export class CompanyBasicProfileComponent implements OnInit, OnDestroy {
     }
 
     this.loading = true;
-    this._companyProfileService
+    this.companyProfileService
       .updateBasicProfile(this.basicInfoForm.value)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -78,15 +130,93 @@ export class CompanyBasicProfileComponent implements OnInit, OnDestroy {
           this.updatedProfile.emit(response.data as CompanyProfile);
           this.editBasicInfo = false;
           this.loading = false;
-          this._snackBar.open('Profile updated successfully', 'close', {
+          this.snackBar.open('Profile updated successfully', 'Close', {
             duration: 2000,
           });
         },
         error: (err) => {
           this.loading = false;
-          this._snackBar.open(err.error?.message || 'Update failed', 'close', {
+          this.snackBar.open(err.error?.message || 'Update failed', 'Close', {
             duration: 3000,
           });
+        },
+      });
+  }
+
+  get latestRejectionReason(): RejectionReasonDTO | null {
+    if (
+      !this.profile?.rejectionReasons ||
+      this.profile.rejectionReasons.length === 0
+    ) {
+      return null;
+    }
+
+    return this.profile.rejectionReasons.reduce((latest, current) => {
+      const latestDate = new Date(latest.rejectedAt).getTime();
+      const currentDate = new Date(current.rejectedAt).getTime();
+
+      return currentDate > latestDate ? current : latest;
+    });
+  }
+
+  getRejectionMessage(reason: RejectionReasonDTO): string {
+    // if (reason.description) return reason.description;
+
+    switch (reason.code) {
+      case 'INVALID_DOCUMENT':
+        return 'Invalid or unreadable document submitted';
+      case 'MISMATCHED_GST':
+        return 'GST details do not match company information';
+      case 'INCOMPLETE_PROFILE':
+        return 'Profile information is incomplete';
+      case 'DUPLICATE_COMPANY':
+        return 'Company already exists in the system';
+      case 'OTHER':
+        return 'Verification rejected due to policy reasons';
+      default:
+        return 'Verification rejected';
+    }
+  }
+
+  reapplyForVerification(): void {
+    if (!this.canReapplyVerification) {
+      this.snackBar.open(
+        'Please complete your profile (90%) and upload required documents before reapplying',
+        'Close',
+        { duration: 4000 },
+      );
+      return;
+    }
+
+    const confirmed = confirm(
+      'Are you sure you want to reapply for verification? Your profile will be reviewed by our admin team.',
+    );
+
+    if (!confirmed) return;
+
+    this.reapplyingVerification = true;
+    this.companyProfileService
+      .reapplyForVerification()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          if (response.success && response.data) {
+            this.updatedProfile.emit(response.data);
+            this.snackBar.open(
+              'Verification request submitted successfully! Your profile is now pending review.',
+              'Close',
+              { duration: 4000 },
+            );
+          }
+          this.reapplyingVerification = false;
+        },
+        error: (err) => {
+          this.reapplyingVerification = false;
+          this.snackBar.open(
+            err.message || 'Failed to submit verification request',
+            'Close',
+            { duration: 3000 },
+          );
         },
       });
   }
@@ -101,7 +231,24 @@ export class CompanyBasicProfileComponent implements OnInit, OnDestroy {
       industry: this.profile.industry,
       GSTIN: this.profile.GSTIN,
       description: this.profile.description,
+      numberOfEmployees: this.profile.numberOfEmployees,
     });
+  }
+
+  getCompletionColor(): string {
+    if (this.profile && this.profile?.profileCompletion >= 80)
+      return 'bg-green-500';
+    if (this.profile && this.profile?.profileCompletion >= 50)
+      return 'bg-yellow-500';
+    return 'bg-red-500';
+  }
+
+  getCompletionTextColor(): string {
+    if (this.profile && this.profile?.profileCompletion >= 80)
+      return 'text-green-700';
+    if (this.profile && this.profile?.profileCompletion >= 50)
+      return 'text-yellow-700';
+    return 'text-red-700';
   }
 
   toggleEditBasicInfo(): void {
@@ -117,7 +264,7 @@ export class CompanyBasicProfileComponent implements OnInit, OnDestroy {
 
   onSelectProfileImage(): void {
     const fileInput = document.getElementById(
-      'profilePictureInput'
+      'profilePictureInput',
     ) as HTMLInputElement;
     fileInput?.click();
     this.showImageMenu = false;
@@ -129,14 +276,14 @@ export class CompanyBasicProfileComponent implements OnInit, OnDestroy {
       const file = input.files[0];
 
       if (!file.type.startsWith('image/')) {
-        this._snackBar.open('Please select an image file', 'close', {
+        this.snackBar.open('Please select an image file', 'Close', {
           duration: 3000,
         });
         return;
       }
 
       if (file.size > 5 * 1024 * 1024) {
-        this._snackBar.open('File size must be less than 5MB', 'close', {
+        this.snackBar.open('File size must be less than 5MB', 'Close', {
           duration: 3000,
         });
         return;
@@ -148,7 +295,7 @@ export class CompanyBasicProfileComponent implements OnInit, OnDestroy {
 
   uploadProfilePicture(file: File): void {
     this.uploadingImage = true;
-    this._companyProfileService
+    this.companyProfileService
       .updateProfilePicture(file)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -157,13 +304,13 @@ export class CompanyBasicProfileComponent implements OnInit, OnDestroy {
             this.updatedProfile.emit(response.data as CompanyProfile);
           }
           this.uploadingImage = false;
-          this._snackBar.open('Profile picture updated successfully', 'close', {
+          this.snackBar.open('Profile picture updated successfully', 'Close', {
             duration: 2000,
           });
         },
         error: (err) => {
           this.uploadingImage = false;
-          this._snackBar.open(err.error?.message || 'Upload failed', 'close', {
+          this.snackBar.open(err.error?.message || 'Upload failed', 'Close', {
             duration: 3000,
           });
         },
@@ -175,7 +322,7 @@ export class CompanyBasicProfileComponent implements OnInit, OnDestroy {
 
     this.showImageMenu = false;
     this.uploadingImage = true;
-    this._companyProfileService
+    this.companyProfileService
       .deleteProfilePicture()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -185,25 +332,24 @@ export class CompanyBasicProfileComponent implements OnInit, OnDestroy {
             this.updatedProfile.emit(response.data as CompanyProfile);
           }
           this.uploadingImage = false;
-          this._snackBar.open('Profile picture deleted successfully', 'close', {
+          this.snackBar.open('Profile picture deleted successfully', 'Close', {
             duration: 2000,
           });
         },
         error: () => {
           this.uploadingImage = false;
-          this._snackBar.open('Delete failed', 'close', { duration: 3000 });
+          this.snackBar.open('Delete failed', 'Close', { duration: 3000 });
         },
       });
   }
 
-  // Banner Image Methods
   toggleBannerMenu(): void {
     this.showBannerMenu = !this.showBannerMenu;
   }
 
   onSelectBannerImage(): void {
     const fileInput = document.getElementById(
-      'bannerImageInput'
+      'bannerImageInput',
     ) as HTMLInputElement;
     fileInput?.click();
     this.showBannerMenu = false;
@@ -215,14 +361,14 @@ export class CompanyBasicProfileComponent implements OnInit, OnDestroy {
       const file = input.files[0];
 
       if (!file.type.startsWith('image/')) {
-        this._snackBar.open('Please select an image file', 'close', {
+        this.snackBar.open('Please select an image file', 'Close', {
           duration: 3000,
         });
         return;
       }
 
       if (file.size > 10 * 1024 * 1024) {
-        this._snackBar.open('File size must be less than 10MB', 'close', {
+        this.snackBar.open('File size must be less than 10MB', 'Close', {
           duration: 3000,
         });
         return;
@@ -234,7 +380,7 @@ export class CompanyBasicProfileComponent implements OnInit, OnDestroy {
 
   uploadBannerImage(file: File): void {
     this.uploadingBanner = true;
-    this._companyProfileService
+    this.companyProfileService
       .updateBannerImage(file)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -243,13 +389,13 @@ export class CompanyBasicProfileComponent implements OnInit, OnDestroy {
             this.updatedProfile.emit(response.data as CompanyProfile);
           }
           this.uploadingBanner = false;
-          this._snackBar.open('Banner image updated successfully', 'close', {
+          this.snackBar.open('Banner image updated successfully', 'Close', {
             duration: 2000,
           });
         },
         error: (err) => {
           this.uploadingBanner = false;
-          this._snackBar.open(err.error?.message || 'Upload failed', 'close', {
+          this.snackBar.open(err.error?.message || 'Upload failed', 'Close', {
             duration: 3000,
           });
         },
@@ -261,7 +407,7 @@ export class CompanyBasicProfileComponent implements OnInit, OnDestroy {
 
     this.showBannerMenu = false;
     this.uploadingBanner = true;
-    this._companyProfileService
+    this.companyProfileService
       .deleteBannerImage()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -271,13 +417,13 @@ export class CompanyBasicProfileComponent implements OnInit, OnDestroy {
             this.profile.bannerImage = undefined;
           }
           this.uploadingBanner = false;
-          this._snackBar.open('Banner image deleted successfully', 'close', {
+          this.snackBar.open('Banner image deleted successfully', 'Close', {
             duration: 2000,
           });
         },
         error: () => {
           this.uploadingBanner = false;
-          this._snackBar.open('Delete failed', 'close', { duration: 3000 });
+          this.snackBar.open('Delete failed', 'Close', { duration: 3000 });
         },
       });
   }

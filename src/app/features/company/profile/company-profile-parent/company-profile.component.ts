@@ -8,12 +8,14 @@ import { CompanyBasicProfileComponent } from '../company-basic-profile/company-b
 import { CompanyDocumentSectionComponent } from '../company-document-section/company-document-section.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { CompanyAddressSectionComponent } from '../company-address-section/company-address-section.component';
 
 @Component({
   selector: 'app-company-profile',
   imports: [
     CompanyBasicProfileComponent,
     CompanyDocumentSectionComponent,
+    CompanyAddressSectionComponent,
     CommonModule,
     FormsModule,
   ],
@@ -66,3 +68,5 @@ export class CompanyProfileComponent implements OnInit, OnDestroy {
     this.profile = updatedProfile;
   }
 }
+
+

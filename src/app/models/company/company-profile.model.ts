@@ -16,8 +16,32 @@ export interface IBannerImage {
   location: string;
 }
 
+export const COMPANY_VERIFICATION_STATUS = {
+  PENDING: 'pending',
+  APPROVED: 'verified',
+  REJECTED: 'rejected',
+} as const;
+
+export enum CompanyRejectionCodes {
+  INVALID_DOCUMENT = 'INVALID_DOCUMENT',
+  MISMATCHED_GST = 'MISMATCHED_GST',
+  INCOMPLETE_PROFILE = 'INCOMPLETE_PROFILE',
+  DUPLICATE_COMPANY = 'DUPLICATE_COMPANY',
+  OTHER = 'OTHER',
+}
+
+
+export type CompanyVerificationStatus =
+  (typeof COMPANY_VERIFICATION_STATUS)[keyof typeof COMPANY_VERIFICATION_STATUS];
+
+export interface RejectionReasonDTO {
+  code: CompanyRejectionCodes;
+  description?: string;
+  rejectedAt: string;
+}
+
 export interface CompanyProfile {
-   _id: string;
+  _id: string;
   name: string;
   email: string;
   phone?: string;
@@ -26,7 +50,8 @@ export interface CompanyProfile {
   provider: 'google' | 'local';
   role: 'company';
   isBlocked: boolean;
-  isVerified: boolean;
+  verificationStatus: CompanyVerificationStatus;
+  rejectionReasons?: RejectionReasonDTO[];
   website?: string;
   location?: string;
   industry?: string;
@@ -34,12 +59,13 @@ export interface CompanyProfile {
   address?: IAddress[];
   description?: string;
   numberOfEmployees?: number;
+  profileCompletion: number;
   documents: IDocuments[];
   subscriptionStatus?: 'active' | 'expired' | 'pending';
-  subscriptionStart?: Date;
-  subscriptionEnd?: Date;
-  createdAt: Date;
-  updatedAt: Date;
+  subscriptionStart?: string;
+  subscriptionEnd?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface BasicCompanyUpdate {
@@ -64,7 +90,7 @@ export interface ICompanyListItem {
   role: 'company';
 
   isBlocked: boolean;
-  isVerified: boolean;
+  verificationStatus: CompanyVerificationStatus;
 
   industry?: string;
   location?: string;
@@ -77,3 +103,4 @@ export interface ICompanyListItem {
   createdAt: string;
   updatedAt: string;
 }
+
