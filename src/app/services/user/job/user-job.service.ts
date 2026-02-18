@@ -6,6 +6,7 @@ import { ApiResponse } from '../../../models/api-response.model';
 import { API_ENDPOINTS } from '../../../constants/api-endpoints.constants';
 import { Skill } from '../../../models/skill.model';
 import { IJobApplication } from '../../../models/job-application/job-application.model';
+import { USER_API_ENDPOINTS } from '../../../constants/user-api-endpoints.constants';
 
 @Injectable({
   providedIn: 'root',
@@ -40,26 +41,26 @@ export class UserJobService {
       params = params.set('skills', filters.skills.join(','));
 
     return this._http.get<ApiResponse<Job[]>>(
-      API_ENDPOINTS.USER.JOB.SEARCH_JOBS,
+      USER_API_ENDPOINTS.JOB.SEARCH_JOBS,
       { params }
     );
   }
 
   getJobById(jobId: string): Observable<ApiResponse<Job>> {
     return this._http.get<ApiResponse<Job>>(
-      API_ENDPOINTS.USER.JOB.GET_JOB_BY_ID(jobId)
+     USER_API_ENDPOINTS.JOB.GET_JOB_BY_ID(jobId)
     );
   }
 
   getJobBySlug(slug: string): Observable<ApiResponse<Job>> {
     return this._http.get<ApiResponse<Job>>(
-      API_ENDPOINTS.USER.JOB.GET_JOB_BY_SLUG(slug)
+      USER_API_ENDPOINTS.JOB.GET_JOB_BY_SLUG(slug)
     );
   }
 
   applyForJob(jobData: FormData): Observable<ApiResponse<any>> {
     return this._http.post<ApiResponse<any>>(
-      API_ENDPOINTS.USER.JOB.APPLY_FOR_JOB,
+      USER_API_ENDPOINTS.JOB.APPLY_FOR_JOB,
       jobData
     );
   }

@@ -1,11 +1,22 @@
 import { CompanyProfile } from '../company/company-profile.model';
 import { Job } from '../job/job.model';
-import { UserProfile } from '../user/user-profile.model';
+import { Education, Experience, UserProfile } from '../user/user-profile.model';
 
 export interface JobApplicationStatusResponse {
   hasApplied: boolean;
   application?: IJobApplication;
 }
+
+export const JOB_APPLICATION_STATUS = {
+  PENDING: 'pending',
+  REVIEWING: 'reviewing',
+  SHORTLISTED: 'shortlisted',
+  INTERVIEWED: 'interviewed',
+  OFFERED: 'offered',
+  REJECTED: 'rejected',
+  WITHDRAWN: 'withdrawn',
+  HIRED: 'hired',
+} as const;
 
 export type JobApplicationStatusTypes =
   | 'pending'
@@ -93,4 +104,132 @@ export interface IJobApplication {
 
   createdAt: Date;
   updatedAt: Date;
+}
+export interface IApplicantDetails {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone?: string;
+  profilePicture?: {
+    key: string;
+    location: string;
+  };
+  skills: string[];
+  education: Education[];
+  experience: Experience[];
+  totalExperienceYears: number;
+  about?: string;
+  location?: string;
+}
+
+export interface Skill {
+  _id: string;
+  name: string;
+  description?: string;
+  blocked: boolean;
+}
+export interface ICandidateListItem extends IJobApplication {
+  candidateName: string;
+  profilePicture?: {
+    key: string;
+    location: string;
+  };
+  experience: number;
+  skills: Skill[];
+  education: Education[];
+  applicantDetails: IApplicantDetails;
+  jobDetails: IJobDetails;
+}
+
+export interface IResumeFile {
+  fileName: string;
+  fileKey: string;
+  signedURL: string;
+  uploadedAt: string;
+}
+
+export interface ICoverLetter {
+  type: 'text' | 'document';
+  content?: string;
+  fileName?: string;
+  fileUrl?: string;
+  fileKey?: string;
+  uploadedAt?: string;
+}
+
+export interface IExpectedSalary {
+  amount: number;
+  currency: string;
+  period: 'monthly' | 'yearly';
+}
+
+export interface IScreeningAnswer {
+  question: string;
+  answer: string;
+}
+
+export type ApplicationStatus =
+  | 'pending'
+  | 'reviewing'
+  | 'shortlisted'
+  | 'interviewed'
+  | 'offered'
+  | 'rejected'
+  | 'withdrawn'
+  | 'hired';
+
+export interface IStatusHistory {
+  status: ApplicationStatus;
+  changedAt: string;
+  changedBy?: string;
+  notes?: string;
+}
+
+export interface IInterview {
+  round: number;
+  type: 'phone' | 'video' | 'in-person' | 'technical' | 'hr';
+  scheduledAt?: string;
+  completedAt?: string;
+  interviewers: string[];
+  feedback?: string;
+  rating?: number;
+  status: 'scheduled' | 'completed' | 'cancelled' | 'rescheduled';
+}
+
+export interface CandidateFilters {
+  status: string[];
+  skills: string[];
+  experience: string[];
+  education: string[];
+  availability: string[];
+  dateRange: string;
+  startDate?: string;
+  endDate?: string;
+  jobId?: string;
+}
+
+export interface FilterOption {
+  value: string;
+  label: string;
+  color?: string;
+}
+
+export interface IJobDetails {
+  _id: string;
+  title: string;
+  slug: string;
+  company: string;
+  location: string;
+  employmentType: string;
+  workMode: string;
+  status: string;
+}
+
+export interface ICompanyDetails {
+  _id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  location?: string;
 }

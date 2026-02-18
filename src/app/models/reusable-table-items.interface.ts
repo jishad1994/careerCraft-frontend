@@ -1,7 +1,7 @@
 export interface TableColumn {
   key: string;
   label: string;
-  type?: 'text' | 'badge' | 'date' | 'image';
+  type?: 'text' | 'badge' | 'date' | 'image'|'custom';
   sortable?: boolean;
   width?: string;
   transform?: (value: any, row?: any) => string;

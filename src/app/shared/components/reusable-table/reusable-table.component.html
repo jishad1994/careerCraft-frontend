@@ -8,7 +8,7 @@
       <h2 class="text-xl font-semibold text-gray-900">{{ title }}</h2>
 
       <!-- Search Bar -->
-      <div class="relative w-full sm:w-64">
+      <div *ngIf="showSearch" class="relative w-full sm:w-64">
         <input type="text" [(ngModel)]="searchQuery" (ngModelChange)="onSearchChange($event)" placeholder="Search..."
           class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
         <svg class="absolute left-3 top-2.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor"

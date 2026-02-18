@@ -14,11 +14,12 @@ import { CommonModule } from '@angular/common';
 })
 export class ResumeSectionComponent {
 @Input() profile: UserProfile | null = null;
-  @Output() updatedProfile = new EventEmitter<UserProfile>();
+
+@Output() updatedProfile = new EventEmitter<UserProfile>();
 
   uploadingDocument = false;
-  loading = false;
 
+  loading = false;
   destroy$ = new Subject<void>();
 
   constructor(
@@ -34,6 +35,7 @@ export class ResumeSectionComponent {
   }
 
   onDocumentSelected(event: Event): void {
+    
     const input = event.target as HTMLInputElement;
 
     if (input.files && input.files[0]) {
@@ -76,15 +78,17 @@ export class ResumeSectionComponent {
             this.updatedProfile.emit(response.data as UserProfile);
           }
           this.uploadingDocument = false;
-          this._snackBar.open('Resume uploaded successfully', 'close', {
+          this._snackBar.open( 'Resume uploaded successfully', 'close', {
             duration: 2000,
           });
         },
         error: (err) => {
           this.uploadingDocument = false;
-          this._snackBar.open(err.error?.message || 'Upload failed', 'close', {
+          this._snackBar.open(err.message || 'Upload failed', 'close', {
             duration: 3000,
           });
+
+          
         },
       });
   }

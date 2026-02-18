@@ -9,4 +9,5 @@ const sampleEnvironment = {
   adminBaseUrl: '',
   logUrl: '',
   GOOGLE_CLIENT_ID: '',
+  PUBLIC_LOCATION_API_URL: '',
 };

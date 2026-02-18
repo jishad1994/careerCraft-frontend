@@ -31,7 +31,7 @@ export class ReusableTableComponent implements OnInit {
   @Input() actions: TableAction[] = [];
   @Input() pagination: PaginationMeta | null = null;
   @Input() loading: boolean = false;
-
+  @Input() showSearch: boolean = true;
   @Output() pageChange = new EventEmitter<number>();
   @Output() searchChange = new EventEmitter<string>();
   @Output() actionClick = new EventEmitter<{ type: string; row: any }>();

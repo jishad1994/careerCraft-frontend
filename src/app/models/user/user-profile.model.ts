@@ -1,6 +1,11 @@
 import { IAddress } from '../company/company-profile.model';
 import { Skill } from '../skill.model';
 
+export interface LocationSuggestion {
+  display_name: string;
+  lat: string;
+  lon: string;
+}
 export interface IPublicFileAsset {
   key: string;
   location: string;
@@ -47,7 +52,10 @@ export interface UserProfile {
   email: string;
   phone: string;
   role: string;
+
   profilePicture?: IPublicFileAsset;
+  bannerImage?: IPublicFileAsset;
+ 
   about: string;
   provider: string;
   isBlocked: boolean;
@@ -81,6 +89,7 @@ export interface IUserListItem {
   isBlocked: boolean;
 
   profilePicture?: IPublicFileAsset;
+  bannerImage?: IPublicFileAsset;
 
   location?: string;
 

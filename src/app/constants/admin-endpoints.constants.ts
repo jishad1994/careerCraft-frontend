@@ -1,8 +1,7 @@
 import { environment } from '../environments/environment';
-import { CompanyVerificationStatus } from '../models/company/company-profile.model';
+import { adminBaseUrl, baseUrl } from './api-endpoints.constants';
 
-export const adminBaseUrl = environment.adminBaseUrl;
-const baseUrl = environment.apiUrl;
+
 
 export const ADMIN_API_END_POINTS = {
   SUBSCRIPTION_PLANS: {

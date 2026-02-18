@@ -11,75 +11,17 @@
 
             <!-- Header Card -->
             <div class="bg-white rounded-lg shadow-sm overflow-hidden">
-                <!-- Cover Photo -->
-                <div class="h-32 bg-gradient-to-r from-blue-500 to-blue-600"></div>
+
 
                 <!-- Profile Info -->
                 <div class="px-6 pb-6">
-                    <!-- Profile Picture -->
-                    <div class="relative -mt-16 mb-4">
-                        <div class="relative inline-block">
-                            <div class="w-32 h-32 rounded-full border-4 border-white overflow-hidden bg-white">
-                                <img *ngIf="profile.profilePicture" [src]="profile.profilePicture.location"
-                                    [alt]="profile.firstName" class="w-full h-full object-cover">
-                                <div *ngIf="!profile.profilePicture"
-                                    class="w-full h-full bg-blue-600 flex items-center justify-center text-white text-3xl font-semibold">
-                                    {{ getInitials() }}
-                                </div>
-                            </div>
 
-                            <!-- Edit Picture Button -->
-                            <button *ngIf="!editMode" (click)="toggleImageMenu()" [disabled]="uploadingImage"
-                                class="absolute bottom-0 right-0 bg-white rounded-full p-2 shadow-lg hover:bg-gray-50 transition-colors disabled:opacity-50">
-                                <svg *ngIf="!uploadingImage" class="w-5 h-5 text-gray-700" fill="none"
-                                    stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z">
-                                    </path>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                </svg>
-                                <div *ngIf="uploadingImage"
-                                    class="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
-                            </button>
-
-                            <!-- Image Menu -->
-                            <div *ngIf="showImageMenu"
-                                class="absolute top-full left-0 mt-2 bg-white rounded-lg shadow-xl py-2 min-w-[180px] z-10">
-                                <button (click)="onSelectImage()"
-                                    class="w-full px-4 py-2 text-left hover:bg-gray-100 flex items-center gap-2">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
-                                        </path>
-                                    </svg>
-                                    {{ profile.profilePicture ? 'Change Photo' : 'Upload Photo' }}
-                                </button>
-                                <button *ngIf="profile.profilePicture" (click)="deleteProfilePicture()"
-                                    class="w-full px-4 py-2 text-left hover:bg-red-50 text-red-600 flex items-center gap-2">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-                                        </path>
-                                    </svg>
-                                    Delete Photo
-                                </button>
-                                <button (click)="toggleImageMenu()"
-                                    class="w-full px-4 py-2 text-left hover:bg-gray-100 text-gray-600 border-t">
-                                    Cancel
-                                </button>
-                            </div>
-
-                            <input type="file" id="profilePictureInput" accept="image/*"
-                                (change)="onFileSelected($event)" class="hidden">
-                        </div>
-                    </div>
 
 
                     <app-basic-profile [profile]="profile" (updatedBasicInfo)="onUpdated($event)"></app-basic-profile>
 
                     <app-resume-section [profile]="profile" (updatedProfile)="onUpdated($event)"></app-resume-section>
-                    
+
                     <app-document-section [profile]="profile"
                         (updatedProfile)="onUpdated($event)"></app-document-section>
 
@@ -96,3 +38,5 @@
                 </div>
             </div>
         </div>
+    </div>
+</div>

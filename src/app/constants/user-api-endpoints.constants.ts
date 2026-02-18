@@ -1,0 +1,82 @@
+import { baseUrl, userBaseUrl } from './api-endpoints.constants';
+
+export const USER_API_ENDPOINTS = {
+  PROFILE: {
+    GET_PROFILE: `${baseUrl}${userBaseUrl}/me`,
+
+    UPDATE_PROFILE: `${baseUrl}${userBaseUrl}/me`,
+
+    UPDATE_PROFILE_PICTURE: `${baseUrl}${userBaseUrl}/me/profile-picture`,
+
+    DELETE_PROFILE_PICTURE: `${baseUrl}${userBaseUrl}/me/profile-picture`,
+
+    UPDATE_BANNER_IMAGE: `${baseUrl}${userBaseUrl}/me/banner-image`,
+
+    DELETE_BANNER_IMAGE: `${baseUrl}${userBaseUrl}/me/banner-image`,
+
+    GET_RESUME: (resumeName: string, mode: string = 'view') =>
+      `${baseUrl}${userBaseUrl}/me/resume/${resumeName}?mode=${mode}`,
+  },
+
+  SKILLS: {
+    GET: `${baseUrl}${userBaseUrl}/me/user-skills`,
+
+    ADD: `${baseUrl}${userBaseUrl}/me/user-skills`,
+
+    DELETE: (id: string) => `${baseUrl}${userBaseUrl}/me/user-skills/${id}`,
+  },
+
+  EDUCATION: {
+    ADD: `${baseUrl}${userBaseUrl}/me/user-education`,
+
+    UPDATE: `${baseUrl}${userBaseUrl}/me/user-education`,
+
+    DELETE: (index: number) =>
+      `${baseUrl}${userBaseUrl}/me/user-education/${index}`,
+  },
+
+  EXPERIENCE: {
+    ADD: `${baseUrl}${userBaseUrl}/me/user-experience`,
+
+    UPDATE: `${baseUrl}${userBaseUrl}/me/user-experience`,
+
+    DELETE: (index: number) =>
+      `${baseUrl}${userBaseUrl}/me/user-experience/${index}`,
+  },
+
+  CERTIFICATES: {
+    ADD: `${baseUrl}${userBaseUrl}/me/certificates`,
+
+    DELETE: (documentKey: string) =>
+      `${baseUrl}${userBaseUrl}/me/certificates?documentKey=${documentKey}`,
+  },
+  RESUMES: {
+    ADD: `${baseUrl}${userBaseUrl}/me/resumes`,
+
+    DELETE: (documentKey: string) =>
+      `${baseUrl}${userBaseUrl}/me/resumes?documentKey=${documentKey}`,
+  },
+
+  JOB: {
+    SEARCH_JOBS: `${baseUrl}${userBaseUrl}/jobs/search`,
+
+    GET_JOB_BY_ID: (jobId: string) => `${baseUrl}${userBaseUrl}/jobs/${jobId}`,
+
+    GET_JOB_BY_SLUG: (slug: string) =>
+      `${baseUrl}${userBaseUrl}/jobs/slug/${slug}`,
+
+    APPLY_FOR_JOB: `${baseUrl}${userBaseUrl}/jobs/apply`,
+  },
+
+  APPLICATION: {
+    GET_STATUS: (jobId: string) =>
+      `${baseUrl}${userBaseUrl}/applications/get-status/${jobId}`,
+
+    GET_USER_APPLICATIONS: (page: number, limit: number, status: string) =>
+      `${baseUrl}${userBaseUrl}/applications?page=${page}&limit=${page}&status=${status}`,
+
+    GET_APPLICATION_BY_ID: (id: string) =>
+      `${baseUrl}${userBaseUrl}/applications/${id}`,
+    WITHDRAW: (id: string) => `${baseUrl}${userBaseUrl}/applications/${id}`,
+  },
+} as const;

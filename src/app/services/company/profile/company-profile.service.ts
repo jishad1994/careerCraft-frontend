@@ -8,6 +8,7 @@ import {
 } from '../../../models/company/company-profile.model';
 import { Observable } from 'rxjs';
 import { API_ENDPOINTS } from '../../../constants/api-endpoints.constants';
+import { COMPANY_API_ENDPOINTS } from '../../../constants/company-api-endpoints.constants';
 
 @Injectable({
   providedIn: 'root',
@@ -17,25 +18,25 @@ export class CompanyProfileService {
 
   getProfile(): Observable<ApiResponse<CompanyProfile>> {
     return this._http.get<ApiResponse<CompanyProfile>>(
-      API_ENDPOINTS.COMPANY.PROFILE.GET_PROFILE
+      COMPANY_API_ENDPOINTS.PROFILE.GET_PROFILE,
     );
   }
 
   // Update basic profile info
   updateBasicProfile(
-    data: BasicCompanyUpdate
+    data: BasicCompanyUpdate,
   ): Observable<ApiResponse<CompanyProfile>> {
     return this._http.put<ApiResponse<CompanyProfile>>(
-      API_ENDPOINTS.COMPANY.PROFILE.UPDATE_PROFILE,
-      data
+      COMPANY_API_ENDPOINTS.PROFILE.UPDATE_PROFILE,
+      data,
     );
   }
   updateAddress(
-    addresses: IAddress[]
+    addresses: IAddress[],
   ): Observable<ApiResponse<CompanyProfile>> {
     return this._http.put<ApiResponse<CompanyProfile>>(
-      API_ENDPOINTS.COMPANY.PROFILE.UPDATE_COMPANY_ADDRESS,
-      addresses
+      COMPANY_API_ENDPOINTS.PROFILE.UPDATE_COMPANY_ADDRESS,
+      addresses,
     );
   }
 
@@ -44,14 +45,14 @@ export class CompanyProfileService {
     const formData = new FormData();
     formData.append('profilePicture', file);
     return this._http.post<ApiResponse<CompanyProfile>>(
-      API_ENDPOINTS.COMPANY.PROFILE.UPDATE_PROFILE_PICTURE,
-      formData
+      COMPANY_API_ENDPOINTS.PROFILE.UPDATE_PROFILE_PICTURE,
+      formData,
     );
   }
 
   deleteProfilePicture(): Observable<ApiResponse<CompanyProfile>> {
     return this._http.delete<ApiResponse<CompanyProfile>>(
-      API_ENDPOINTS.COMPANY.PROFILE.DELETE_PROFILE_PICTURE
+      COMPANY_API_ENDPOINTS.PROFILE.DELETE_PROFILE_PICTURE,
     );
   }
 
@@ -60,14 +61,14 @@ export class CompanyProfileService {
     const formData = new FormData();
     formData.append('bannerImage', file);
     return this._http.post<ApiResponse<CompanyProfile>>(
-      API_ENDPOINTS.COMPANY.PROFILE.UPDATE_BANNER_IMAGE,
-      formData
+      COMPANY_API_ENDPOINTS.PROFILE.UPDATE_BANNER_IMAGE,
+      formData,
     );
   }
 
   deleteBannerImage(): Observable<ApiResponse<CompanyProfile>> {
     return this._http.delete<ApiResponse<CompanyProfile>>(
-      API_ENDPOINTS.COMPANY.PROFILE.DELETE_BANNER_IMAGE
+      COMPANY_API_ENDPOINTS.PROFILE.DELETE_BANNER_IMAGE,
     );
   }
 
@@ -76,18 +77,21 @@ export class CompanyProfileService {
     const formData = new FormData();
     formData.append('document', file);
     return this._http.post<ApiResponse<CompanyProfile>>(
-      API_ENDPOINTS.COMPANY.PROFILE.UPLOAD_DOCUMENTS,
-      formData
+      COMPANY_API_ENDPOINTS.PROFILE.UPLOAD_DOCUMENTS,
+      formData,
     );
   }
 
   deleteDocument(documentKey: string): Observable<ApiResponse<CompanyProfile>> {
     return this._http.delete<ApiResponse<CompanyProfile>>(
-      API_ENDPOINTS.COMPANY.PROFILE.DELETE_DOCUMENT(documentKey)
+      COMPANY_API_ENDPOINTS.PROFILE.DELETE_DOCUMENT(documentKey),
     );
   }
 
   reapplyForVerification(): Observable<ApiResponse<CompanyProfile>> {
-    return this._http.patch<ApiResponse<CompanyProfile>>(API_ENDPOINTS.COMPANY.PROFILE.REAPPLY_FOR_VERIFICATION, {});
+    return this._http.patch<ApiResponse<CompanyProfile>>(
+      COMPANY_API_ENDPOINTS.PROFILE.REAPPLY_FOR_VERIFICATION,
+      {},
+    );
   }
 }

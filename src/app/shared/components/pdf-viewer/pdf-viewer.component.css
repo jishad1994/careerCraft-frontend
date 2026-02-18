@@ -1,0 +1,14 @@
+/* Ensure iframe fills entire container */
+iframe {
+  display: block;
+}
+
+/* Smooth transitions */
+button {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Loading spinner center alignment */
+.mat-spinner {
+  margin: 0 auto;
+}

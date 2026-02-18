@@ -1,10 +1,10 @@
 import { IDocuments, IPublicFileAsset } from '../user/user-profile.model';
 
-export class IAddress {
-  city!: string;
-  state!: string;
-  country!: string;
-  postalCode!: string;
+export interface IAddress {
+  city: string;
+  state: string;
+  country: string;
+  postalCode: string;
 }
 
 export interface IProfilePicture {
@@ -29,7 +29,6 @@ export enum CompanyRejectionCodes {
   DUPLICATE_COMPANY = 'DUPLICATE_COMPANY',
   OTHER = 'OTHER',
 }
-
 
 export type CompanyVerificationStatus =
   (typeof COMPANY_VERIFICATION_STATUS)[keyof typeof COMPANY_VERIFICATION_STATUS];
@@ -103,4 +102,3 @@ export interface ICompanyListItem {
   createdAt: string;
   updatedAt: string;
 }
-

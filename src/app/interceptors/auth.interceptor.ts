@@ -10,8 +10,14 @@ import { catchError, switchMap, tap, throwError } from 'rxjs';
 import { API_ENDPOINTS } from '../constants/api-endpoints.constants';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
+import { environment } from '../environments/environment';
 
 export const authInterceptor: HttpInterceptorFn = function (req, next) {
+  //for external APIs, we don't want to attach cookies or handle refresh logic
+  if (!req.url.includes(environment.apiUrl)) {
+    return next(req);
+  }
+
   const authReq = req.clone({ withCredentials: true });
 
   const router = inject(Router);
@@ -43,12 +49,12 @@ export const authInterceptor: HttpInterceptorFn = function (req, next) {
 
             authService.logout();
             return throwError(() => refreshError);
-          })
+          }),
         );
       }
-      
+
       // Other errors
       return throwError(() => error);
-    })
+    }),
   );
 };
