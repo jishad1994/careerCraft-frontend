@@ -21,7 +21,7 @@ export class CompanyJobViewComponent {
     private route: ActivatedRoute,
     private router: Router,
     private _jobService: CompanyJobService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
   ) {}
 
   ngOnInit() {
@@ -121,7 +121,7 @@ export class CompanyJobViewComponent {
     });
   }
   ViewApplicants(id: string): void {
-    this.router.navigate(['company/dashboard/applications', id]);
+    this.router.navigate(['company/dashboard/jobs', id, 'applications']);
   }
 
   get hasApplications() {

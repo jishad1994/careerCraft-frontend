@@ -3,6 +3,7 @@ const sampleEnvironment = {
 
   // #urls
   apiUrl: 'https://your-domain.com',
+  socketUrl: 'https://your-domain.com/api',
   authBaseUrl: '',
   userBaseUrl: '',
   companyBaseUrl: '',
@@ -10,4 +11,5 @@ const sampleEnvironment = {
   logUrl: '',
   GOOGLE_CLIENT_ID: '',
   PUBLIC_LOCATION_API_URL: '',
+  STRIPE_PUBLISHABLE_KEY: '',
 };

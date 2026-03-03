@@ -65,4 +65,36 @@ export const COMPANY_API_ENDPOINTS = {
     GET_RESUME: (applicationId: string, mode: string = 'view') =>
       `${baseUrl}${companyBaseUrl}/applications/${applicationId}/resume?mode=${mode}`,
   },
+
+  SUBSCRIPTION: {
+    GET_ACTIVE_SUBSCRIPTION: `${baseUrl}${companyBaseUrl}/subscriptions/active`,
+
+    GET_PLAN_BY_ID: (planId: string) =>
+      `${baseUrl}${companyBaseUrl}/subscriptions/plans/${planId}`,
+
+    GET_ALL_ACTIVE_PLANS: `${baseUrl}${companyBaseUrl}/subscriptions/plans`,
+
+    GET_REMAINING_SUBSCRIPTION_LIMITS: `${baseUrl}${companyBaseUrl}/subscriptions/remaining-limits`,
+
+    CANCEL_SUSBCRIPTION: `${baseUrl}${companyBaseUrl}/subscriptions/cancel`,
+
+    CREATE_PAYMENT_INTEND_AND_SUBSCRIBE: `${baseUrl}${companyBaseUrl}/subscriptions`,
+
+    CONFIRM_PAYMENT_AND_ACTIVATE_SUBSCRIPTION: `${baseUrl}${companyBaseUrl}/subscriptions/payments/confirm`,
+
+    RETRY_PAYMENT: `${baseUrl}${companyBaseUrl}/subscriptions/payments`,
+
+    UPGRADE: `${baseUrl}${companyBaseUrl}/subscriptions/upgrade`,
+  },
+  CANDIDATES: {
+    getCandidateProfile: (candidateId: string) =>
+      `${baseUrl}${companyBaseUrl}/candidates/${candidateId}/profile`,
+
+    GET_RESUME_BY_CANDIDATE_ID: (
+      candidateId: string,
+      resumeKey: string,
+      mode: string = 'view',
+    ) =>
+      `${baseUrl}${companyBaseUrl}/candidates/${candidateId}/resumes?resumeKey=${resumeKey}&mode=${mode}`,
+  },
 } as const;

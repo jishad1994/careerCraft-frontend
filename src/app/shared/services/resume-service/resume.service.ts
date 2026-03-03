@@ -26,4 +26,21 @@ export class ResumeService {
       },
     );
   }
+
+  getResumeByCandidateId(
+    candidateId: string,
+    resumeKey: string,
+    mode: string = 'view',
+  ) {
+    return this._http.get(
+      COMPANY_API_ENDPOINTS.CANDIDATES.GET_RESUME_BY_CANDIDATE_ID(
+        candidateId,
+        resumeKey,
+        mode,
+      ),
+      {
+        responseType: 'blob',
+      },
+    );
+  }
 }

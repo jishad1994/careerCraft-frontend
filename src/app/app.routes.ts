@@ -31,12 +31,12 @@ export const routes: Routes = [
   {
     path: 'user',
     loadChildren: () =>
-      import('./routes/user.routes').then((m) => m.USER_ROUTES),
+      import('./routes/user/parent.routes').then((m) => m.USER_ROUTES),
   },
   {
     path: 'company',
     loadChildren: () =>
-      import('./routes/company.routes').then((m) => m.COMPANY_ROUTES),
+      import('./routes/company/parent.routes').then((m) => m.COMPANY_ROUTES),
   },
   {
     path: 'admin',
@@ -47,8 +47,8 @@ export const routes: Routes = [
   {
     path: 'blocked',
     loadComponent: () =>
-      import(
-        '../app/shared/components/account-restricted/account-restricted.component'
-      ).then((m) => m.AccountRestrictedComponent),
+      import('../app/shared/components/account-restricted/account-restricted.component').then(
+        (m) => m.AccountRestrictedComponent,
+      ),
   },
 ];

@@ -14,9 +14,12 @@ import { environment } from '../environments/environment';
 
 export const authInterceptor: HttpInterceptorFn = function (req, next) {
   //for external APIs, we don't want to attach cookies or handle refresh logic
-  if (!req.url.includes(environment.apiUrl)) {
-    return next(req);
-  }
+  // if (!req.url.includes(environment.apiUrl)) {
+
+  //   console.log('req.url',req.url)
+  //   console.log('api.url',environment.apiUrl)
+  //   return next(req);
+  // }
 
   const authReq = req.clone({ withCredentials: true });
 
@@ -46,7 +49,6 @@ export const authInterceptor: HttpInterceptorFn = function (req, next) {
 
           catchError((refreshError) => {
             //refresh token expired or invalid
-
             authService.logout();
             return throwError(() => refreshError);
           }),

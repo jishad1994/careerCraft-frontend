@@ -1,3 +1,5 @@
+// Frontend: src/app/shared/components/header/header.component.ts
+
 import {
   Component,
   Input,
@@ -9,15 +11,11 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { environment } from '../../../environments/environment';
-import { Router, RouterLink, RouterModule } from '@angular/router';
-import { Store } from '@ngrx/store';
-import { map, Subject, take, takeUntil } from 'rxjs';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { AuthStateService } from '../../../services/authState/auth-state.service';
-import { AuthService } from '../../../services/auth/auth.service';
+import { Router, RouterLink } from '@angular/router';
+import { Subject, takeUntil } from 'rxjs';
 import { HoverScaleDirective } from '../../../custom-directives/hover-scale.directive';
 import { AuthResponseUserDTO } from '../../../models/auth.dto';
+import { SocketService } from '../../services/socket-service/socket.service';
 
 export interface NavItem {
   label: string;
@@ -27,13 +25,15 @@ export interface NavItem {
   isPrimary?: boolean;
   children?: NavItem[];
 }
+
 @Component({
   selector: 'app-header',
-  imports: [CommonModule, FormsModule, RouterLink,HoverScaleDirective],
+  standalone: true,
+  imports: [CommonModule, FormsModule, RouterLink, HoverScaleDirective],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css',
 })
-export class HeaderComponent  {
+export class HeaderComponent implements OnInit, OnDestroy {
   @Input() logoUrl: string = '';
   @Input() logoRoute: string = '/home';
   @Input() logoText: string = '';
@@ -46,12 +46,63 @@ export class HeaderComponent  {
 
   @Output() search = new EventEmitter<string>();
   @Output() logout = new EventEmitter<void>();
+
   searchQuery = '';
   isUserDropdownOpen = false;
   isSearchFocused = false;
   showMobileMenu = false;
 
- 
+  // Total unread count only
+  unreadCount = 0;
+
+  private readonly destroy$ = new Subject<void>();
+
+  constructor(
+    private readonly router: Router,
+    private readonly socketService: SocketService,
+  ) {
+    socketService.connect();
+  }
+
+  ngOnInit(): void {
+    if (this.user) {
+      this.initializeNotifications();
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  private initializeNotifications(): void {
+    // Subscribe to total unread count
+    this.socketService
+      .getUnreadCount()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((count) => {
+        this.unreadCount = count;
+      });
+
+    // Listen for new notifications
+    this.socketService
+      .onNotification()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        // Request updated count
+        this.socketService.requestUnreadCount();
+      });
+
+    // Request initial count
+    this.socketService.requestUnreadCount();
+  }
+
+  goToNotifications(): void {
+    if (!this.user) return;
+    this.router.navigate([
+      `${this.user.role == 'company' ? 'company/dashboard' : 'user'}/notifications`,
+    ]);
+  }
 
   onSearch(): void {
     if (this.searchQuery.trim()) {

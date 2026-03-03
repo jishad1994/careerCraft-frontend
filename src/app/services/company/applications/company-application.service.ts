@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
-  ICandidateListItem,
+  IJobApplicationDetails,
   IJobApplication,
 } from '../../../models/job-application/job-application.model';
 import { API_ENDPOINTS } from '../../../constants/api-endpoints.constants';
@@ -32,7 +32,7 @@ export class CompanyApplicationService {
     limit: number = 10,
     search: string = '',
     filters: CandidateFilters,
-  ): Observable<ApiResponse<ICandidateListItem[]>> {
+  ): Observable<ApiResponse<IJobApplicationDetails[]>> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('limit', limit.toString());
@@ -80,8 +80,8 @@ export class CompanyApplicationService {
     );
   }
 
-  getApplicationById(id: string): Observable<ApiResponse<IJobApplication>> {
-    return this._http.get<ApiResponse<IJobApplication>>(
+  getApplicationById(id: string): Observable<ApiResponse<IJobApplicationDetails>> {
+    return this._http.get<ApiResponse<IJobApplicationDetails>>(
       COMPANY_API_ENDPOINTS.APPLICATIONS.GET_BY_ID(id),
     );
   }
@@ -99,22 +99,22 @@ export class CompanyApplicationService {
     id: string,
     status: string,
     notes?: string,
-  ): Observable<ApiResponse<IJobApplication>> {
-    return this._http.post<ApiResponse<IJobApplication>>(
+  ): Observable<ApiResponse<IJobApplicationDetails>> {
+    return this._http.post<ApiResponse<IJobApplicationDetails>>(
       COMPANY_API_ENDPOINTS.APPLICATIONS.UPDATE_STATUS(id),
       { status, notes: notes ?? '' },
     );
   }
-  markAsViewed(id: string): Observable<ApiResponse<IJobApplication>> {
-    return this._http.get<ApiResponse<IJobApplication>>(
+  markAsViewed(id: string): Observable<ApiResponse<IJobApplicationDetails>> {
+    return this._http.get<ApiResponse<IJobApplicationDetails>>(
       COMPANY_API_ENDPOINTS.APPLICATIONS.MARK_AS_VIEWED(id),
     );
   }
   addNotes(
     id: string,
     notes: string,
-  ): Observable<ApiResponse<IJobApplication>> {
-    return this._http.post<ApiResponse<IJobApplication>>(
+  ): Observable<ApiResponse<IJobApplicationDetails>> {
+    return this._http.post<ApiResponse<IJobApplicationDetails>>(
       COMPANY_API_ENDPOINTS.APPLICATIONS.ADD_NOTES(id),
       { notes },
     );
@@ -123,8 +123,8 @@ export class CompanyApplicationService {
   toggleFlag(
     applicationId: string,
     isStarred: boolean,
-  ): Observable<ApiResponse<IJobApplication>> {
-    return this._http.patch<ApiResponse<IJobApplication>>(
+  ): Observable<ApiResponse<IJobApplicationDetails>> {
+    return this._http.patch<ApiResponse<IJobApplicationDetails>>(
       COMPANY_API_ENDPOINTS.APPLICATIONS.TOGGLE_FLAG(applicationId),
       { isStarred },
     );

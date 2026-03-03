@@ -52,10 +52,9 @@ export interface UserProfile {
   email: string;
   phone: string;
   role: string;
-
   profilePicture?: IPublicFileAsset;
+  profileCompletion: number;
   bannerImage?: IPublicFileAsset;
- 
   about: string;
   provider: string;
   isBlocked: boolean;

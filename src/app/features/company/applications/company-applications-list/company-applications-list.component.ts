@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   FilterOption,
-  ICandidateListItem,
+  IJobApplicationDetails,
   JOB_APPLICATION_STATUS,
 } from '../../../../models/job-application/job-application.model';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -52,7 +52,7 @@ interface Skill {
   styleUrl: './company-applications-list.component.css',
 })
 export class CompanyApplicationsListComponent implements OnInit, OnDestroy {
-  candidates: ICandidateListItem[] = [];
+  candidates: IJobApplicationDetails[] = [];
   allSkills: Skill[] = [];
   filteredSkills: Skill[] = [];
   loading = false;
@@ -137,15 +137,13 @@ export class CompanyApplicationsListComponent implements OnInit, OnDestroy {
       });
     this.loadSkills();
     this.setupSkillSearch();
-    console.log('initally loaded');
-    this.loadCandidates();
 
-    this.route.queryParamMap.subscribe((param) => {
+    this.route.paramMap.subscribe((param) => {
       this.jobId = param.get('jobId') || undefined;
       if (this.jobId) {
         this.filters.jobId = this.jobId;
-        this.loadCandidates();
       }
+      this.loadCandidates();
     });
   }
 
@@ -236,18 +234,36 @@ export class CompanyApplicationsListComponent implements OnInit, OnDestroy {
     this.loadCandidates(page);
   }
 
-  viewProfile(candidate: ICandidateListItem): void {
-    this.router.navigate(['/company/applications', candidate._id]);
+  viewProfile(candidate: IJobApplicationDetails): void {
+    this.router.navigate(
+      ['company/dashboard/candidates', candidate.applicantDetails._id],
+      {
+        state: {
+          returnUrl: this.jobId
+            ? `company/dashboard/jobs/${this.jobId}/applications`
+            : `company/dashboard/applications`,
+        },
+      },
+    );
   }
 
-  viewResume(candidate: ICandidateListItem): void {
+  viewApplication(candidate: IJobApplicationDetails): void {
+    this.router.navigate(['company/dashboard/applications', candidate._id], {
+      state: {
+        returnUrl: this.jobId
+          ? `company/dashboard/jobs/${this.jobId}/applications`
+          : `company/dashboard/applications`,
+      },
+    });
+  }
+
+  viewResume(candidate: IJobApplicationDetails): void {
     this.resumeService
       .getUserResumeByApplicationId(candidate._id)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (blob) => {
           this.dialog.open(PdfViewerComponent, {
-        
             width: '90vw',
             height: '90vh',
             maxWidth: '95vw',
@@ -267,7 +283,7 @@ export class CompanyApplicationsListComponent implements OnInit, OnDestroy {
       });
   }
 
-  changeStatus(candidate: ICandidateListItem, status: string): void {
+  changeStatus(candidate: IJobApplicationDetails, status: string): void {
     this.candidatesService
       .updateApplicationStatus(candidate._id, status)
       .pipe(takeUntil(this.destroy$))
@@ -290,7 +306,7 @@ export class CompanyApplicationsListComponent implements OnInit, OnDestroy {
       });
   }
 
-  addNote(candidate: ICandidateListItem): void {
+  addNote(candidate: IJobApplicationDetails): void {
     const note = prompt('Add a note for this candidate:');
     if (!note) return;
 
@@ -315,7 +331,7 @@ export class CompanyApplicationsListComponent implements OnInit, OnDestroy {
       });
   }
 
-  toggleFlag(candidate: ICandidateListItem): void {
+  toggleFlag(candidate: IJobApplicationDetails): void {
     const newFlagState = !candidate.isStarred;
 
     this.candidatesService

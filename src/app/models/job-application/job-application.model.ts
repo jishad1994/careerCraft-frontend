@@ -85,7 +85,7 @@ export interface IJobApplication {
     type: 'phone' | 'video' | 'in-person' | 'technical' | 'hr';
     scheduledAt?: Date;
     completedAt?: Date;
-    interviewers?: string;
+    // interviewers?: string;
     feedback?: string;
     rating?: number; // 1-5
     status: 'scheduled' | 'completed' | 'cancelled' | 'rescheduled';
@@ -105,31 +105,8 @@ export interface IJobApplication {
   createdAt: Date;
   updatedAt: Date;
 }
-export interface IApplicantDetails {
-  _id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone?: string;
-  profilePicture?: {
-    key: string;
-    location: string;
-  };
-  skills: string[];
-  education: Education[];
-  experience: Experience[];
-  totalExperienceYears: number;
-  about?: string;
-  location?: string;
-}
 
-export interface Skill {
-  _id: string;
-  name: string;
-  description?: string;
-  blocked: boolean;
-}
-export interface ICandidateListItem extends IJobApplication {
+export interface IJobApplicationDetails extends IJobApplication {
   candidateName: string;
   profilePicture?: {
     key: string;
@@ -168,6 +145,12 @@ export interface IScreeningAnswer {
   question: string;
   answer: string;
 }
+export interface Skill {
+  _id: string;
+  name: string;
+  description?: string;
+  blocked: boolean;
+}
 
 export type ApplicationStatus =
   | 'pending'
@@ -189,9 +172,9 @@ export interface IStatusHistory {
 export interface IInterview {
   round: number;
   type: 'phone' | 'video' | 'in-person' | 'technical' | 'hr';
-  scheduledAt?: string;
-  completedAt?: string;
-  interviewers: string[];
+  scheduledAt?: Date;
+  completedAt?: Date;
+  // interviewers: string[];
   feedback?: string;
   rating?: number;
   status: 'scheduled' | 'completed' | 'cancelled' | 'rescheduled';
@@ -231,5 +214,22 @@ export interface ICompanyDetails {
   name: string;
   email: string;
   phone?: string;
+  location?: string;
+}
+export interface IApplicantDetails {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone?: string;
+  profilePicture?: {
+    key: string;
+    location: string;
+  };
+  skills: string[];
+  education: Education[];
+  experience: Experience[];
+  totalExperienceYears: number;
+  about?: string;
   location?: string;
 }

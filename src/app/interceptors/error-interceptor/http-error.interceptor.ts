@@ -44,13 +44,13 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
 
       // 404 / 400: Not found / invalid request
       if (err.status === 404 || err.status === 400) {
-        snackBar.open(
-          normalizedError.message || 'Page not found or invalid request',
-          'Close',
-          {
-            duration: 3000,
-          }
-        );
+        // snackBar.open(
+        //   normalizedError.message || 'Page not found or invalid request',
+        //   'Close',
+        //   {
+        //     duration: 3000,
+        //   }
+        // );
         // router.navigate(['/not-found']);
       }
 

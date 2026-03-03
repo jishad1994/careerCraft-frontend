@@ -1,5 +1,5 @@
 export interface ISubscriptionPlan {
-  _id?: string;
+  _id: string;
   name: string;
   price: number;
   durationInDays: number;

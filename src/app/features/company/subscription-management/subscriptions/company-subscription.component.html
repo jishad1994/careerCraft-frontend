@@ -1,0 +1,186 @@
+<div class="min-h-screen bg-gray-50 py-6 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-7xl mx-auto">
+    
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-gray-900">Subscription Management</h1>
+      <p class="mt-2 text-gray-600">Manage your subscription plan and billing</p>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="flex items-center justify-center py-12">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+    </div>
+
+    <div *ngIf="!loading">
+      
+      <!-- Current Subscription Card (Compact) -->
+      <div *ngIf="activeSubscription" class="mb-8">
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+            <div class="flex-1">
+              <h2 class="text-xl font-semibold text-gray-900">Current Plan: {{ activeSubscription.snapShot.name }}</h2>
+              <p class="text-sm text-gray-600 mt-1">
+                <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium"
+                      [ngClass]="{
+                        'bg-green-100 text-green-800': activeSubscription.status === 'active',
+                        'bg-red-100 text-red-800': activeSubscription.status === 'expired',
+                        'bg-gray-100 text-gray-800': activeSubscription.status === 'cancelled'
+                      }">
+                  {{ activeSubscription.status | uppercase }}
+                </span>
+                <span class="ml-2">{{ getDaysRemaining() }} days remaining</span>
+                <span class="ml-2 text-gray-500">•</span>
+                <span class="ml-2">${{ activeSubscription.snapShot.price }}/{{ activeSubscription.snapShot.durationInDays }} days</span>
+              </p>
+              
+              <!-- Mini Usage Stats -->
+              <div class="mt-4 grid grid-cols-3 gap-4">
+                <div>
+                  <p class="text-xs text-gray-500">Jobs</p>
+                  <div class="flex items-center gap-2 mt-1">
+                    <div class="flex-1 bg-gray-200 rounded-full h-1.5">
+                      <div class="h-1.5 rounded-full transition-all"
+                           [ngClass]="getUsageColor(getUsagePercentage(activeSubscription.usage.jobsPosted, activeSubscription.snapShot.limits.jobs))"
+                           [style.width.%]="getUsagePercentage(activeSubscription.usage.jobsPosted, activeSubscription.snapShot.limits.jobs)">
+                      </div>
+                    </div>
+                    <span class="text-xs text-gray-600">{{ activeSubscription.usage.jobsPosted }}/{{ activeSubscription.snapShot.limits.jobs }}</span>
+                  </div>
+                </div>
+                <div>
+                  <p class="text-xs text-gray-500">Resumes</p>
+                  <div class="flex items-center gap-2 mt-1">
+                    <div class="flex-1 bg-gray-200 rounded-full h-1.5">
+                      <div class="h-1.5 rounded-full transition-all"
+                           [ngClass]="getUsageColor(getUsagePercentage(activeSubscription.usage.resumesViewed, activeSubscription.snapShot.limits.resumeViews))"
+                           [style.width.%]="getUsagePercentage(activeSubscription.usage.resumesViewed, activeSubscription.snapShot.limits.resumeViews)">
+                      </div>
+                    </div>
+                    <span class="text-xs text-gray-600">{{ activeSubscription.usage.resumesViewed }}/{{ activeSubscription.snapShot.limits.resumeViews }}</span>
+                  </div>
+                </div>
+                <div>
+                  <p class="text-xs text-gray-500">Featured</p>
+                  <div class="flex items-center gap-2 mt-1">
+                    <div class="flex-1 bg-gray-200 rounded-full h-1.5">
+                      <div class="h-1.5 rounded-full transition-all"
+                           [ngClass]="getUsageColor(getUsagePercentage(activeSubscription.usage.featuredUsed, activeSubscription.snapShot.limits.featuredJobs))"
+                           [style.width.%]="getUsagePercentage(activeSubscription.usage.featuredUsed, activeSubscription.snapShot.limits.featuredJobs)">
+                      </div>
+                    </div>
+                    <span class="text-xs text-gray-600">{{ activeSubscription.usage.featuredUsed }}/{{ activeSubscription.snapShot.limits.featuredJobs }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="mt-4 sm:mt-0 sm:ml-6">
+              <button (click)="viewCurrentSubscription()"
+                      class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                View Details
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Available Plans -->
+      <div>
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">
+          {{ activeSubscription ? 'Available Plans' : 'Choose Your Plan' }}
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div *ngFor="let plan of plans"
+               class="bg-white rounded-lg shadow-sm border transition-all hover:shadow-md"
+               [ngClass]="{
+                 'border-blue-500 ring-2 ring-blue-500': isCurrentPlan(plan),
+                 'border-gray-200': !isCurrentPlan(plan)
+               }">
+            
+            <!-- Current Plan Badge -->
+            <div *ngIf="isCurrentPlan(plan)" class="bg-blue-500 text-white text-xs font-medium px-3 py-1 rounded-t-lg text-center">
+              Current Plan
+            </div>
+
+            <div class="p-6">
+              <!-- Plan Name -->
+              <h3 class="text-xl font-bold text-gray-900 mb-2">{{ plan.name }}</h3>
+              
+              <!-- Price -->
+              <div class="mb-4">
+                <span class="text-3xl font-bold text-gray-900">${{ plan.price }}</span>
+                <span class="text-gray-600">/ {{ plan.durationInDays }} days</span>
+              </div>
+
+              <!-- Description -->
+              <p *ngIf="plan.description" class="text-sm text-gray-600 mb-4">{{ plan.description }}</p>
+
+              <!-- Limits -->
+              <div class="space-y-2 mb-4">
+                <div class="flex items-center text-sm text-gray-700">
+                  <svg class="w-4 h-4 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                  </svg>
+                  {{ plan.limits.jobs }} Job Posts
+                </div>
+                <div class="flex items-center text-sm text-gray-700">
+                  <svg class="w-4 h-4 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                  </svg>
+                  {{ plan.limits.resumeViews }} Resume Views
+                </div>
+                <div class="flex items-center text-sm text-gray-700">
+                  <svg class="w-4 h-4 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                  </svg>
+                  {{ plan.limits.featuredJobs }} Featured Jobs
+                </div>
+              </div>
+
+              <!-- Features -->
+              <div class="space-y-2 mb-6 pb-6 border-b border-gray-200">
+                <div class="flex items-center text-sm"
+                     [ngClass]="plan.features.chat ? 'text-gray-700' : 'text-gray-400'">
+                  <svg class="w-4 h-4 mr-2" [ngClass]="plan.features.chat ? 'text-green-500' : 'text-gray-300'" fill="currentColor" viewBox="0 0 20 20">
+                    <path *ngIf="plan.features.chat" fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                    <path *ngIf="!plan.features.chat" fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                  </svg>
+                  Chat
+                </div>
+                <div class="flex items-center text-sm"
+                     [ngClass]="plan.features.videoCall ? 'text-gray-700' : 'text-gray-400'">
+                  <svg class="w-4 h-4 mr-2" [ngClass]="plan.features.videoCall ? 'text-green-500' : 'text-gray-300'" fill="currentColor" viewBox="0 0 20 20">
+                    <path *ngIf="plan.features.videoCall" fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                    <path *ngIf="!plan.features.videoCall" fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                  </svg>
+                  Video Call
+                </div>
+                <div class="flex items-center text-sm"
+                     [ngClass]="plan.features.analytics ? 'text-gray-700' : 'text-gray-400'">
+                  <svg class="w-4 h-4 mr-2" [ngClass]="plan.features.analytics ? 'text-green-500' : 'text-gray-300'" fill="currentColor" viewBox="0 0 20 20">
+                    <path *ngIf="plan.features.analytics" fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                    <path *ngIf="!plan.features.analytics" fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                  </svg>
+                  Analytics
+                </div>
+              </div>
+
+              <!-- Action Button -->
+              <button (click)="selectPlan(plan)" [disabled]="isCurrentPlan(plan)"
+                      class="w-full py-2 px-4 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      [ngClass]="{
+                        'bg-blue-600 text-white hover:bg-blue-700': !isCurrentPlan(plan),
+                        'bg-gray-300 text-gray-600 cursor-not-allowed': isCurrentPlan(plan)
+                      }">
+                {{ isCurrentPlan(plan) ? 'Current Plan' : 'Select Plan' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
