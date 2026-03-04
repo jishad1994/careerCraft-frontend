@@ -60,7 +60,7 @@ export class UserLayoutComponent {
     },
     {
       label: 'Companies',
-      route: '/companies',
+      route: 'dsgdfg',
     },
   ];
 

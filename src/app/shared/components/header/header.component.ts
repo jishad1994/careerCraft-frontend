@@ -66,6 +66,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (this.user) {
+      console.log('notifications intialized');
       this.initializeNotifications();
     }
   }
@@ -81,6 +82,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       .getUnreadCount()
       .pipe(takeUntil(this.destroy$))
       .subscribe((count) => {
+        console.log('notifications undread count reci ', count);
         this.unreadCount = count;
       });
 

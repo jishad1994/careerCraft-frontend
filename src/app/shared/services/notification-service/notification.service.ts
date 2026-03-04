@@ -25,7 +25,7 @@ export class NotificationService {
 
   markAsRead(notificationId: string): Observable<ApiResponse<null>> {
     return this._http.put<ApiResponse<null>>(
-      `${NOTIFICATION_ENDPOINTS.MARK_AS_READ}/${notificationId}`,
+      NOTIFICATION_ENDPOINTS.MARK_AS_READ(notificationId),
       {},
     );
   }
