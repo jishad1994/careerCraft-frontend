@@ -1,39 +1,36 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
-import {
-  IJobApplication,
-  JobApplicationStatusTypes,
-} from '../../../../models/job-application/job-application.model';
+import { IJobApplicationDetails } from '../../../../models/job-application/job-application.model';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { UserJobService } from '../../../../services/user/job/user-job.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { UserJobApplicationService } from '../../../../services/user/application/user-job-application.service';
 
 @Component({
-  selector: 'app-application-view',
+  selector: 'app-candidate-application-view',
+  standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './application-view.component.html',
   styleUrl: './application-view.component.css',
 })
-export class ApplicationViewComponent {
-  application: IJobApplication | null = null;
+export class CandidateApplicationViewComponent implements OnInit, OnDestroy {
+  application: IJobApplicationDetails | null = null;
   loading = false;
   withdrawing = false;
   applicationId: string = '';
-  showWithdrawConfirm = false;
+  showWithdrawModal = false;
 
-  destroy$ = new Subject<void>();
+  private destroy$ = new Subject<void>();
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private _applicationService: UserJobApplicationService,
-    private snackBar: MatSnackBar
+    private applicationService: UserJobApplicationService,
+    private snackBar: MatSnackBar,
   ) {}
 
   ngOnInit() {
-    this.route.params.subscribe((params) => {
+    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       this.applicationId = params['id'];
       if (this.applicationId) {
         this.loadApplication();
@@ -48,8 +45,7 @@ export class ApplicationViewComponent {
 
   loadApplication() {
     this.loading = true;
-
-    this._applicationService
+    this.applicationService
       .getApplicationById(this.applicationId)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -59,61 +55,94 @@ export class ApplicationViewComponent {
           }
           this.loading = false;
         },
-        error: (error) => {
-          this.snackBar.open('Failed to load application details', 'Close', {
+        error: () => {
+          this.snackBar.open('Failed to load application', 'Close', {
             duration: 3000,
           });
           this.loading = false;
-          this.router.navigate(['user/my-applications']);
+          this.router.navigate(['/user/my-applications']);
         },
       });
   }
 
   goBack() {
-    this.router.navigate(['user/my-applications']);
+    this.router.navigate(['/user/my-applications']);
   }
 
   viewJob() {
     if (this.application) {
-      this.router.navigate(['user/jobs', this.application.job.slug]);
+      this.router.navigate(['/user/jobs', this.application.jobDetails.slug]);
     }
   }
 
-  openWithdrawConfirm() {
-    this.showWithdrawConfirm = true;
+  viewInterviews() {
+    this.router.navigate(['/user/my-applications/interviews'], {
+      queryParams: { applicationId: this.applicationId },
+    });
   }
 
-  closeWithdrawConfirm() {
-    this.showWithdrawConfirm = false;
+  openWithdrawModal() {
+    this.showWithdrawModal = true;
+  }
+
+  closeWithdrawModal() {
+    this.showWithdrawModal = false;
   }
 
   withdrawApplication() {
     if (!this.application) return;
 
     this.withdrawing = true;
-
-    this._applicationService
+    this.applicationService
       .withdrawApplication(this.applicationId)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (response) => {
+        next: () => {
           this.snackBar.open('Application withdrawn successfully', 'Close', {
             duration: 2000,
           });
           this.withdrawing = false;
-          this.showWithdrawConfirm = false;
-          this.loadApplication(); // Reload to show updated status
+          this.closeWithdrawModal();
+          this.loadApplication();
         },
         error: (error) => {
           this.snackBar.open(
-            error.error?.message || 'Failed to withdraw application',
+            error.error?.message || 'Failed to withdraw',
             'Close',
-            { duration: 3000 }
+            { duration: 3000 },
           );
           this.withdrawing = false;
-          this.showWithdrawConfirm = false;
         },
       });
+  }
+
+  canWithdraw(): boolean {
+    return (
+      this.application?.status === 'pending' ||
+      this.application?.status === 'reviewing'
+    );
+  }
+
+  hasInterviews(): boolean {
+    return !!(
+      this.application?.interviews && this.application.interviews.length > 0
+    );
+  }
+
+  getUpcomingInterviewsCount(): number {
+    if (!this.application?.interviews) return 0;
+    const now = new Date();
+    return this.application.interviews.filter(
+      (i) =>
+        i.scheduledAt &&
+        new Date(i.scheduledAt) > now &&
+        (i.status === 'scheduled' || i.status === 'rescheduled'),
+    ).length;
+  }
+
+  getRecentStatusHistory() {
+    if (!this.application?.statusHistory) return [];
+    return this.application.statusHistory.slice(-5).reverse();
   }
 
   downloadResume() {
@@ -128,62 +157,43 @@ export class ApplicationViewComponent {
     }
   }
 
-  canWithdraw(): boolean {
-    if (!this.application) return false;
-    return ['pending', 'reviewing'].includes(this.application.status);
-  }
-
-  getStatusClass(status: JobApplicationStatusTypes): string {
-    const classes: Record<JobApplicationStatusTypes, string> = {
-      pending: 'bg-yellow-100 text-yellow-800 border-yellow-300',
-      reviewing: 'bg-blue-100 text-blue-800 border-blue-300',
-      shortlisted: 'bg-purple-100 text-purple-800 border-purple-300',
-      interviewed: 'bg-indigo-100 text-indigo-800 border-indigo-300',
-      offered: 'bg-green-100 text-green-800 border-green-300',
-      rejected: 'bg-red-100 text-red-800 border-red-300',
-      withdrawn: 'bg-gray-100 text-gray-800 border-gray-300',
-      hired: 'bg-green-100 text-green-800 border-green-300',
+  getStatusClass(status: string): string {
+    const classes: Record<string, string> = {
+      pending: 'bg-yellow-100 text-yellow-800',
+      reviewing: 'bg-blue-100 text-blue-800',
+      shortlisted: 'bg-purple-100 text-purple-800',
+      interviewed: 'bg-indigo-100 text-indigo-800',
+      offered: 'bg-green-100 text-green-800',
+      rejected: 'bg-red-100 text-red-800',
+      withdrawn: 'bg-gray-100 text-gray-800',
+      hired: 'bg-green-600 text-white',
     };
-    return classes[status] || 'bg-gray-100 text-gray-800 border-gray-300';
+    return classes[status] || 'bg-gray-100 text-gray-800';
   }
 
-  getStatusIcon(status: JobApplicationStatusTypes): string {
-    const icons: Record<JobApplicationStatusTypes, string> = {
-      pending: '⏳',
-      reviewing: '👁️',
-      shortlisted: '⭐',
-      interviewed: '💬',
-      offered: '🎉',
-      rejected: '❌',
-      withdrawn: '↩️',
-      hired: '✅',
-    };
-    return icons[status] || '📄';
-  }
-
-  formatDate(date: Date | string): string {
+  formatDate(date: Date | string | undefined): string {
+    if (!date) return '';
     return new Date(date).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
+      month: 'short',
       day: 'numeric',
+      year: 'numeric',
     });
   }
 
   formatDateTime(date: Date | string): string {
     return new Date(date).toLocaleString('en-US', {
-      year: 'numeric',
-      month: 'long',
+      month: 'short',
       day: 'numeric',
       hour: '2-digit',
       minute: '2-digit',
     });
   }
 
-  getTimeAgo(date: Date): string {
+  getTimeAgo(date: Date | string): string {
     const now = new Date();
-    const applied = new Date(date);
+    const past = new Date(date);
     const days = Math.floor(
-      (now.getTime() - applied.getTime()) / (1000 * 60 * 60 * 24)
+      (now.getTime() - past.getTime()) / (1000 * 60 * 60 * 24),
     );
 
     if (days === 0) return 'today';

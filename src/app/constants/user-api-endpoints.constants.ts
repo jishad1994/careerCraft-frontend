@@ -75,6 +75,13 @@ export const USER_API_ENDPOINTS = {
     GET_USER_APPLICATIONS: (page: number, limit: number, status: string) =>
       `${baseUrl}${userBaseUrl}/applications?page=${page}&limit=${page}&status=${status}`,
 
+    GET_INTERVIEWS: `${baseUrl}${userBaseUrl}/applications/interviews`,
+
+    GET_INTERVIEW_STATS: `${baseUrl}${userBaseUrl}/applications/interviews/statistics`,
+
+    GET_INTERVIEW_BY_ID: (interviewId: string) =>
+      `${baseUrl}${userBaseUrl}/applications/interviews/${interviewId}`,
+
     GET_APPLICATION_BY_ID: (id: string) =>
       `${baseUrl}${userBaseUrl}/applications/${id}`,
     WITHDRAW: (id: string) => `${baseUrl}${userBaseUrl}/applications/${id}`,

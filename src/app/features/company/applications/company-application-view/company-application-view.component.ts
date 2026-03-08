@@ -1,4 +1,3 @@
-// Frontend: src/app/pages/application-view/application-view.component.ts
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -94,6 +93,8 @@ export class CompanyApplicationViewComponent implements OnInit, OnDestroy {
     });
 
     this.previousPageUrl = history.state?.returnUrl;
+
+    console.log('return url', history.state.returnUrl);
   }
 
   ngOnDestroy(): void {

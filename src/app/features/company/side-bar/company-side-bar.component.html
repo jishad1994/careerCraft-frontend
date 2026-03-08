@@ -62,7 +62,7 @@
           ➕ Post New Job
         </li>
         <li
-          routerLink="/compan/dashboard/jobs"
+          routerLink="/company/dashboard/jobs"
           class="p-2 rounded hover:bg-slate-800 cursor-pointer"
         >
           📄 Active Jobs
@@ -84,6 +84,14 @@
         <span *ngIf="!collapsed">Employees</span>
       </li>
 
+      <!-- Interview Management -->
+      <li
+        routerLink="/company/dashboard/interviews"
+        class="flex items-center gap-3 p-3 rounded-lg cursor-pointer hover:bg-slate-800"
+      >
+        <span>⚙️</span>
+        <span *ngIf="!collapsed">Manage Interviews</span>
+      </li>
       <!-- Settings -->
       <li
         routerLink="/company/settings"

@@ -166,6 +166,8 @@ export interface IInterview {
   type: 'phone' | 'video' | 'in-person' | 'technical' | 'hr';
   scheduledAt?: Date;
   completedAt?: Date;
+  isRescheduled: boolean;
+  rescheduledReson: string;
   // interviewers: string[];
   feedback?: string;
   rating?: number;
@@ -230,6 +232,7 @@ export interface InterviewFilter {
   companyId?: string;
   jobId?: string;
   applicationId?: string;
+  applicantId?: string;
   status?: string[];
   type?: string[];
   round?: number;
@@ -244,8 +247,14 @@ export interface InterviewWithPopulated {
   applicationId: string;
   jobId: string;
   jobTitle: string;
+  jobSlug: string;
   companyId: string;
   companyName: string;
+  companyEmail: string;
+  companyProfilePicture?: {
+    key: string;
+    location: string;
+  };
   applicantId: string;
   applicantName: string;
   applicantEmail: string;
@@ -256,4 +265,21 @@ export interface InterviewWithPopulated {
   };
   applicationStatus: string;
   appliedAt: Date;
+}
+export interface InterviewStats {
+  total: number;
+  byStatus: Record<string, number>;
+  byType: Record<string, number>;
+  upcoming: number;
+  past: number;
+}
+export interface InterviewReturnState {
+  page: number;
+  activeTab: 'all' | 'upcoming' | 'completed';
+  searchQuery: string;
+  selectedStatuses: string[];
+  selectedTypes: string[];
+  companyId?: string | null;
+  jobId?: string | null;
+  applicationId?: string | null;
 }
