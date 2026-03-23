@@ -31,6 +31,8 @@ export const COMPANY_API_ENDPOINTS = {
 
         GET_JOB_BY_ID: (jobId: string) => `${baseUrl}${companyBaseUrl}/jobs/${jobId}`,
 
+        GET_APPLICATIONS_BY_JOB: (jobId: string) => `${baseUrl}${companyBaseUrl}/jobs/${jobId}/applications`,
+
         UPDATE_JOB_BY_ID: (jobId: string) => `${baseUrl}${companyBaseUrl}/jobs/${jobId}`,
 
         UPDATE_JOB_STATUS: (jobId: string) => `${baseUrl}${companyBaseUrl}/jobs/${jobId}/status`,
@@ -85,38 +87,6 @@ export const COMPANY_API_ENDPOINTS = {
         GET_UPCOMING_INTERVIEWS: `${baseUrl}${companyBaseUrl}/applications/interviews/upcoming`,
     },
 
-    //     MARK_AS_VIEWED: (id: string) => `${baseUrl}${companyBaseUrl}/applications/${id}/mark-viewed`,
-
-    //     TOGGLE_FLAG: (id: string) => `${baseUrl}${companyBaseUrl}/applications/${id}/toggle-flag`,
-
-    //     ADD_NOTES: (id: string) => `${baseUrl}${companyBaseUrl}/applications/${id}/add-notes`,
-
-    //     GET_RESUME: (applicationId: string, mode: string = "view") =>
-    //         `${baseUrl}${companyBaseUrl}/applications/${applicationId}/resume?mode=${mode}`,
-
-    //     SCHEDULE_INTERVIEW: (applicationId: string) =>
-    //         `${baseUrl}${companyBaseUrl}/applications/${applicationId}/interviews`,
-
-    //     RESCHEDULE_INTERVIEW: (applicationId: string, interviewId: string) =>
-    //         `${baseUrl}${companyBaseUrl}/applications/${applicationId}/interviews/${interviewId}/reschedule`,
-
-    //     CANCEL_INTERVIEW: (applicationId: string, interviewId: string) =>
-    //         `${baseUrl}${companyBaseUrl}/applications/${applicationId}/interviews/${interviewId}/cancel`,
-
-    //     COMPLETE_INTERVIEW: (applicationId: string, interviewId: string) =>
-    //         `${baseUrl}${companyBaseUrl}/applications/${applicationId}/interviews/${interviewId}/complete`,
-
-    //     UPDATE_INTERVIEW: (applicationId: string, interviewId: string) =>
-    //         `${baseUrl}${companyBaseUrl}/applications/${applicationId}/interviews/${interviewId}/update`,
-
-    //     GET_INTERVIEWS: `${baseUrl}${companyBaseUrl}/applications/interviews`,
-
-    //     GET_INTERVIEW_BY_ID: (interviewId: string) => `${baseUrl}${companyBaseUrl}/applications/interviews/${interviewId}`,
-
-    //     GET_INTERVIEW_STATISTICS: `${baseUrl}${companyBaseUrl}/applications/interviews/statistics`,
-
-    //     GET_UPCOMING_INTERVIEWS: `${baseUrl}${companyBaseUrl}/applications/interviews/upcoming`,
-    // },
 
     SUBSCRIPTION: {
         GET_ACTIVE_SUBSCRIPTION: `${baseUrl}${companyBaseUrl}/subscriptions/active`,
