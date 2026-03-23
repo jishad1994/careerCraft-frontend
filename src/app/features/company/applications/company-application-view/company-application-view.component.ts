@@ -1,4 +1,3 @@
-// Frontend: src/app/pages/application-view/application-view.component.ts
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -15,6 +14,7 @@ import {
 import { CompanyApplicationService } from '../../../../services/company/applications/company-application.service';
 import { PdfViewerComponent } from '../../../../shared/components/pdf-viewer/pdf-viewer.component';
 import { ResumeService } from '../../../../shared/services/resume-service/resume.service';
+import { InterviewService } from '../../../../services/company/interview-service/interview.service';
 
 @Component({
   selector: 'app-company-application-view',
@@ -78,6 +78,7 @@ export class CompanyApplicationViewComponent implements OnInit, OnDestroy {
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly applicationService: CompanyApplicationService,
+    private readonly _interviewService: InterviewService,
     private readonly snackBar: MatSnackBar,
     private readonly dialog: MatDialog,
     private readonly _resumeService: ResumeService,
@@ -92,6 +93,8 @@ export class CompanyApplicationViewComponent implements OnInit, OnDestroy {
     });
 
     this.previousPageUrl = history.state?.returnUrl;
+
+    console.log('return url', history.state.returnUrl);
   }
 
   ngOnDestroy(): void {
@@ -307,26 +310,26 @@ export class CompanyApplicationViewComponent implements OnInit, OnDestroy {
 
     const interviewPayload = {
       ...this.interviewData,
-      scheduledAt: scheduledAt.toISOString(),
+      scheduledAt: scheduledAt,
     };
 
-    // this.applicationService
-    //   .scheduleInterview(this.applicationId, interviewPayload)
-    //   .pipe(takeUntil(this.destroy$))
-    //   .subscribe({
-    //     next: () => {
-    //       this.snackBar.open('Interview scheduled successfully', 'Close', {
-    //         duration: 2000,
-    //       });
-    //       this.loadApplication();
-    //       this.closeInterviewModal();
-    //     },
-    //     error: () => {
-    //       this.snackBar.open('Failed to schedule interview', 'Close', {
-    //         duration: 3000,
-    //       });
-    //     },
-    //   });
+    this._interviewService
+      .scheduleInterview(this.applicationId, interviewPayload)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.snackBar.open('Interview scheduled successfully', 'Close', {
+            duration: 2000,
+          });
+          // this.loadApplication();
+          this.closeInterviewModal();
+        },
+        error: () => {
+          this.snackBar.open('Failed to schedule interview', 'Close', {
+            duration: 3000,
+          });
+        },
+      });
   }
 
   joinVideoInterview(interview: IInterview): void {

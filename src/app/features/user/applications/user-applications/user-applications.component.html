@@ -96,7 +96,7 @@
             <!-- Job Title & Company -->
             <div class="mb-3">
               <h3 class="text-xl font-semibold text-gray-900 mb-1 hover:text-blue-600 cursor-pointer"
-                (click)="viewJob(application.job.slug)">
+                (click)="viewApplication(application._id)">
                 {{ application.job.title }}
               </h3>
               <p class="text-gray-700 font-medium">{{ application.job.company.name }}</p>
@@ -150,7 +150,8 @@
             </div>
 
             <!-- Expected Salary -->
-            <div *ngIf="application.expectedSalary && application.expectedSalary?.amount" class="mt-3 text-sm text-gray-600">
+            <div *ngIf="application.expectedSalary && application.expectedSalary?.amount"
+              class="mt-3 text-sm text-gray-600">
               <span class="font-medium">Expected Salary:</span>
               {{ application.expectedSalary.currency }}
               {{ application.expectedSalary.amount.toLocaleString() }} / {{ application.expectedSalary.period }}

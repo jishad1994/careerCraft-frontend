@@ -45,6 +45,13 @@ export const COMPANY_ROUTES: Routes = [
             (m) => m.companyApplicationRoutes,
           ),
       },
+      {
+        path: 'interviews',
+        loadChildren: () =>
+          import('./company.interview.routes').then(
+            (m) => m.companyInterviewRoutes,
+          ),
+      },
 
       {
         path: 'subscriptions',

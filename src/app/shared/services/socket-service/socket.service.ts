@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
 import { INotification } from '../../../models/notification/notification.model';
@@ -82,11 +82,23 @@ export interface NotificationMarkRead {
 @Injectable({
   providedIn: 'root',
 })
-export class SocketService {
+export class SocketService implements OnDestroy {
   private socket: Socket | null = null;
   private readonly connected$ = new BehaviorSubject<boolean>(false);
+
+  //notification streams
   private readonly notification$ = new Subject<INotification>();
   private readonly unreadCount$ = new BehaviorSubject<number>(0);
+  // WebRTC streams
+  private readonly webrtcOffer$ = new Subject<WebRTCOffer>();
+  private readonly webrtcAnswer$ = new Subject<WebRTCAnswer>();
+  private readonly iceCandidate$ = new Subject<ICECandidate>();
+  private readonly userJoined$ = new Subject<UserJoined>();
+  private readonly userLeft$ = new Subject<UserLeft>();
+  private readonly joinedInterview$ = new Subject<JoinedInterview>();
+  private readonly connectionRequested$ = new Subject<ConnectionRequested>();
+  private readonly interviewEnded$ = new Subject<void>();
+
   private readonly error$ = new Subject<string>();
 
   constructor() {}
@@ -129,6 +141,7 @@ export class SocketService {
       this.error$.next(error.message || ' socket connection error');
     });
 
+    //notification events
     this.socket.on('notification:new', (notification: INotification) => {
       console.log('New notification received:', notification);
       this.notification$.next(notification);
@@ -138,6 +151,56 @@ export class SocketService {
     this.socket.on('notification:count', (data: { count: number }) => {
       console.log('Unread count updated:', data.count);
       this.unreadCount$.next(data.count);
+    });
+
+    // ============ WEBRTC SIGNALING EVENTS ============
+
+    // Joined interview confirmation
+    this.socket.on('joined-interview', (data: JoinedInterview) => {
+      console.log('Joined interview:', data);
+      this.joinedInterview$.next(data);
+    });
+
+    // User joined room
+    this.socket.on('user-joined', (data: UserJoined) => {
+      console.log('User joined:', data);
+      this.userJoined$.next(data);
+    });
+
+    // User left room
+    this.socket.on('user-left', (data: UserLeft) => {
+      console.log('User left:', data);
+      this.userLeft$.next(data);
+    });
+
+    // Connection requested by late joiner
+    this.socket.on('connection-requested', (data: ConnectionRequested) => {
+      console.log('Connection requested:', data);
+      this.connectionRequested$.next(data);
+    });
+
+    // WebRTC offer received
+    this.socket.on('webrtc-offer', (data: WebRTCOffer) => {
+      console.log('WebRTC offer received:', data);
+      this.webrtcOffer$.next(data);
+    });
+
+    // WebRTC answer received
+    this.socket.on('webrtc-answer', (data: WebRTCAnswer) => {
+      console.log('WebRTC answer received:', data);
+      this.webrtcAnswer$.next(data);
+    });
+
+    // ICE candidate received
+    this.socket.on('ice-candidate', (data: ICECandidate) => {
+      console.log('ICE candidate received');
+      this.iceCandidate$.next(data);
+    });
+
+    // Interview ended
+    this.socket.on('interview-ended', () => {
+      console.log('Interview ended');
+      this.interviewEnded$.next();
     });
 
     //error handling for socket events
@@ -229,6 +292,131 @@ export class SocketService {
     }
   }
 
+  // ============ WEBRTC SIGNALING METHODS ============
+
+  /**
+   * Join interview room
+   */
+  joinInterview(
+    applicationId: string,
+    interviewId: string,
+    roomId: string,
+    userId: string,
+    role: 'user' | 'company' | 'admin',
+  ): void {
+    if (this.socket?.connected) {
+      this.socket.emit('join-interview', {
+        applicationId,
+        interviewId,
+        roomId,
+        userId,
+        role,
+      });
+    } else {
+      this.error$.next('Cannot join interview: Socket not connected');
+    }
+  }
+
+  /**
+   * Leave interview room
+   */
+  leaveInterview(roomId: string, userId: string): void {
+    if (this.socket?.connected) {
+      this.socket.emit('leave-interview', { roomId, userId });
+    }
+  }
+
+  /**
+   * Request connection from existing participant
+   */
+  requestConnection(roomId: string, to: string): void {
+    if (this.socket?.connected) {
+      this.socket.emit('request-connection', { roomId, to });
+    }
+  }
+
+  /**
+   * Send WebRTC offer
+   */
+  sendOffer(
+    roomId: string,
+    offer: RTCSessionDescriptionInit,
+    to: string,
+  ): void {
+    if (this.socket?.connected) {
+      this.socket.emit('webrtc-offer', { roomId, offer, to });
+    }
+  }
+
+  /**
+   * Send WebRTC answer
+   */
+  sendAnswer(
+    roomId: string,
+    answer: RTCSessionDescriptionInit,
+    to: string,
+  ): void {
+    if (this.socket?.connected) {
+      this.socket.emit('webrtc-answer', { roomId, answer, to });
+    }
+  }
+
+  /**
+   * Send ICE candidate
+   */
+  sendIceCandidate(
+    roomId: string,
+    candidate: RTCIceCandidateInit,
+    to: string,
+  ): void {
+    if (this.socket?.connected) {
+      this.socket.emit('ice-candidate', { roomId, candidate, to });
+    }
+  }
+
+  /**
+   * End interview for all participants
+   */
+  endInterview(roomId: string): void {
+    if (this.socket?.connected) {
+      this.socket.emit('end-interview', { roomId });
+    }
+  }
+
+  // ============ WEBRTC EVENT OBSERVABLES ============
+
+  onJoinedInterview(): Observable<JoinedInterview> {
+    return this.joinedInterview$.asObservable();
+  }
+
+  onUserJoined(): Observable<UserJoined> {
+    return this.userJoined$.asObservable();
+  }
+
+  onUserLeft(): Observable<UserLeft> {
+    return this.userLeft$.asObservable();
+  }
+
+  onConnectionRequested(): Observable<ConnectionRequested> {
+    return this.connectionRequested$.asObservable();
+  }
+
+  onWebRTCOffer(): Observable<WebRTCOffer> {
+    return this.webrtcOffer$.asObservable();
+  }
+
+  onWebRTCAnswer(): Observable<WebRTCAnswer> {
+    return this.webrtcAnswer$.asObservable();
+  }
+
+  onICECandidate(): Observable<ICECandidate> {
+    return this.iceCandidate$.asObservable();
+  }
+
+  onInterviewEnded(): Observable<void> {
+    return this.interviewEnded$.asObservable();
+  }
+
   /**
    * Get current connection state
    */
@@ -261,8 +449,11 @@ export class SocketService {
     this.unreadCount$.next(count);
   }
 
+  getSocketId(): string | undefined {
+    return this.socket?.id;
+  }
+
   ngOnDestroy(): void {
     this.disconnect();
   }
 }
-  

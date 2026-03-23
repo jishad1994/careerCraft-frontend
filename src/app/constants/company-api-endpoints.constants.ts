@@ -50,9 +50,6 @@ export const COMPANY_API_ENDPOINTS = {
 
         GET_APPLICANTS: `${baseUrl}${companyBaseUrl}/applications`,
 
-        GET_BY_JOB: (jobId: string, page: number, limit: number, status: string) =>
-            `${baseUrl}${companyBaseUrl}/jobs/${jobId}/applications?page=${page}&limit=${limit}&status=${status}`,
-
         UPDATE_STATUS: (id: string) => `${baseUrl}${companyBaseUrl}/applications/${id}/update-status`,
 
         MARK_AS_VIEWED: (id: string) => `${baseUrl}${companyBaseUrl}/applications/${id}/mark-viewed`,
@@ -88,6 +85,39 @@ export const COMPANY_API_ENDPOINTS = {
         GET_UPCOMING_INTERVIEWS: `${baseUrl}${companyBaseUrl}/applications/interviews/upcoming`,
     },
 
+    //     MARK_AS_VIEWED: (id: string) => `${baseUrl}${companyBaseUrl}/applications/${id}/mark-viewed`,
+
+    //     TOGGLE_FLAG: (id: string) => `${baseUrl}${companyBaseUrl}/applications/${id}/toggle-flag`,
+
+    //     ADD_NOTES: (id: string) => `${baseUrl}${companyBaseUrl}/applications/${id}/add-notes`,
+
+    //     GET_RESUME: (applicationId: string, mode: string = "view") =>
+    //         `${baseUrl}${companyBaseUrl}/applications/${applicationId}/resume?mode=${mode}`,
+
+    //     SCHEDULE_INTERVIEW: (applicationId: string) =>
+    //         `${baseUrl}${companyBaseUrl}/applications/${applicationId}/interviews`,
+
+    //     RESCHEDULE_INTERVIEW: (applicationId: string, interviewId: string) =>
+    //         `${baseUrl}${companyBaseUrl}/applications/${applicationId}/interviews/${interviewId}/reschedule`,
+
+    //     CANCEL_INTERVIEW: (applicationId: string, interviewId: string) =>
+    //         `${baseUrl}${companyBaseUrl}/applications/${applicationId}/interviews/${interviewId}/cancel`,
+
+    //     COMPLETE_INTERVIEW: (applicationId: string, interviewId: string) =>
+    //         `${baseUrl}${companyBaseUrl}/applications/${applicationId}/interviews/${interviewId}/complete`,
+
+    //     UPDATE_INTERVIEW: (applicationId: string, interviewId: string) =>
+    //         `${baseUrl}${companyBaseUrl}/applications/${applicationId}/interviews/${interviewId}/update`,
+
+    //     GET_INTERVIEWS: `${baseUrl}${companyBaseUrl}/applications/interviews`,
+
+    //     GET_INTERVIEW_BY_ID: (interviewId: string) => `${baseUrl}${companyBaseUrl}/applications/interviews/${interviewId}`,
+
+    //     GET_INTERVIEW_STATISTICS: `${baseUrl}${companyBaseUrl}/applications/interviews/statistics`,
+
+    //     GET_UPCOMING_INTERVIEWS: `${baseUrl}${companyBaseUrl}/applications/interviews/upcoming`,
+    // },
+
     SUBSCRIPTION: {
         GET_ACTIVE_SUBSCRIPTION: `${baseUrl}${companyBaseUrl}/subscriptions/active`,
 
@@ -108,7 +138,7 @@ export const COMPANY_API_ENDPOINTS = {
 
         RETRY_PAYMENT: `${baseUrl}${companyBaseUrl}/subscriptions/payments`,
 
-        GET_PAYMENT: (paymentId:string)=>`${baseUrl}${companyBaseUrl}/subscriptions/payments/${paymentId}`,
+        GET_PAYMENT: (paymentId: string) => `${baseUrl}${companyBaseUrl}/subscriptions/payments/${paymentId}`,
 
         UPGRADE: `${baseUrl}${companyBaseUrl}/subscriptions/upgrade`,
     },

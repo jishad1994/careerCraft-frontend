@@ -80,16 +80,7 @@ export interface IJobApplication {
   notes?: string;
   feedback?: string;
 
-  interviews?: Array<{
-    round: number;
-    type: 'phone' | 'video' | 'in-person' | 'technical' | 'hr';
-    scheduledAt?: Date;
-    completedAt?: Date;
-    // interviewers?: string;
-    feedback?: string;
-    rating?: number; // 1-5
-    status: 'scheduled' | 'completed' | 'cancelled' | 'rescheduled';
-  }>;
+  interviews?: IInterview[];
 
   appliedAt: Date;
   viewedAt?: Date;
@@ -170,10 +161,13 @@ export interface IStatusHistory {
 }
 
 export interface IInterview {
+  _id: string;
   round: number;
   type: 'phone' | 'video' | 'in-person' | 'technical' | 'hr';
   scheduledAt?: Date;
   completedAt?: Date;
+  isRescheduled: boolean;
+  rescheduledReson: string;
   // interviewers: string[];
   feedback?: string;
   rating?: number;
@@ -232,4 +226,60 @@ export interface IApplicantDetails {
   totalExperienceYears: number;
   about?: string;
   location?: string;
+}
+
+export interface InterviewFilter {
+  companyId?: string;
+  jobId?: string;
+  applicationId?: string;
+  applicantId?: string;
+  status?: string[];
+  type?: string[];
+  round?: number;
+  startDate?: Date;
+  endDate?: Date;
+  search?: string;
+}
+
+export interface InterviewWithPopulated {
+  _id: string;
+  interview: IInterview;
+  applicationId: string;
+  jobId: string;
+  jobTitle: string;
+  jobSlug: string;
+  companyId: string;
+  companyName: string;
+  companyEmail: string;
+  companyProfilePicture?: {
+    key: string;
+    location: string;
+  };
+  applicantId: string;
+  applicantName: string;
+  applicantEmail: string;
+  applicantPhone?: string;
+  applicantProfilePicture?: {
+    key: string;
+    location: string;
+  };
+  applicationStatus: string;
+  appliedAt: Date;
+}
+export interface InterviewStats {
+  total: number;
+  byStatus: Record<string, number>;
+  byType: Record<string, number>;
+  upcoming: number;
+  past: number;
+}
+export interface InterviewReturnState {
+  page: number;
+  activeTab: 'all' | 'upcoming' | 'completed';
+  searchQuery: string;
+  selectedStatuses: string[];
+  selectedTypes: string[];
+  companyId?: string | null;
+  jobId?: string | null;
+  applicationId?: string | null;
 }
