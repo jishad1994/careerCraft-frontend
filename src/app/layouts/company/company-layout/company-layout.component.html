@@ -1,6 +1,6 @@
-<div class="flex flex-col min-h-screen bg-gray-50">
+<div class="flex flex-col h-screen bg-gray-50">
 
-  <!-- Header -->
+  <!-- Header - Fixed at top -->
   <app-header
     [logoUrl]="logoUrl"
     [logoRoute]="logoRoute"
@@ -13,28 +13,31 @@
     (logout)="onLogout()">
   </app-header>
 
-  <!-- Body -->
+  <!-- Body - Sidebar fixed, content + footer scrollable -->
   <div class="flex flex-1 overflow-hidden">
 
-    <!-- Sidebar -->
-    <aside class="w-64 flex-shrink-0 sticky top-0 h-screen">
-      <app-company-side-bar></app-company-side-bar>
-    </aside>
+    <!-- Sidebar - Fixed, doesn't scroll -->
+    <app-company-side-bar></app-company-side-bar>
 
-    <!-- Main Content -->
-    <main class="flex-1 overflow-y-auto p-4">
-      <router-outlet></router-outlet>
+    <!-- Main Content Area - Scrollable (includes footer) -->
+    <main class="flex-1 overflow-y-auto">
+      <div class="min-h-full flex flex-col">
+        <!-- Content -->
+        <div class="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6">
+          <router-outlet></router-outlet>
+        </div>
+
+        <!-- Footer - Scrolls with content -->
+        <app-footer
+          *ngIf="showFooter"
+          [logoUrl]="logoUrl"
+          [description]="'Find your suitable candidates or discover top talent. Connecting opportunities with excellence.'"
+          [sections]="footerSections"
+          [socialLinks]="socialLinks">
+        </app-footer>
+      </div>
     </main>
 
   </div>
-
-  <!-- Footer -->
-  <app-footer
-    *ngIf="showFooter"
-    [logoUrl]="logoUrl"
-    [description]="'Find your suitable candidates or discover top talent. Connecting opportunities with excellence.'"
-    [sections]="footerSections"
-    [socialLinks]="socialLinks">
-  </app-footer>
 
 </div>

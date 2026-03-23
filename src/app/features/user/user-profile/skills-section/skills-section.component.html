@@ -1,38 +1,82 @@
-<div class="bg-white rounded-lg shadow-sm p-6">
-    <div class="flex items-center justify-between mb-4">
-        <h2 class="text-xl font-semibold text-gray-900">Skills</h2>
+<div class="space-y-4">
+    <!-- Header -->
+    <div class="flex items-center justify-between">
+        <h2 class="text-lg sm:text-xl font-semibold text-gray-900">Skills</h2>
+        <button 
+            (click)="focusSearchInput()"
+            class="px-3 sm:px-4 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-lg transition-colors flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            <span class="hidden sm:inline">Add Skill</span>
+        </button>
     </div>
 
     <!-- Skills Display -->
-    <div *ngIf=" profile&& profile.skills.length > 0" class="flex flex-wrap gap-2 mb-4">
+    <div *ngIf="profile && profile.skills.length > 0" class="flex flex-wrap gap-2">
         <span *ngFor="let skill of profile.skills"
-            class="px-4 py-2 bg-blue-50 text-blue-700 rounded-full text-sm font-medium flex items-center gap-2">
-            {{ skill.name }}
-            <button (click)="removeSkill(skill.id)" class="hover:text-red-600">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
-                    </path>
+            class="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-blue-50 text-blue-700 rounded-full text-sm font-medium hover:bg-blue-100 transition-colors">
+            <span>{{ skill.name }}</span>
+            <button 
+                (click)="removeSkill(skill.id)" 
+                class="hover:text-red-600 transition-colors"
+                aria-label="Remove skill">
+                <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
             </button>
         </span>
     </div>
 
+    <!-- Empty State -->
+    <div *ngIf="profile && profile.skills.length === 0" class="text-center py-8">
+        <svg class="w-12 h-12 sm:w-16 sm:h-16 mx-auto text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+        </svg>
+        <p class="text-sm sm:text-base text-gray-500">No skills added yet</p>
+        <p class="text-xs sm:text-sm text-gray-400 mt-1">Start by searching and adding your skills below</p>
+    </div>
+
     <!-- Skills Search -->
     <div class="relative">
-        <input type="text" [(ngModel)]="skillsSearchQuery" (input)="searchSkills(skillsSearchQuery)"
-            placeholder="Search and add skills..."
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+        <div class="relative">
+            <input 
+                #searchInput
+                type="text" 
+                [(ngModel)]="skillsSearchQuery" 
+                (ngModelChange)="onSearchChange($event)"
+                placeholder="Search and add skills (e.g., JavaScript, Python)..."
+                class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow">
+            
+            <!-- Loading Spinner -->
+            <div *ngIf="searchingSkills" class="absolute right-3 top-1/2 -translate-y-1/2">
+                <div class="animate-spin rounded-full h-4 w-4 sm:h-5 sm:w-5 border-b-2 border-blue-600"></div>
+            </div>
+        </div>
 
-        <!-- Search Results -->
-        <div *ngIf="searchResults.length > 0"
-            class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-            <button *ngFor="let skill of searchResults" (click)="addSkill(skill._id)"
-                class="w-full px-4 py-2 text-left hover:bg-gray-100 flex items-center justify-between">
-                <span>{{ skill.name }}</span>
-                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <!-- Search Results Dropdown -->
+        <div *ngIf="searchResults.length > 0 && skillsSearchQuery.length >= 2"
+            class="absolute z-10 w-full mt-2 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+            <button 
+                *ngFor="let skill of searchResults" 
+                (click)="addSkill(skill._id)"
+                class="w-full px-3 sm:px-4 py-2 sm:py-3 text-left text-sm sm:text-base hover:bg-gray-50 flex items-center justify-between transition-colors border-b border-gray-100 last:border-b-0">
+                <span class="text-gray-900">{{ skill.name }}</span>
+                <svg class="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                 </svg>
             </button>
         </div>
+
+        <!-- No Results -->
+        <div *ngIf="searchResults.length === 0 && skillsSearchQuery.length >= 2 && !searchingSkills"
+            class="absolute z-10 w-full mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-4 text-center">
+            <p class="text-sm text-gray-500">No skills found for "{{ skillsSearchQuery }}"</p>
+        </div>
     </div>
+
+    <!-- Helper Text -->
+    <p class="text-xs sm:text-sm text-gray-500">
+        Add skills to showcase your expertise. Start typing to search from our skill database.
+    </p>
 </div>

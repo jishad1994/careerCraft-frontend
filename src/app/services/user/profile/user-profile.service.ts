@@ -51,7 +51,6 @@ export class UserProfileService {
       formData,
     );
   }
-  
 
   deleteBannerImage(): Observable<ApiResponse<UserProfile>> {
     return this._http.delete<ApiResponse<UserProfile>>(
@@ -132,24 +131,42 @@ export class UserProfileService {
       formData,
     );
   }
+
+  deleteCertificate(documentKey: string): Observable<ApiResponse<UserProfile>> {
+    return this._http.delete<ApiResponse<UserProfile>>(
+      USER_API_ENDPOINTS.CERTIFICATES.DELETE(documentKey),
+    );
+  }
+
   uploadResume(file: File): Observable<ApiResponse<UserProfile>> {
     const formData = new FormData();
 
     formData.append('resume', file);
 
     return this._http.post<ApiResponse<UserProfile>>(
-     USER_API_ENDPOINTS.RESUMES.ADD,
+      USER_API_ENDPOINTS.RESUMES.ADD,
       formData,
     );
   }
-  deleteCertificate(documentKey: string): Observable<ApiResponse<UserProfile>> {
-    return this._http.delete<ApiResponse<UserProfile>>(
-     USER_API_ENDPOINTS.CERTIFICATES.DELETE(documentKey),
+
+  viewResume(resumeKey: string) {
+    return this._http.get(USER_API_ENDPOINTS.RESUMES.VIEW(resumeKey), {
+      responseType: 'blob',
+    });
+  }
+  
+  viewDocument(documentKey: string, mode: string = 'view') {
+    return this._http.get(
+      USER_API_ENDPOINTS.CERTIFICATES.VIEW(documentKey, mode),
+      {
+        responseType: 'blob',
+      },
     );
   }
-  deleteResume(documentKey: string): Observable<ApiResponse<UserProfile>> {
+
+  deleteResume(resumeKey: string): Observable<ApiResponse<UserProfile>> {
     return this._http.delete<ApiResponse<UserProfile>>(
-      USER_API_ENDPOINTS.RESUMES.DELETE(documentKey),
+      USER_API_ENDPOINTS.RESUMES.DELETE(resumeKey),
     );
   }
 }

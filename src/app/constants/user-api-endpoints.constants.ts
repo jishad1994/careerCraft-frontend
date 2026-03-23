@@ -44,17 +44,23 @@ export const USER_API_ENDPOINTS = {
       `${baseUrl}${userBaseUrl}/me/user-experience/${index}`,
   },
 
-  CERTIFICATES: {
-    ADD: `${baseUrl}${userBaseUrl}/me/certificates`,
-
-    DELETE: (documentKey: string) =>
-      `${baseUrl}${userBaseUrl}/me/certificates?documentKey=${documentKey}`,
-  },
   RESUMES: {
     ADD: `${baseUrl}${userBaseUrl}/me/resumes`,
 
+    VIEW: (resumeKey: string) =>
+      `${baseUrl}${userBaseUrl}/me/resumes/view?resumeKey=${resumeKey}`,
+
     DELETE: (documentKey: string) =>
       `${baseUrl}${userBaseUrl}/me/resumes?documentKey=${documentKey}`,
+  },
+  CERTIFICATES: {
+    ADD: `${baseUrl}${userBaseUrl}/me/certificates`,
+
+    VIEW: (certificateKey: string, mode: string) =>
+      `${baseUrl}${userBaseUrl}/me/certificates/view?certificateKey=${certificateKey}&mode=${mode}`,
+
+    DELETE: (documentKey: string) =>
+      `${baseUrl}${userBaseUrl}/me/certificates?documentKey=${documentKey}`,
   },
 
   JOB: {

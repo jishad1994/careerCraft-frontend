@@ -88,6 +88,15 @@ export class CompanyProfileService {
     );
   }
 
+  viewDocument(documentKey: string, mode: string = 'view') {
+    return this._http.get(
+      COMPANY_API_ENDPOINTS.PROFILE.VIEW_DOCUMENT(documentKey, mode),
+      {
+        responseType: 'blob',
+      },
+    );
+  }
+
   reapplyForVerification(): Observable<ApiResponse<CompanyProfile>> {
     return this._http.patch<ApiResponse<CompanyProfile>>(
       COMPANY_API_ENDPOINTS.PROFILE.REAPPLY_FOR_VERIFICATION,

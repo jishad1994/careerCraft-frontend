@@ -3,6 +3,7 @@ import { ApiResponse } from '../../../models/api-response.model';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { COMPANY_API_ENDPOINTS } from '../../../constants/company-api-endpoints.constants';
+import { IPayment } from '../../../models/payment.model';
 
 interface PaymentIntentResponse {
   clientSecret: string;
@@ -63,7 +64,7 @@ export class PaymentService {
   /**
    * Get payment by ID
    */
-  getPayment(paymentId: string): Observable<ApiResponse<unknown>> {
-    return this._http.get<ApiResponse<unknown>>(`${paymentId}`);  //use case not yet
+  getPayment(paymentId: string): Observable<ApiResponse<IPayment>> {
+    return this._http.get<ApiResponse<IPayment>>(COMPANY_API_ENDPOINTS.SUBSCRIPTION.GET_PAYMENT(paymentId));  //use case not yet
   }
 }

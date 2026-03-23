@@ -9,14 +9,15 @@ import {
 import { CompanyProfile } from '../../../../models/company/company-profile.model';
 import { Subject, takeUntil } from 'rxjs';
 import { CompanyProfileService } from '../../../../services/company/profile/company-profile.service';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
 import { IDocuments } from '../../../../models/user/user-profile.model';
-
+import { MatDialog } from '@angular/material/dialog';
+import { PdfViewerComponent } from '../../../../shared/components/pdf-viewer/pdf-viewer.component';
 @Component({
   selector: 'app-company-document-section',
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './company-document-section.component.html',
   styleUrl: './company-document-section.component.css',
 })
@@ -32,12 +33,13 @@ export class CompanyDocumentSectionComponent implements OnInit, OnDestroy {
   constructor(
     private _companyProfileService: CompanyProfileService,
     private fb: FormBuilder,
-    private _snackBar: MatSnackBar
+    private _snackBar: MatSnackBar,
+    private dialog: MatDialog,
   ) {}
 
   onSelectDocument(): void {
     const fileInput = document.getElementById(
-      'documentInput'
+      'documentInput',
     ) as HTMLInputElement;
     fileInput?.click();
   }
@@ -58,7 +60,7 @@ export class CompanyDocumentSectionComponent implements OnInit, OnDestroy {
         this._snackBar.open(
           'Only PDF, JPEG, and PNG files are allowed',
           'close',
-          { duration: 3000 }
+          { duration: 3000 },
         );
         return;
       }
@@ -94,6 +96,36 @@ export class CompanyDocumentSectionComponent implements OnInit, OnDestroy {
           this._snackBar.open(err.error?.message || 'Upload failed', 'close', {
             duration: 3000,
           });
+        },
+      });
+  }
+
+  viewDocument(doc: IDocuments, mode: string = 'view'): void {
+    if (!doc) return;
+    // Stream resume from backend
+    this._companyProfileService
+      .viewDocument(doc.key)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (blob) => {
+          this.dialog.open(PdfViewerComponent, {
+            width: '90vw',
+            maxWidth: '1200px',
+            height: '90vh',
+            data: {
+              blob,
+              fileName: doc.originalName,
+            },
+          });
+        },
+        error: (error) => {
+          this._snackBar.open(
+            error.message || 'Failed to load Document',
+            'Close',
+            {
+              duration: 3000,
+            },
+          );
         },
       });
   }

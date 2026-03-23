@@ -1,79 +1,186 @@
-<div class="bg-white rounded-lg shadow-sm p-6">
-    <div class="flex items-center justify-between mb-4">
-        <h2 class="text-xl font-semibold text-gray-900">Experience</h2>
-        <button (click)="startAddExperience()" *ngIf="!addingExperience"
-            class="text-blue-600 hover:text-blue-700 flex items-center gap-1">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<div class="space-y-4">
+    <!-- Header -->
+    <div class="flex items-center justify-between">
+        <h2 class="text-lg sm:text-xl font-semibold text-gray-900">Experience</h2>
+        <button 
+            *ngIf="!addingExperience"
+            (click)="startAddExperience()" 
+            class="px-3 sm:px-4 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-lg transition-colors flex items-center gap-2">
+            <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
             </svg>
-            Add Experience
+            <span class="hidden sm:inline">Add Experience</span>
+            <span class="sm:hidden">Add</span>
         </button>
     </div>
 
     <!-- Add Experience Form -->
-    <form *ngIf="addingExperience" [formGroup]="experienceForm"
-        class="p-4 border border-gray-200 rounded-lg space-y-3 mb-4">
-        <h3 class="font-medium text-gray-900">New Experience</h3>
-        <input type="text" formControlName="jobTitle" placeholder="Job Title *"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg">
-        <input type="text" formControlName="company" placeholder="Company *"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg">
-        <div class="grid grid-cols-2 gap-3">
-            <input type="month" formControlName="startDate" class="px-3 py-2 border border-gray-300 rounded-lg">
-            <input type="month" formControlName="endDate" [disabled]="experienceForm.get('isCurrent')?.value"
-                class="px-3 py-2 border border-gray-300 rounded-lg">
+    <form 
+        *ngIf="addingExperience" 
+        [formGroup]="experienceForm"
+        class="p-4 sm:p-5 bg-gray-50 border border-gray-200 rounded-lg space-y-4">
+        <h3 class="text-base sm:text-lg font-semibold text-gray-900">New Experience</h3>
+        
+        <!-- Job Title -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Job Title *</label>
+            <input 
+                type="text" 
+                formControlName="jobTitle" 
+                placeholder="e.g., Software Engineer"
+                class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                [class.border-red-500]="experienceForm.get('jobTitle')?.invalid && experienceForm.get('jobTitle')?.touched">
+            <p *ngIf="experienceForm.get('jobTitle')?.invalid && experienceForm.get('jobTitle')?.touched" 
+               class="text-xs sm:text-sm text-red-600 mt-1">
+                Job title is required
+            </p>
         </div>
-        <label class="flex items-center gap-2">
-            <input type="checkbox" formControlName="isCurrent" class="rounded text-blue-600">
-            <span class="text-sm text-gray-700">I currently work here</span>
+
+        <!-- Company -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Company *</label>
+            <input 
+                type="text" 
+                formControlName="company" 
+                placeholder="e.g., Google"
+                class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                [class.border-red-500]="experienceForm.get('company')?.invalid && experienceForm.get('company')?.touched">
+            <p *ngIf="experienceForm.get('company')?.invalid && experienceForm.get('company')?.touched" 
+               class="text-xs sm:text-sm text-red-600 mt-1">
+                Company name is required
+            </p>
+        </div>
+
+        <!-- Dates -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <!-- Start Date -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Start Date *</label>
+                <input 
+                    type="date" 
+                    formControlName="startDate"
+                    class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    [class.border-red-500]="experienceForm.get('startDate')?.invalid && experienceForm.get('startDate')?.touched">
+                <p *ngIf="experienceForm.get('startDate')?.invalid && experienceForm.get('startDate')?.touched" 
+                   class="text-xs sm:text-sm text-red-600 mt-1">
+                    Start date is required
+                </p>
+            </div>
+
+            <!-- End Date -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                    End Date {{ experienceForm.get('isCurrent')?.value ? '(Current)' : '*' }}
+                </label>
+                <input 
+                    type="date" 
+                    formControlName="endDate" 
+                    [disabled]="experienceForm.get('isCurrent')?.value"
+                    class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
+                    [class.border-red-500]="experienceForm.get('endDate')?.invalid && experienceForm.get('endDate')?.touched && !experienceForm.get('isCurrent')?.value">
+                <p *ngIf="experienceForm.get('endDate')?.invalid && experienceForm.get('endDate')?.touched && !experienceForm.get('isCurrent')?.value" 
+                   class="text-xs sm:text-sm text-red-600 mt-1">
+                    End date is required
+                </p>
+            </div>
+        </div>
+
+        <!-- Currently Working -->
+        <label class="flex items-center gap-2 cursor-pointer">
+            <input 
+                type="checkbox" 
+                formControlName="isCurrent" 
+                class="w-4 h-4 rounded text-blue-600 focus:ring-2 focus:ring-blue-500">
+            <span class="text-sm sm:text-base text-gray-700">I currently work here</span>
         </label>
-        <textarea formControlName="description" rows="3" placeholder="Description"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg"></textarea>
-        <div class="flex gap-2">
-            <button type="button" (click)="saveExperience()"
-                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Save</button>
-            <button type="button" (click)="cancelAddExperience()"
-                class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">Cancel</button>
+
+        <!-- Description -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+            <textarea 
+                formControlName="description" 
+                rows="3" 
+                placeholder="Describe your role and achievements..."
+                class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"></textarea>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex gap-2 sm:gap-3">
+            <button 
+                type="button" 
+                (click)="saveExperience()"
+                [disabled]="loading"
+                class="flex-1 sm:flex-none px-4 sm:px-6 py-2 text-sm font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                {{ loading ? 'Saving...' : 'Save' }}
+            </button>
+            <button 
+                type="button" 
+                (click)="cancelAddExperience()"
+                [disabled]="loading"
+                class="flex-1 sm:flex-none px-4 sm:px-6 py-2 text-sm font-medium border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors">
+                Cancel
+            </button>
         </div>
     </form>
 
+    <!-- Total Experience Display -->
+    <div *ngIf="profile && profile.totalExperienceYears" 
+         class="p-3 sm:p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg flex items-center justify-between">
+        <div>
+            <p class="text-xs sm:text-sm text-blue-700 font-medium">Total Experience</p>
+            <p class="text-lg sm:text-2xl font-bold text-blue-900">
+                {{ profile.totalExperienceYears }} {{ profile.totalExperienceYears === 1 ? 'year' : 'years' }}
+            </p>
+        </div>
+        <svg class="w-8 h-8 sm:w-10 sm:h-10 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+        </svg>
+    </div>
+
     <!-- Experience List -->
-    <div class="space-y-4" *ngIf="profile">
-        <div *ngFor="let exp of profile.experience; let i = index" class="p-4 border border-gray-200 rounded-lg">
+    <div *ngIf="profile" class="space-y-3 sm:space-y-4">
+        <div *ngFor="let exp of profile.experience; let i = index" 
+             class="p-4 sm:p-5 border border-gray-200 rounded-lg hover:shadow-sm transition-shadow">
 
             <!-- View Mode -->
-            <div *ngIf="editingExperience !== i" class="flex gap-4">
-                <div class="flex-shrink-0 w-12 h-12 bg-gray-100 rounded flex items-center justify-center">
-                    <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
-                        </path>
+            <div *ngIf="editingExperience !== i" class="flex gap-3 sm:gap-4">
+                <!-- Icon -->
+                <div class="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 bg-blue-50 rounded-lg flex items-center justify-center">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                     </svg>
                 </div>
-                <div class="flex-1">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <h3 class="font-semibold text-gray-900">{{ exp.jobTitle }}</h3>
-                            <p class="text-gray-600">{{ exp.company }}</p>
-                            <p class="text-sm text-gray-500 mt-1">
-                                {{ formatDate(exp.startDate) }} - {{ exp.isCurrent ? 'Present' :
-                                formatDate(exp.endDate!) }}
+
+                <!-- Content -->
+                <div class="flex-1 min-w-0">
+                    <div class="flex justify-between items-start gap-3">
+                        <div class="flex-1 min-w-0">
+                            <h3 class="text-base sm:text-lg font-semibold text-gray-900 truncate">{{ exp.jobTitle }}</h3>
+                            <p class="text-sm sm:text-base text-gray-600 truncate">{{ exp.company }}</p>
+                            <p class="text-xs sm:text-sm text-gray-500 mt-1">
+                                {{ formatDate(exp.startDate) }} - {{ exp.isCurrent ? 'Present' : formatDate(exp.endDate!) }}
                             </p>
-                            <p *ngIf="exp.description" class="text-gray-700 mt-2">{{ exp.description }}</p>
+                            <p *ngIf="exp.description" class="text-sm sm:text-base text-gray-700 mt-2 line-clamp-3">
+                                {{ exp.description }}
+                            </p>
                         </div>
-                        <div class="flex gap-2">
-                            <button (click)="startEditExperience(i)" class="text-blue-600 hover:text-blue-700">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
-                                    </path>
+
+                        <!-- Actions -->
+                        <div class="flex gap-1 sm:gap-2 flex-shrink-0">
+                            <button 
+                                (click)="startEditExperience(i)" 
+                                class="p-1.5 sm:p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                aria-label="Edit experience">
+                                <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                                 </svg>
                             </button>
-                            <button (click)="deleteExperience(i)" class="text-red-600 hover:text-red-700">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-                                    </path>
+                            <button 
+                                (click)="deleteExperience(i)" 
+                                class="p-1.5 sm:p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                aria-label="Delete experience">
+                                <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                 </svg>
                             </button>
                         </div>
@@ -82,48 +189,111 @@
             </div>
 
             <!-- Edit Mode -->
-            <form *ngIf="editingExperience === i" [formGroup]="experienceForm" class="space-y-3">
-                <input type="text" formControlName="jobTitle" placeholder="Job Title *"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-lg">
-                <input type="text" formControlName="company" placeholder="Company *"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-lg">
-                <div class="grid grid-cols-2 gap-3">
-                    <input type="month" formControlName="startDate" class="px-3 py-2 border border-gray-300 rounded-lg">
-                    <input type="month" formControlName="endDate" [disabled]="experienceForm.get('isCurrent')?.value"
-                        class="px-3 py-2 border border-gray-300 rounded-lg">
+            <form *ngIf="editingExperience === i" [formGroup]="experienceForm" class="space-y-4">
+                <!-- Job Title -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Job Title *</label>
+                    <input 
+                        type="text" 
+                        formControlName="jobTitle" 
+                        placeholder="Job Title"
+                        class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        [class.border-red-500]="experienceForm.get('jobTitle')?.invalid && experienceForm.get('jobTitle')?.touched">
+                    <p *ngIf="experienceForm.get('jobTitle')?.invalid && experienceForm.get('jobTitle')?.touched" 
+                       class="text-xs sm:text-sm text-red-600 mt-1">
+                        Job title is required
+                    </p>
                 </div>
-                <label class="flex items-center gap-2">
-                    <input type="checkbox" formControlName="isCurrent" class="rounded text-blue-600">
-                    <span class="text-sm text-gray-700">I currently work here</span>
+
+                <!-- Company -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Company *</label>
+                    <input 
+                        type="text" 
+                        formControlName="company" 
+                        placeholder="Company"
+                        class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        [class.border-red-500]="experienceForm.get('company')?.invalid && experienceForm.get('company')?.touched">
+                    <p *ngIf="experienceForm.get('company')?.invalid && experienceForm.get('company')?.touched" 
+                       class="text-xs sm:text-sm text-red-600 mt-1">
+                        Company name is required
+                    </p>
+                </div>
+
+                <!-- Dates -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Start Date *</label>
+                        <input 
+                            type="date" 
+                            formControlName="startDate"
+                            class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            [class.border-red-500]="experienceForm.get('startDate')?.invalid && experienceForm.get('startDate')?.touched">
+                        <p *ngIf="experienceForm.get('startDate')?.invalid && experienceForm.get('startDate')?.touched" 
+                           class="text-xs sm:text-sm text-red-600 mt-1">
+                            Start date is required
+                        </p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            End Date {{ experienceForm.get('isCurrent')?.value ? '(Current)' : '*' }}
+                        </label>
+                        <input 
+                            type="date" 
+                            formControlName="endDate" 
+                            [disabled]="experienceForm.get('isCurrent')?.value"
+                            class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
+                            [class.border-red-500]="experienceForm.get('endDate')?.invalid && experienceForm.get('endDate')?.touched && !experienceForm.get('isCurrent')?.value">
+                        <p *ngIf="experienceForm.get('endDate')?.invalid && experienceForm.get('endDate')?.touched && !experienceForm.get('isCurrent')?.value" 
+                           class="text-xs sm:text-sm text-red-600 mt-1">
+                            End date is required
+                        </p>
+                    </div>
+                </div>
+
+                <label class="flex items-center gap-2 cursor-pointer">
+                    <input 
+                        type="checkbox" 
+                        formControlName="isCurrent" 
+                        class="w-4 h-4 rounded text-blue-600 focus:ring-2 focus:ring-blue-500">
+                    <span class="text-sm sm:text-base text-gray-700">I currently work here</span>
                 </label>
-                <textarea formControlName="description" rows="3" placeholder="Description"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-lg"></textarea>
-                <div class="flex gap-2">
-                    <button type="button" (click)="updateExperience(i)"
-                        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Update</button>
-                    <button type="button" (click)="cancelEditExperience()"
-                        class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">Cancel</button>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                    <textarea 
+                        formControlName="description" 
+                        rows="3" 
+                        placeholder="Description"
+                        class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"></textarea>
+                </div>
+
+                <div class="flex gap-2 sm:gap-3">
+                    <button 
+                        type="button" 
+                        (click)="updateExperience(i)"
+                        [disabled]="loading"
+                        class="flex-1 sm:flex-none px-4 sm:px-6 py-2 text-sm font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors">
+                        {{ loading ? 'Updating...' : 'Update' }}
+                    </button>
+                    <button 
+                        type="button" 
+                        (click)="cancelEditExperience()"
+                        [disabled]="loading"
+                        class="flex-1 sm:flex-none px-4 sm:px-6 py-2 text-sm font-medium border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors">
+                        Cancel
+                    </button>
                 </div>
             </form>
         </div>
 
-        <!-- Total Experience Display -->
-        <div class="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-between">
-            <div>
-                <p class="text-sm text-blue-700 font-medium">Total Experience</p>
-                <p class="text-xl font-semibold text-blue-900">
-                    {{ profile.totalExperienceYears || 0 }} years
-                </p>
-            </div>
-            <svg class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M12 8c1.657 0 3-1.343 3-3S13.657 2 12 2 9 3.343 9 5s1.343 3 3 3zM12 14c-4.418 0-8 1.79-8 4v2h16v-2c0-2.21-3.582-4-8-4z" />
+        <!-- Empty State -->
+        <div *ngIf="profile.experience.length === 0 && !addingExperience" class="text-center py-8 sm:py-12">
+            <svg class="w-12 h-12 sm:w-16 sm:h-16 mx-auto text-gray-400 mb-3 sm:mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
             </svg>
-        </div>
-
-
-        <div *ngIf="profile.experience.length === 0 && !addingExperience" class="text-gray-500 text-center py-4">
-            No experience added yet.
+            <p class="text-sm sm:text-base text-gray-500 font-medium">No experience added yet</p>
+            <p class="text-xs sm:text-sm text-gray-400 mt-1">Add your work experience to showcase your career journey</p>
         </div>
     </div>
 </div>

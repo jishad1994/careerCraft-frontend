@@ -46,8 +46,8 @@
                     <!-- Document Name -->
                     <div class="flex-1 min-w-0">
                         <p class="text-sm font-medium text-gray-900 truncate">{{ getDocumentName(doc) }}</p>
-                        <a [href]="doc.signedURL" target="_blank" class="text-xs text-blue-600 hover:underline">View
-                            Document</a>
+                        <button class="text-xs text-blue-600 hover:underline" (click)="viewDocument(doc)">View
+                            Document</button>
                     </div>
                 </div>
 

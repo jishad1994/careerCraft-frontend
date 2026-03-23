@@ -23,62 +23,47 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
         statusCode: err.status,
       };
 
-      // 403: Forbidden or blocked account
-      if (err.status === 403) {
-        snackBar.open(normalizedError.message || 'Access denied', 'Close', {
-          duration: 3000,
-        });
-        authService.logout();
-        router.navigate(['/blocked']);
-      }
-      if (
-        err.status === 401 &&
-        req.url.includes(API_ENDPOINTS.AUTH.REFRESH())
-      ) {
-        snackBar.open('session has expired', 'Close', {
-          duration: 3000,
-        });
+      switch (err.status) {
+        case 0:
+          snackBar.open(
+            'Cannot connect to server. Check your internet.',
+            'Close',
+            { duration: 3000 },
+          );
+          break;
 
-        router.navigate(['auth/login']);
-      }
+        case 401:
+          // If refresh token request fails → logout
+          if (!req.url.includes('/refresh')) {
+            // snackBar.open('Session expired. Please login again.', 'Close', {
+            //   duration: 3000,
+            // });
+            console.log('in error interceptor and logged out:');
 
-      // 404 / 400: Not found / invalid request
-      if (err.status === 404 || err.status === 400) {
-        // snackBar.open(
-        //   normalizedError.message || 'Page not found or invalid request',
-        //   'Close',
-        //   {
-        //     duration: 3000,
-        //   }
-        // );
-        // router.navigate(['/not-found']);
-      }
-
-      // 500: Internal server error
-      if (err.status === 500) {
-        snackBar.open(
-          normalizedError.message || 'Internal server error',
-          'Close',
-          {
-            duration: 3000,
+            // authService.logout();
+            // router.navigate(['/auth/login']);
+            return throwError(() => err);
           }
-        );
-        // router.navigate(['/error']);
-      }
 
-      // Network / unknown errors
-      if (err.status === 0) {
-        snackBar.open(
-          'Cannot connect to server. Check your network.',
-          'Close',
-          {
+          break;
+
+        case 403:
+          snackBar.open(normalizedError.message || 'Access denied', 'Close', {
             duration: 3000,
-          }
-        );
+          });
+
+          authService.logout();
+          router.navigate(['/blocked']);
+
+          break;
+
+        case 500:
+          snackBar.open('Internal server error', 'Close', { duration: 3000 });
+
+          break;
       }
 
-      // Return normalized ApiResponse to components
       return throwError(() => normalizedError);
-    })
+    }),
   );
 };

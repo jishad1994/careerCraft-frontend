@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { CompanySideBarComponent } from '../../../features/company/side-bar/company-side-bar.component';
 import {
   HeaderComponent,
@@ -25,12 +25,14 @@ import { CommonModule } from '@angular/common';
     HeaderComponent,
     FooterComponent,
     RouterOutlet,
-    CommonModule
+    CommonModule,
   ],
   templateUrl: './company-layout.component.html',
   styleUrl: './company-layout.component.css',
 })
 export class CompanyLayoutComponent {
+  @ViewChild(CompanySideBarComponent) sidebar!: CompanySideBarComponent;
+
   destroy$ = new Subject<void>();
   logoUrl = environment.logUrl;
   logoRoute = '/company/dashboard';
@@ -88,7 +90,7 @@ export class CompanyLayoutComponent {
     private _authStateService: AuthStateService,
     private _authService: AuthService,
     private _router: Router,
-    private _snackBar: MatSnackBar
+    private _snackBar: MatSnackBar,
   ) {}
 
   ngOnInit(): void {
@@ -111,16 +113,20 @@ export class CompanyLayoutComponent {
                   };
                 }
                 return null;
-              })
+              }),
             )
             .subscribe((user) => {
               this.currentUser = user;
             });
         },
-        error: () => {
-          this._snackBar.open('User session expired', 'close', {
-            duration: 3000,
-          });
+        error: (error) => {
+          this._snackBar.open(
+            error.message || 'User session expired',
+            'close',
+            {
+              duration: 3000,
+            },
+          );
         },
       });
   }
@@ -144,8 +150,10 @@ export class CompanyLayoutComponent {
             this._router.navigate(['/']);
           }
         },
-        error: () => {
-          this._snackBar.open('Logout failed', 'Close', { duration: 2000 });
+        error: (error) => {
+          this._snackBar.open(error.message || 'Logout failed', 'Close', {
+            duration: 2000,
+          });
         },
       });
   }

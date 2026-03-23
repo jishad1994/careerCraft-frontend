@@ -1,12 +1,14 @@
 import {
   Component,
+  ElementRef,
   EventEmitter,
   Input,
   OnDestroy,
   Output,
+  ViewChild,
 } from '@angular/core';
 import { Skill } from '../../../../models/skill.model';
-import { Subject, takeUntil } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
 import { UserProfileService } from '../../../../services/user/profile/user-profile.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SkillService } from '../../../../services/skill/skill.service';
@@ -16,16 +18,20 @@ import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-skills-section',
-  imports: [CommonModule,FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './skills-section.component.html',
   styleUrl: './skills-section.component.css',
 })
 export class SkillsSectionComponent implements OnDestroy {
+  @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
+  
   skillsSearchQuery = '';
   searchResults: Skill[] = [];
   loading = false;
   searchingSkills: boolean = false;
-  destroy$ = new Subject<void>();
+  
+  private destroy$ = new Subject<void>();
+  private searchSubject$ = new Subject<string>();
 
   @Input() profile: UserProfile | null = null;
   @Output() updatedUser = new EventEmitter<UserProfile>();
@@ -34,17 +40,42 @@ export class SkillsSectionComponent implements OnDestroy {
     private _userProfileService: UserProfileService,
     private _skillService: SkillService,
     private _snackBar: MatSnackBar
-  ) {}
+  ) {
+   
+    this.searchSubject$
+      .pipe(
+        debounceTime(300), 
+        distinctUntilChanged(), 
+        takeUntil(this.destroy$)
+      )
+      .subscribe((query) => {
+        this.performSearch(query);
+      });
+  }
 
-  searchSkills(query: string) {
+ 
+  onSearchChange(query: string): void {
+    this.searchSubject$.next(query);
+  }
+
+ 
+  focusSearchInput(): void {
+    if (this.searchInput) {
+      this.searchInput.nativeElement.focus();
+    }
+  }
+
+
+  private performSearch(query: string): void {
     if (!query || query.length < 2) {
       this.searchResults = [];
+      this.searchingSkills = false;
       return;
     }
 
     this.searchingSkills = true;
-    let page = 1;
-    let limit = 10;
+    const page = 1;
+    const limit = 10;
 
     this._skillService
       .getSkillsPaginated(page, limit, query)
@@ -54,7 +85,6 @@ export class SkillsSectionComponent implements OnDestroy {
           this.searchResults = response.data as Skill[];
           this.searchingSkills = false;
         },
-
         error: () => {
           this.searchingSkills = false;
           this.searchResults = [];
@@ -63,8 +93,8 @@ export class SkillsSectionComponent implements OnDestroy {
   }
 
   addSkill(skillId: string): void {
-
-    console.log("skill id is :",skillId)
+    console.log('Adding skill id:', skillId);
+    
     this._userProfileService
       .addUserSkill(skillId)
       .pipe(takeUntil(this.destroy$))
@@ -73,12 +103,12 @@ export class SkillsSectionComponent implements OnDestroy {
           this.updatedUser.emit(response.data as UserProfile);
           this.skillsSearchQuery = '';
           this.searchResults = [];
-          this._snackBar.open('Skill added', 'close', { duration: 2000 });
+          this._snackBar.open('Skill added', 'Close', { duration: 2000 });
         },
         error: (err) => {
           this._snackBar.open(
             err.error?.message || 'Failed to add skill',
-            'close',
+            'Close',
             { duration: 3000 }
           );
         },
@@ -86,19 +116,18 @@ export class SkillsSectionComponent implements OnDestroy {
   }
 
   removeSkill(skillId: string): void {
+    console.log('Removing skill id:', skillId);
 
-    console.log("skill id is:",skillId);
-    
     this._userProfileService
       .removeUserSkill(skillId)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
           this.updatedUser.emit(response.data as UserProfile);
-          this._snackBar.open('Skill removed', 'close', { duration: 2000 });
+          this._snackBar.open('Skill removed', 'Close', { duration: 2000 });
         },
         error: () => {
-          this._snackBar.open('Failed to remove skill', 'close', {
+          this._snackBar.open('Failed to remove skill', 'Close', {
             duration: 3000,
           });
         },

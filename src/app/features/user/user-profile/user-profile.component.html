@@ -1,5 +1,5 @@
-<div class="min-h-screen bg-gray-100 py-8">
-    <div class="max-w-4xl mx-auto px-4">
+<div class="min-h-screen bg-gray-50 py-4 sm:py-6 lg:py-8">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
 
         <!-- Loading State -->
         <div *ngIf="loading && !profile" class="flex items-center justify-center min-h-[400px]">
@@ -9,34 +9,49 @@
         <!-- Profile Content -->
         <div *ngIf="profile" class="space-y-4">
 
-            <!-- Header Card -->
-            <div class="bg-white rounded-lg shadow-sm overflow-hidden">
-
-
-                <!-- Profile Info -->
-                <div class="px-6 pb-6">
-
-
-
+            <!-- Basic Profile Card -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                <div class="p-4 sm:p-6">
                     <app-basic-profile [profile]="profile" (updatedBasicInfo)="onUpdated($event)"></app-basic-profile>
-
-                    <app-resume-section [profile]="profile" (updatedProfile)="onUpdated($event)"></app-resume-section>
-
-                    <app-document-section [profile]="profile"
-                        (updatedProfile)="onUpdated($event)"></app-document-section>
-
-                    <app-education-section [profile]="profile"
-                        (updatedEducation)="onUpdated($event)"></app-education-section>
-
-                    <app-skills-section [profile]="profile" (updatedUser)="onUpdated($event)"></app-skills-section>
-
-                    <app-experience-section [profile]="profile"
-                        (updatedExperience)="onUpdated($event)"></app-experience-section>
-
-
-
                 </div>
             </div>
+
+           
+
+            <!-- Education Section Card -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                <div class="p-4 sm:p-6">
+                    <app-education-section [profile]="profile" (updatedEducation)="onUpdated($event)"></app-education-section>
+                </div>
+            </div>
+
+            <!-- Skills Section Card -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                <div class="p-4 sm:p-6">
+                    <app-skills-section [profile]="profile" (updatedUser)="onUpdated($event)"></app-skills-section>
+                </div>
+            </div>
+
+            <!-- Experience Section Card -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                <div class="p-4 sm:p-6">
+                    <app-experience-section [profile]="profile" (updatedExperience)="onUpdated($event)"></app-experience-section>
+                </div>
+            </div>
+             <!-- Resume Section Card -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                <div class="p-4 sm:p-6">
+                    <app-resume-section [profile]="profile" (updatedProfile)="onUpdated($event)"></app-resume-section>
+                </div>
+            </div>
+
+            <!-- Documents Section Card -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                <div class="p-4 sm:p-6">
+                    <app-document-section [profile]="profile" (updatedProfile)="onUpdated($event)"></app-document-section>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>

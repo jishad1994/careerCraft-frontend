@@ -1,41 +1,42 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { IDocuments, UserProfile } from '../../../../models/user/user-profile.model';
+import {
+  IDocuments,
+  UserProfile,
+} from '../../../../models/user/user-profile.model';
 import { Subject, takeUntil } from 'rxjs';
 import { UserProfileService } from '../../../../services/user/profile/user-profile.service';
-import { FormBuilder, FormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { PdfViewerComponent } from '../../../../shared/components/pdf-viewer/pdf-viewer.component';
 
 @Component({
   selector: 'app-resume-section',
-  imports: [CommonModule,FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './resume-section.component.html',
-  styleUrl: './resume-section.component.css'
+  styleUrl: './resume-section.component.css',
 })
 export class ResumeSectionComponent {
-@Input() profile: UserProfile | null = null;
-
-@Output() updatedProfile = new EventEmitter<UserProfile>();
+  @Input() profile: UserProfile | null = null;
+  @Output() updatedProfile = new EventEmitter<UserProfile>();
 
   uploadingDocument = false;
-
   loading = false;
   destroy$ = new Subject<void>();
 
   constructor(
     private _userProfileService: UserProfileService,
-    private _snackBar: MatSnackBar
+    private _snackBar: MatSnackBar,
+    private dialog: MatDialog,
   ) {}
 
-  onSelectDocument(): void {
-    const fileInput = document.getElementById(
-      'documentInput'
-    ) as HTMLInputElement;
+  onSelectResume(): void {
+    const fileInput = document.getElementById('documentInput') as HTMLInputElement;
     fileInput?.click();
   }
 
-  onDocumentSelected(event: Event): void {
-    
+  onResumeSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
 
     if (input.files && input.files[0]) {
@@ -47,28 +48,32 @@ export class ResumeSectionComponent {
         'image/jpg',
         'image/png',
       ];
+      
       if (!allowedTypes.includes(file.type)) {
         this._snackBar.open(
           'Only PDF, JPEG, and PNG files are allowed',
-          'close',
+          'Close',
           { duration: 3000 }
         );
         return;
       }
 
       if (file.size > 10 * 1024 * 1024) {
-        this._snackBar.open('File size must be less than 10MB', 'close', {
-          duration: 3000,
-        });
+        this._snackBar.open(
+          'File size must be less than 10MB',
+          'Close',
+          { duration: 3000 }
+        );
         return;
       }
 
-      this.uploadDocument(file);
+      this.uploadResume(file);
     }
   }
 
-  uploadDocument(file: File): void {
+  uploadResume(file: File): void {
     this.uploadingDocument = true;
+    
     this._userProfileService
       .uploadResume(file)
       .pipe(takeUntil(this.destroy$))
@@ -78,27 +83,58 @@ export class ResumeSectionComponent {
             this.updatedProfile.emit(response.data as UserProfile);
           }
           this.uploadingDocument = false;
-          this._snackBar.open( 'Resume uploaded successfully', 'close', {
-            duration: 2000,
-          });
+          this._snackBar.open(
+            response.message || 'Resume uploaded successfully',
+            'Close',
+            { duration: 2000 }
+          );
         },
         error: (err) => {
           this.uploadingDocument = false;
-          this._snackBar.open(err.message || 'Upload failed', 'close', {
-            duration: 3000,
-          });
-
-          
+          this._snackBar.open(
+            err.message || 'Upload failed',
+            'Close',
+            { duration: 3000 }
+          );
         },
       });
   }
 
-  deleteDocument(documentkey: string): void {
-    if (!confirm('Delete this resume?')) return;
+  viewResume(doc: IDocuments): void {
+    if (!doc) return;
+    
+    this._userProfileService
+      .viewResume(doc.key)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (blob) => {
+          this.dialog.open(PdfViewerComponent, {
+            width: '90vw',
+            maxWidth: '1200px',
+            height: '90vh',
+            data: {
+              blob,
+              fileName: doc.originalName,
+            },
+          });
+        },
+        error: (error) => {
+          this._snackBar.open(
+            error.message || 'Failed to load document',
+            'Close',
+            { duration: 3000 }
+          );
+        },
+      });
+  }
+
+  deleteResume(resumeKey: string): void {
+    if (!confirm('Are you sure you want to delete this resume?')) return;
 
     this.loading = true;
+    
     this._userProfileService
-      .deleteResume(documentkey)
+      .deleteResume(resumeKey)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
@@ -106,13 +142,19 @@ export class ResumeSectionComponent {
             this.updatedProfile.emit(response.data as UserProfile);
           }
           this.loading = false;
-          this._snackBar.open('Resume deleted successfully', 'close', {
-            duration: 2000,
-          });
+          this._snackBar.open(
+            'Resume deleted successfully',
+            'Close',
+            { duration: 2000 }
+          );
         },
-        error: () => {
+        error: (error) => {
           this.loading = false;
-          this._snackBar.open('Delete failed', 'close', { duration: 3000 });
+          this._snackBar.open(
+            error.message || 'Delete failed',
+            'Close',
+            { duration: 3000 }
+          );
         },
       });
   }
@@ -130,8 +172,6 @@ export class ResumeSectionComponent {
     }
     return 'image';
   }
-
-  ngOnInit(): void {}
 
   ngOnDestroy(): void {
     this.destroy$.next();

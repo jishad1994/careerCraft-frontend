@@ -11,10 +11,7 @@ import {
 } from 'rxjs';
 import { IRegisterData } from '../../models/auth.interface';
 import { API_ENDPOINTS } from '../../constants/api-endpoints.constants';
-import {
-  AuthResponseUserDTO,
-  ILoginCredentials,
-} from '../../models/auth.dto';
+import { AuthResponseUserDTO, ILoginCredentials } from '../../models/auth.dto';
 import { AuthStateService } from '../authState/auth-state.service';
 import { Router } from '@angular/router';
 import { ApiResponse } from '../../models/api-response.model';
@@ -26,7 +23,7 @@ export class AuthService {
   constructor(
     private _http: HttpClient,
     private _authStateService: AuthStateService,
-    private _router: Router
+    private _router: Router,
   ) {}
 
   //base url from environment files
@@ -35,11 +32,11 @@ export class AuthService {
   //check phone number exists
   checkPhoneOrEmailExists(
     phoneOrEmail: string,
-    role: string
+    role: string,
   ): Observable<ApiResponse<{ exists: boolean }>> {
     return this._http.post<ApiResponse<{ exists: boolean }>>(
       API_ENDPOINTS.AUTH.CHECK_PHONE_OR_EMAIL(role),
-      { phoneOrEmail, role }
+      { phoneOrEmail, role },
     );
   }
 
@@ -47,7 +44,9 @@ export class AuthService {
 
   refresh(): Observable<ApiResponse<AuthResponseUserDTO>> {
     return this._http
-      .get<ApiResponse<AuthResponseUserDTO>>(API_ENDPOINTS.AUTH.REFRESH())
+      .get<
+        ApiResponse<AuthResponseUserDTO>
+      >(API_ENDPOINTS.AUTH.REFRESH(), { withCredentials: true })
       .pipe(
         tap((response) => {
           this._authStateService.updateState({
@@ -66,19 +65,18 @@ export class AuthService {
           });
 
           return throwError(() => error);
-        })
+        }),
       );
   }
 
   //Login
   login(
-    payload: ILoginCredentials
+    payload: ILoginCredentials,
   ): Observable<ApiResponse<AuthResponseUserDTO>> {
     return this._http
-      .post<ApiResponse<AuthResponseUserDTO>>(
-        API_ENDPOINTS.AUTH.LOGIN(payload.role),
-        payload
-      )
+      .post<
+        ApiResponse<AuthResponseUserDTO>
+      >(API_ENDPOINTS.AUTH.LOGIN(payload.role), payload)
       .pipe(
         tap((response) => {
           if (response.success) {
@@ -90,7 +88,7 @@ export class AuthService {
         catchError((error) => {
           this._authStateService.logout();
           return throwError(() => error);
-        })
+        }),
       );
   }
 
@@ -102,7 +100,7 @@ export class AuthService {
         {},
         {
           withCredentials: true,
-        }
+        },
       )
       .pipe(
         tap((response) => {
@@ -113,40 +111,40 @@ export class AuthService {
         catchError((error) => {
           console.log(error.message);
           return throwError(error);
-        })
+        }),
       );
   }
 
   //user register
   userSignup(
     email: string,
-    role: string
+    role: string,
   ): Observable<ApiResponse<{ email: string; role: string }>> {
     const payload = { email, role };
     return this._http.post<ApiResponse<{ email: string; role: string }>>(
       API_ENDPOINTS.AUTH.SIGNUP(role),
-      payload
+      payload,
     );
   }
 
   //request OTP
   requestOTP(
-    payload: IRegisterData
+    payload: IRegisterData,
   ): Observable<ApiResponse<{ email: string; role: string }>> {
     return this._http.post<ApiResponse<{ email: string; role: string }>>(
       API_ENDPOINTS.AUTH.REQUEST_OTP(payload.role),
-      payload
+      payload,
     );
   }
 
   resendOTP(
     email: string,
-    role: string
+    role: string,
   ): Observable<ApiResponse<{ email: string; role: string }>> {
     const payload = { email, role };
     return this._http.post<ApiResponse<{ email: string; role: string }>>(
       API_ENDPOINTS.AUTH.RESEND_OTP(payload.role),
-      payload
+      payload,
     );
   }
 
@@ -154,12 +152,12 @@ export class AuthService {
   verifyOTP(
     otp: string,
     email: string,
-    role: string
+    role: string,
   ): Observable<ApiResponse<{ email: string; role: string }>> {
     const payload = { otp, email, role };
     return this._http.post<ApiResponse<{ email: string; role: string }>>(
       API_ENDPOINTS.AUTH.VERIFY_OTP(role),
-      payload
+      payload,
     );
   }
 
@@ -167,12 +165,12 @@ export class AuthService {
 
   forgotPassword(
     email: string,
-    role: 'user' | 'company'
+    role: 'user' | 'company',
   ): Observable<ApiResponse<null>> {
     const payload = { email, role };
     return this._http.post<ApiResponse<null>>(
       API_ENDPOINTS.AUTH.FORGOT_PASSWORD(payload.role),
-      payload
+      payload,
     );
   }
 
@@ -180,14 +178,14 @@ export class AuthService {
   resetPassword(
     newPassword: string,
     resetPasswordToken: string,
-    role: string
+    role: string,
   ): Observable<ApiResponse<null>> {
     return this._http.post<ApiResponse<null>>(
       API_ENDPOINTS.AUTH.RESET_PASSWORD(role),
       {
         newPassword,
         resetPasswordToken,
-      }
+      },
     );
   }
 }

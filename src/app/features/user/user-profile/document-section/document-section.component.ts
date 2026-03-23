@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Component, EventEmitter, Input, Output, OnDestroy } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import {
   IDocuments,
   UserProfile,
@@ -15,25 +15,22 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   templateUrl: './document-section.component.html',
   styleUrl: './document-section.component.css',
 })
-export class DocumentSectionComponent {
+export class DocumentSectionComponent implements OnDestroy {
   @Input() profile: UserProfile | null = null;
   @Output() updatedProfile = new EventEmitter<UserProfile>();
 
   uploadingDocument = false;
   loading = false;
 
-  destroy$ = new Subject<void>();
+  private destroy$ = new Subject<void>();
 
   constructor(
     private _userProfileService: UserProfileService,
-    private fb: FormBuilder,
     private _snackBar: MatSnackBar
   ) {}
 
   onSelectDocument(): void {
-    const fileInput = document.getElementById(
-      'documentInput'
-    ) as HTMLInputElement;
+    const fileInput = document.getElementById('documentInput') as HTMLInputElement;
     fileInput?.click();
   }
 
@@ -49,19 +46,22 @@ export class DocumentSectionComponent {
         'image/jpg',
         'image/png',
       ];
+      
       if (!allowedTypes.includes(file.type)) {
         this._snackBar.open(
           'Only PDF, JPEG, and PNG files are allowed',
-          'close',
+          'Close',
           { duration: 3000 }
         );
         return;
       }
 
       if (file.size > 10 * 1024 * 1024) {
-        this._snackBar.open('File size must be less than 10MB', 'close', {
-          duration: 3000,
-        });
+        this._snackBar.open(
+          'File size must be less than 10MB',
+          'Close',
+          { duration: 3000 }
+        );
         return;
       }
 
@@ -71,6 +71,7 @@ export class DocumentSectionComponent {
 
   uploadDocument(file: File): void {
     this.uploadingDocument = true;
+    
     this._userProfileService
       .uploadCertificate(file)
       .pipe(takeUntil(this.destroy$))
@@ -80,25 +81,50 @@ export class DocumentSectionComponent {
             this.updatedProfile.emit(response.data as UserProfile);
           }
           this.uploadingDocument = false;
-          this._snackBar.open('Document uploaded successfully', 'close', {
+          this._snackBar.open('Document uploaded successfully', 'Close', {
             duration: 2000,
           });
         },
         error: (err) => {
           this.uploadingDocument = false;
-          this._snackBar.open(err.error?.message || 'Upload failed', 'close', {
-            duration: 3000,
-          });
+          this._snackBar.open(
+            err.error?.message || 'Upload failed',
+            'Close',
+            { duration: 3000 }
+          );
         },
       });
   }
 
-  deleteDocument(documentkey: string): void {
-    if (!confirm('Delete this document?')) return;
+  viewDocument(doc: IDocuments): void {
+    this._userProfileService
+      .viewDocument(doc.key)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (blob) => {
+          const url = window.URL.createObjectURL(blob);
+          window.open(url, '_blank');
+          
+          // Clean up the URL after opening
+          setTimeout(() => window.URL.revokeObjectURL(url), 100);
+        },
+        error: (err) => {
+          this._snackBar.open(
+            err.message || 'Failed to view document',
+            'Close',
+            { duration: 3000 }
+          );
+        },
+      });
+  }
+
+  deleteDocument(documentKey: string): void {
+    if (!confirm('Are you sure you want to delete this document?')) return;
 
     this.loading = true;
+    
     this._userProfileService
-      .deleteCertificate(documentkey)
+      .deleteCertificate(documentKey)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
@@ -106,13 +132,13 @@ export class DocumentSectionComponent {
             this.updatedProfile.emit(response.data as UserProfile);
           }
           this.loading = false;
-          this._snackBar.open('Document deleted successfully', 'close', {
+          this._snackBar.open('Document deleted successfully', 'Close', {
             duration: 2000,
           });
         },
         error: () => {
           this.loading = false;
-          this._snackBar.open('Delete failed', 'close', { duration: 3000 });
+          this._snackBar.open('Delete failed', 'Close', { duration: 3000 });
         },
       });
   }
@@ -130,8 +156,6 @@ export class DocumentSectionComponent {
     }
     return 'image';
   }
-
-  ngOnInit(): void {}
 
   ngOnDestroy(): void {
     this.destroy$.next();

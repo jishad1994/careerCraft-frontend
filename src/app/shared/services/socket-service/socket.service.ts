@@ -3,6 +3,82 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
 import { INotification } from '../../../models/notification/notification.model';
 import { environment } from '../../../environments/environment';
+
+export interface WebRTCOffer {
+  offer: RTCSessionDescriptionInit;
+  from: string;
+}
+
+export interface WebRTCAnswer {
+  answer: RTCSessionDescriptionInit;
+  from: string;
+}
+
+export interface ICECandidate {
+  candidate: RTCIceCandidateInit;
+  from: string;
+}
+
+export interface UserJoined {
+  userId: string;
+  role: 'user' | 'company' | 'admin';
+  socketId: string;
+}
+
+export interface UserLeft {
+  userId: string;
+  socketId: string;
+}
+
+export interface ConnectionRequested {
+  from: string;
+  roomId: string;
+}
+
+export interface Participant {
+  userId: string;
+  role: 'user' | 'company' | 'admin';
+  socketId: string;
+  joinedAt: Date;
+  leftAt?: Date;
+  status: 'waiting' | 'connected' | 'disconnected';
+}
+
+export interface CallSession {
+  _id?: string;
+  interviewId: string;
+  applicationId: string;
+  roomId: string;
+  participants: Participant[];
+  callType: 'video' | 'audio';
+  status: 'waiting' | 'active' | 'ended';
+  startedAt: Date;
+  endedAt?: Date;
+  duration?: number;
+  recordingUrl?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface JoinedInterview {
+  roomId: string;
+  session: CallSession;
+  shouldInitiate: boolean;
+  existingParticipants: Participant[];
+}
+
+export interface NotificationCount {
+  count: number;
+}
+
+export interface SocketError {
+  message: string;
+}
+
+export interface NotificationMarkRead {
+  notificationId: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })

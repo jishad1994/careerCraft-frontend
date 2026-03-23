@@ -33,7 +33,7 @@ export class LoginPageComponent implements OnDestroy {
     private _snackBar: MatSnackBar,
     private _router: Router,
     private _googleAuth: GoogleAuthService,
-    private store: Store<AppState>
+    private store: Store<AppState>,
   ) {}
 
   loading: boolean = false;
@@ -59,7 +59,9 @@ export class LoginPageComponent implements OnDestroy {
         },
         error: (error) => {
           this.loading = false;
-          this._snackBar.open('Login Failed', 'close', { duration: 2000 });
+          this._snackBar.open(error.message || 'Login Failed', 'close', {
+            duration: 2000,
+          });
         },
       });
   }
@@ -85,7 +87,9 @@ export class LoginPageComponent implements OnDestroy {
               }
             },
             error: (error) => {
-              this._snackBar.open('Login Failed', 'close', { duration: 2000 });
+              this._snackBar.open(error.message || 'Login Failed', 'close', {
+                duration: 2000,
+              });
             },
           });
       },

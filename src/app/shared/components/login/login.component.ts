@@ -16,7 +16,7 @@ import { NoSpaceDirective } from '../../../custom-directives/no-space.directive'
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink,NoSpaceDirective],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, NoSpaceDirective],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
@@ -59,6 +59,10 @@ export class LoginComponent {
 
   get password() {
     return this.loginForm.get('password')!;
+  }
+
+  selectRole(role: 'user' | 'company'): void {
+    this.selectedRole = role;
   }
 
   handleGoogleLogin() {

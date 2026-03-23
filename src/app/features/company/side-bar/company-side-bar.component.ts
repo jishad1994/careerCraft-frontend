@@ -1,6 +1,7 @@
+import { Component, HostListener } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
+import { AuthService } from '../../../services/auth/auth.service';
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-company-side-bar',
@@ -11,11 +12,30 @@ import { RouterModule } from '@angular/router';
 export class CompanySideBarComponent {
   collapsed = false;
   jobMenuOpen = false;
+  isMobileMenuOpen = false;
+  isDesktop = window.innerWidth >= 1024;
+
+  constructor(
+    private router: Router,
+    private authService: AuthService
+  ) {}
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.isDesktop = event.target.innerWidth >= 1024;
+    if (this.isDesktop) {
+      this.isMobileMenuOpen = false;
+    }
+  }
 
   toggleSidebar() {
-    this.collapsed = !this.collapsed;
-    if (!this.collapsed) {
-      this.jobMenuOpen = false;
+    if (this.isDesktop) {
+      this.collapsed = !this.collapsed;
+      if (!this.collapsed) {
+        this.jobMenuOpen = false;
+      }
+    } else {
+      this.isMobileMenuOpen = !this.isMobileMenuOpen;
     }
   }
 
@@ -25,7 +45,14 @@ export class CompanySideBarComponent {
     }
   }
 
+  closeMobileMenu() {
+    if (!this.isDesktop) {
+      this.isMobileMenuOpen = false;
+    }
+  }
+
   logout() {
-    console.log('logout button clicked');
+    this.authService.logout();
+    this.router.navigate(['/auth/login']);
   }
 }

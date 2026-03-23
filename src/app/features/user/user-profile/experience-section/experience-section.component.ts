@@ -7,7 +7,7 @@ import {
   Output,
 } from '@angular/core';
 import { UserProfileService } from '../../../../services/user/profile/user-profile.service';
-import { Experience, UserProfile } from '../../../../models/user/user-profile.model';
+import { UserProfile } from '../../../../models/user/user-profile.model';
 import {
   FormBuilder,
   FormGroup,
@@ -26,7 +26,6 @@ import { Subject, takeUntil } from 'rxjs';
 })
 export class ExperienceSectionComponent implements OnInit, OnDestroy {
   @Input() profile: UserProfile | null = null;
-
   @Output() updatedExperience = new EventEmitter<UserProfile>();
 
   experienceForm!: FormGroup;
@@ -34,7 +33,7 @@ export class ExperienceSectionComponent implements OnInit, OnDestroy {
   addingExperience: boolean = false;
   loading = false;
 
-  destroy$ = new Subject<void>();
+  private destroy$ = new Subject<void>();
 
   constructor(
     private _userProfileService: UserProfileService,
@@ -43,13 +42,30 @@ export class ExperienceSectionComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.initForm();
+  }
+
+  initForm(): void {
     this.experienceForm = this._fb.group({
-      jobTitle: ['', Validators.required],
-      company: ['', Validators.required],
+      jobTitle: ['', [Validators.required, Validators.minLength(2)]],
+      company: ['', [Validators.required, Validators.minLength(2)]],
       startDate: ['', Validators.required],
       endDate: [''],
       isCurrent: [false],
-      description: [''],
+      description: ['', Validators.maxLength(500)],
+    });
+
+    this.experienceForm.get('isCurrent')?.valueChanges.subscribe((isCurrent) => {
+      const endDateControl = this.experienceForm.get('endDate');
+      
+      if (isCurrent) {
+        endDateControl?.clearValidators();
+        endDateControl?.setValue('');
+      } else {
+        endDateControl?.setValidators([Validators.required]);
+      }
+      
+      endDateControl?.updateValueAndValidity();
     });
   }
 
@@ -61,27 +77,38 @@ export class ExperienceSectionComponent implements OnInit, OnDestroy {
   startEditExperience(index: number): void {
     this.editingExperience = index;
     const experienceToUpdate = this.profile!.experience[index];
-    this.experienceForm.patchValue(experienceToUpdate);
+    
+    const formattedExperience = {
+      ...experienceToUpdate,
+      startDate: this.formatDateForInput(experienceToUpdate.startDate),
+      endDate: experienceToUpdate.endDate ? this.formatDateForInput(experienceToUpdate.endDate) : '',
+    };
+    
+    this.experienceForm.patchValue(formattedExperience);
   }
 
   cancelAddExperience(): void {
     this.addingExperience = false;
-    this.experienceForm.reset();
+    this.experienceForm.reset({ isCurrent: false });
   }
 
-  cancelEditExperience() {
+  cancelEditExperience(): void {
     this.editingExperience = null;
-    this.experienceForm.reset();
+    this.experienceForm.reset({ isCurrent: false });
   }
 
   saveExperience(): void {
     if (this.experienceForm.invalid) {
       this.experienceForm.markAllAsTouched();
+      this._snackBar.open('Please fill in all required fields', 'Close', {
+        duration: 3000,
+      });
       return;
     }
 
-    const experience = this.experienceForm.value;
+    const experience = this.prepareExperienceData();
     this.loading = true;
+
     this._userProfileService
       .addExperience(experience)
       .pipe(takeUntil(this.destroy$))
@@ -89,10 +116,9 @@ export class ExperienceSectionComponent implements OnInit, OnDestroy {
         next: (response) => {
           this.addingExperience = false;
           this.updatedExperience.emit(response.data as UserProfile);
-          this.experienceForm.reset();
+          this.experienceForm.reset({ isCurrent: false });
           this.loading = false;
-
-          this._snackBar.open('Experience added successfully', 'close', {
+          this._snackBar.open('Experience added successfully', 'Close', {
             duration: 2000,
           });
         },
@@ -100,7 +126,7 @@ export class ExperienceSectionComponent implements OnInit, OnDestroy {
           this.loading = false;
           this._snackBar.open(
             err.error?.message || 'Failed to add experience',
-            'close',
+            'Close',
             { duration: 3000 }
           );
         },
@@ -110,35 +136,44 @@ export class ExperienceSectionComponent implements OnInit, OnDestroy {
   updateExperience(index: number): void {
     if (this.experienceForm.invalid) {
       this.experienceForm.markAllAsTouched();
+      this._snackBar.open('Please fill in all required fields', 'Close', {
+        duration: 3000,
+      });
       return;
     }
 
+    const experience = this.prepareExperienceData();
     this.loading = true;
+
     this._userProfileService
-      .updateExperience(index,this.experienceForm.value)
+      .updateExperience(index, experience)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
           this.updatedExperience.emit(response.data as UserProfile);
           this.editingExperience = null;
+          this.experienceForm.reset({ isCurrent: false });
           this.loading = false;
-          this._snackBar.open('Experience updated successfully', 'close', {
+          this._snackBar.open('Experience updated successfully', 'Close', {
             duration: 2000,
           });
         },
         error: (err) => {
           this.loading = false;
-          this._snackBar.open(err.error?.message || 'Update failed', 'close', {
-            duration: 3000,
-          });
+          this._snackBar.open(
+            err.error?.message || 'Update failed',
+            'Close',
+            { duration: 3000 }
+          );
         },
       });
   }
 
   deleteExperience(index: number): void {
-    if (!confirm('Delete this experience entry?')) return;
+    if (!confirm('Are you sure you want to delete this experience?')) return;
 
     this.loading = true;
+
     this._userProfileService
       .deleteExperience(index)
       .pipe(takeUntil(this.destroy$))
@@ -146,26 +181,42 @@ export class ExperienceSectionComponent implements OnInit, OnDestroy {
         next: (response) => {
           this.updatedExperience.emit(response.data as UserProfile);
           this.loading = false;
-          this._snackBar.open('Experience deleted', 'close', {
+          this._snackBar.open('Experience deleted successfully', 'Close', {
             duration: 2000,
           });
         },
-        error: (err) => {
+        error: () => {
           this.loading = false;
-          this._snackBar.open('Delete failed', 'close', { duration: 3000 });
+          this._snackBar.open('Delete failed', 'Close', { duration: 3000 });
         },
       });
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+  private prepareExperienceData(): any {
+    const formValue = this.experienceForm.value;
+    return {
+      ...formValue,
+      // Convert date strings to Date objects
+      startDate: new Date(formValue.startDate),
+      endDate: formValue.isCurrent ? undefined : new Date(formValue.endDate),
+    };
   }
+
   formatDate(dateString: string): string {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
       month: 'short',
       year: 'numeric',
     });
+  }
+
+  private formatDateForInput(dateString: string | Date): string {
+    const date = new Date(dateString);
+    return date.toISOString().split('T')[0];
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

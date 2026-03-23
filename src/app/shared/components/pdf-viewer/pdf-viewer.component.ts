@@ -33,7 +33,7 @@ interface PdfViewerData {
 })
 export class PdfViewerComponent implements OnInit, OnDestroy {
    resumeUrl: SafeResourceUrl | null = null;
-  fileName = 'resume.pdf';
+  fileName = 'document.pdf';
   downloading = false;
 
   private objectUrl: string | null = null;
