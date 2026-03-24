@@ -11,10 +11,11 @@ import { FooterComponent, FooterSection, SocialLink } from "../../../shared/comp
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { HeaderComponent, NavItem } from "../../../shared/components/header/header.component";
+import { FloatingChatBarComponent } from "../../../shared/components/chat/floating-chat-bar/floating-chat-bar.component";
 
 @Component({
     selector: "app-user-layout",
-    imports: [FooterComponent, CommonModule, RouterModule, FormsModule, RouterOutlet, HeaderComponent],
+    imports: [FooterComponent, CommonModule, RouterModule, FormsModule, RouterOutlet, HeaderComponent, FloatingChatBarComponent],
     templateUrl: "./user-layout.component.html",
     styleUrl: "./user-layout.component.css",
 })
@@ -37,8 +38,8 @@ export class UserLayoutComponent {
             route: "/user/my-applications",
         },
         {
-            label: "Saved Jobs",
-            route: "/user/saved",
+            label: "Messages",
+            route: "/user/messages",
         },
         {
             label: "Companies",

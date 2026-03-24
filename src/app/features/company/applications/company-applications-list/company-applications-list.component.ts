@@ -18,6 +18,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { SkillService } from '../../../../services/skill/skill.service';
 import { ResumeService } from '../../../../shared/services/resume-service/resume.service';
 import { PdfViewerComponent } from '../../../../shared/components/pdf-viewer/pdf-viewer.component';
+import { ChatInitiationService } from '../../../../shared/services/chat-inititaion-service/chat-initiation.service';
 
 interface CandidateFilters {
   status: string[];
@@ -126,6 +127,7 @@ export class CompanyApplicationsListComponent implements OnInit, OnDestroy {
     private readonly snackBar: MatSnackBar,
     private readonly dialog: MatDialog,
     private readonly resumeService: ResumeService,
+    private chatInitiationService: ChatInitiationService
   ) {}
 
   ngOnInit(): void {
@@ -182,6 +184,7 @@ export class CompanyApplicationsListComponent implements OnInit, OnDestroy {
       });
   }
 
+  
   onSkillSearchInput(event: Event): void {
     const input = event.target as HTMLInputElement;
     this.skillSearch$.next(input.value);
@@ -464,5 +467,18 @@ export class CompanyApplicationsListComponent implements OnInit, OnDestroy {
 
   toPaginationResults(page: number, limit: number, totalItems: number): number {
     return Math.min(page * limit, totalItems);
+  }
+
+    messageApplicant(application: IJobApplicationDetails): void {
+    if (application.status !== 'shortlisted') {
+      // Optional: Show message that chat is only available for shortlisted
+      return;
+    }
+ 
+    this.chatInitiationService.initiateFromApplication(
+      application.applicantDetails._id,
+      application.jobDetails._id,
+      application._id
+    );
   }
 }

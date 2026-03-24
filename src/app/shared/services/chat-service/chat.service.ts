@@ -23,8 +23,8 @@ export class ChatService {
         return this.http.get<ApiResponse<Conversation>>(CHAT_ENDPOINTS.GET_CONVERSATION_BY_ID(id));
     }
 
-    getMessages(conversationId: string, page: number = 1, limit: number = 50): Observable<ApiResponse<Message>> {
-        return this.http.get<ApiResponse<Message>>(CHAT_ENDPOINTS.GET_MESSAGES(conversationId), {
+    getMessages(conversationId: string, page: number = 1, limit: number = 50): Observable<ApiResponse<Message[]>> {
+        return this.http.get<ApiResponse<Message[]>>(CHAT_ENDPOINTS.GET_MESSAGES(conversationId), {
             params: { page: page.toString(), limit: limit.toString() },
         });
     }

@@ -47,6 +47,13 @@ export const USER_ROUTES: Routes = [
             (m) => m.userJobApplicationRoutes,
           ),
       },
+      {
+        path: 'messages',
+        loadComponent: () =>
+          import('../../shared/components/chat/chat-page/chat-page.component').then(
+            (m) => m.ChatPageComponent,
+          ),
+      },
 
       { path: '**', redirectTo: 'home' },
     ],

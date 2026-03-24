@@ -1,459 +1,608 @@
-import { Injectable, OnDestroy } from '@angular/core';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { io, Socket } from 'socket.io-client';
-import { INotification } from '../../../models/notification/notification.model';
-import { environment } from '../../../environments/environment';
+import { Injectable, OnDestroy } from "@angular/core";
+import { BehaviorSubject, Observable, Subject } from "rxjs";
+import { io, Socket } from "socket.io-client";
+import { INotification } from "../../../models/notification/notification.model";
+import { environment } from "../../../environments/environment";
+import { Message, TypingIndicator } from "../../../models/chat.model";
 
 export interface WebRTCOffer {
-  offer: RTCSessionDescriptionInit;
-  from: string;
+    offer: RTCSessionDescriptionInit;
+    from: string;
 }
 
 export interface WebRTCAnswer {
-  answer: RTCSessionDescriptionInit;
-  from: string;
+    answer: RTCSessionDescriptionInit;
+    from: string;
 }
 
 export interface ICECandidate {
-  candidate: RTCIceCandidateInit;
-  from: string;
+    candidate: RTCIceCandidateInit;
+    from: string;
 }
 
 export interface UserJoined {
-  userId: string;
-  role: 'user' | 'company' | 'admin';
-  socketId: string;
+    userId: string;
+    role: "user" | "company" | "admin";
+    socketId: string;
 }
 
 export interface UserLeft {
-  userId: string;
-  socketId: string;
+    userId: string;
+    socketId: string;
 }
 
 export interface ConnectionRequested {
-  from: string;
-  roomId: string;
+    from: string;
+    roomId: string;
 }
 
 export interface Participant {
-  userId: string;
-  role: 'user' | 'company' | 'admin';
-  socketId: string;
-  joinedAt: Date;
-  leftAt?: Date;
-  status: 'waiting' | 'connected' | 'disconnected';
+    userId: string;
+    role: "user" | "company" | "admin";
+    socketId: string;
+    joinedAt: Date;
+    leftAt?: Date;
+    status: "waiting" | "connected" | "disconnected";
 }
 
 export interface CallSession {
-  _id?: string;
-  interviewId: string;
-  applicationId: string;
-  roomId: string;
-  participants: Participant[];
-  callType: 'video' | 'audio';
-  status: 'waiting' | 'active' | 'ended';
-  startedAt: Date;
-  endedAt?: Date;
-  duration?: number;
-  recordingUrl?: string;
-  createdAt: Date;
-  updatedAt: Date;
+    _id?: string;
+    interviewId: string;
+    applicationId: string;
+    roomId: string;
+    participants: Participant[];
+    callType: "video" | "audio";
+    status: "waiting" | "active" | "ended";
+    startedAt: Date;
+    endedAt?: Date;
+    duration?: number;
+    recordingUrl?: string;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 export interface JoinedInterview {
-  roomId: string;
-  session: CallSession;
-  shouldInitiate: boolean;
-  existingParticipants: Participant[];
+    roomId: string;
+    session: CallSession;
+    shouldInitiate: boolean;
+    existingParticipants: Participant[];
 }
 
 export interface NotificationCount {
-  count: number;
+    count: number;
 }
 
 export interface SocketError {
-  message: string;
+    message: string;
 }
 
 export interface NotificationMarkRead {
-  notificationId: string;
+    notificationId: string;
 }
 
 @Injectable({
-  providedIn: 'root',
+    providedIn: "root",
 })
 export class SocketService implements OnDestroy {
-  private socket: Socket | null = null;
-  private readonly connected$ = new BehaviorSubject<boolean>(false);
+    private socket: Socket | null = null;
+    private readonly connected$ = new BehaviorSubject<boolean>(false);
 
-  //notification streams
-  private readonly notification$ = new Subject<INotification>();
-  private readonly unreadCount$ = new BehaviorSubject<number>(0);
-  // WebRTC streams
-  private readonly webrtcOffer$ = new Subject<WebRTCOffer>();
-  private readonly webrtcAnswer$ = new Subject<WebRTCAnswer>();
-  private readonly iceCandidate$ = new Subject<ICECandidate>();
-  private readonly userJoined$ = new Subject<UserJoined>();
-  private readonly userLeft$ = new Subject<UserLeft>();
-  private readonly joinedInterview$ = new Subject<JoinedInterview>();
-  private readonly connectionRequested$ = new Subject<ConnectionRequested>();
-  private readonly interviewEnded$ = new Subject<void>();
+    //notification streams
+    private readonly notification$ = new Subject<INotification>();
+    private readonly unreadCount$ = new BehaviorSubject<number>(0);
+    // WebRTC streams
+    private readonly webrtcOffer$ = new Subject<WebRTCOffer>();
+    private readonly webrtcAnswer$ = new Subject<WebRTCAnswer>();
+    private readonly iceCandidate$ = new Subject<ICECandidate>();
+    private readonly userJoined$ = new Subject<UserJoined>();
+    private readonly userLeft$ = new Subject<UserLeft>();
+    private readonly joinedInterview$ = new Subject<JoinedInterview>();
+    private readonly connectionRequested$ = new Subject<ConnectionRequested>();
+    private readonly interviewEnded$ = new Subject<void>();
 
-  private readonly error$ = new Subject<string>();
+    //chat streams
+    private readonly chatNewMessage$ = new Subject<Message>();
+    private readonly chatMessageNotification$ = new Subject<{ conversationId: string; message: Message }>();
+    private readonly chatTyping$ = new Subject<TypingIndicator>();
+    private readonly chatMessagesDelivered$ = new Subject<{ conversationId: string; messageIds: string[] }>();
+    private readonly chatMessagesRead$ = new Subject<{ conversationId: string; messageIds: string[]; readBy: string }>();
+    private readonly chatUnreadCount$ = new BehaviorSubject<number>(0);
+    private readonly chatJoined$ = new Subject<{ conversationId: string; success: boolean }>();
 
-  constructor() {}
+    private readonly error$ = new Subject<string>();
 
-  connect(): void {
-    if (this.socket?.connected) {
-      console.log('Socket already connected');
-      return;
+    constructor() {}
+
+    connect(): void {
+        if (this.socket?.connected) {
+            console.log("Socket already connected");
+            return;
+        }
+
+        this.socket = io(environment.apiUrl, {
+            withCredentials: true,
+            transports: ["websocket", "polling"],
+            reconnection: true,
+            reconnectionAttempts: 5,
+            reconnectionDelay: 1000,
+            reconnectionDelayMax: 5000,
+            timeout: 20000,
+        });
+
+        this.setupEventListeners();
     }
 
-    this.socket = io(environment.apiUrl, {
-      withCredentials: true,
-      transports: ['websocket', 'polling'],
-      reconnection: true,
-      reconnectionAttempts: 5,
-      reconnectionDelay: 1000,
-      reconnectionDelayMax: 5000,
-      timeout: 20000,
-    });
+    setupEventListeners(): void {
+        if (!this.socket) return;
 
-    this.setupEventListeners();
-  }
+        this.socket.on("connect", () => {
+            console.log("Socket connected:", this.socket?.id);
+            this.connected$.next(true);
+            this.requestUnreadCount();
+        });
 
-  setupEventListeners(): void {
-    if (!this.socket) return;
+        this.socket.on("dicsonnect", () => {
+            console.log("Socket disconnected");
+            this.connected$.next(false);
+        });
 
-    this.socket.on('connect', () => {
-      console.log('Socket connected:', this.socket?.id);
-      this.connected$.next(true);
-      this.requestUnreadCount();
-    });
+        this.socket.on("connect_error", (error) => {
+            console.error("Socket connection error:", error);
+            this.error$.next(error.message || " socket connection error");
+        });
 
-    this.socket.on('dicsonnect', () => {
-      console.log('Socket disconnected');
-      this.connected$.next(false);
-    });
+        //notification events
+        this.socket.on("notification:new", (notification: INotification) => {
+            console.log("New notification received:", notification);
+            this.notification$.next(notification);
+            this.incrementUnreadCount();
+        });
 
-    this.socket.on('connect_error', (error) => {
-      console.error('Socket connection error:', error);
-      this.error$.next(error.message || ' socket connection error');
-    });
+        this.socket.on("notification:count", (data: { count: number }) => {
+            console.log("Unread count updated:", data.count);
+            this.unreadCount$.next(data.count);
+        });
 
-    //notification events
-    this.socket.on('notification:new', (notification: INotification) => {
-      console.log('New notification received:', notification);
-      this.notification$.next(notification);
-      this.incrementUnreadCount();
-    });
+        // ============ CHAT EVENTS ============
 
-    this.socket.on('notification:count', (data: { count: number }) => {
-      console.log('Unread count updated:', data.count);
-      this.unreadCount$.next(data.count);
-    });
+        // New message received
+        this.socket.on("chat:newMessage", (message: Message) => {
+            console.log("New chat message:", message);
+            this.chatNewMessage$.next(message);
+        });
 
-    // ============ WEBRTC SIGNALING EVENTS ============
+        // Message notification (when not in conversation)
+        this.socket.on("chat:messageNotification", (data: { conversationId: string; message: Message }) => {
+            console.log("Chat message notification:", data);
+            this.chatMessageNotification$.next(data);
+        });
 
-    // Joined interview confirmation
-    this.socket.on('joined-interview', (data: JoinedInterview) => {
-      console.log('Joined interview:', data);
-      this.joinedInterview$.next(data);
-    });
+        // Typing indicator
+        this.socket.on("chat:typing", (data: TypingIndicator) => {
+            console.log("Typing indicator:", data);
+            this.chatTyping$.next(data);
+        });
 
-    // User joined room
-    this.socket.on('user-joined', (data: UserJoined) => {
-      console.log('User joined:', data);
-      this.userJoined$.next(data);
-    });
+        // Messages delivered
+        this.socket.on("chat:messagesDelivered", (data: { conversationId: string; messageIds: string[] }) => {
+            console.log("Messages delivered:", data);
+            this.chatMessagesDelivered$.next(data);
+        });
 
-    // User left room
-    this.socket.on('user-left', (data: UserLeft) => {
-      console.log('User left:', data);
-      this.userLeft$.next(data);
-    });
+        // Messages read
+        this.socket.on("chat:messagesRead", (data: { conversationId: string; messageIds: string[]; readBy: string }) => {
+            console.log("Messages read:", data);
+            this.chatMessagesRead$.next(data);
+        });
 
-    // Connection requested by late joiner
-    this.socket.on('connection-requested', (data: ConnectionRequested) => {
-      console.log('Connection requested:', data);
-      this.connectionRequested$.next(data);
-    });
+        // Unread count update
+        this.socket.on("chat:unreadCount", (data: { count: number }) => {
+            console.log("Chat unread count:", data.count);
+            this.chatUnreadCount$.next(data.count);
+        });
 
-    // WebRTC offer received
-    this.socket.on('webrtc-offer', (data: WebRTCOffer) => {
-      console.log('WebRTC offer received:', data);
-      this.webrtcOffer$.next(data);
-    });
+        // Joined conversation
+        this.socket.on("chat:joined", (data: { conversationId: string; success: boolean }) => {
+            console.log("Joined conversation:", data);
+            this.chatJoined$.next(data);
+        });
 
-    // WebRTC answer received
-    this.socket.on('webrtc-answer', (data: WebRTCAnswer) => {
-      console.log('WebRTC answer received:', data);
-      this.webrtcAnswer$.next(data);
-    });
+        // ============ WEBRTC SIGNALING EVENTS ============
 
-    // ICE candidate received
-    this.socket.on('ice-candidate', (data: ICECandidate) => {
-      console.log('ICE candidate received');
-      this.iceCandidate$.next(data);
-    });
+        // Joined interview confirmation
+        this.socket.on("joined-interview", (data: JoinedInterview) => {
+            console.log("Joined interview:", data);
+            this.joinedInterview$.next(data);
+        });
 
-    // Interview ended
-    this.socket.on('interview-ended', () => {
-      console.log('Interview ended');
-      this.interviewEnded$.next();
-    });
+        // User joined room
+        this.socket.on("user-joined", (data: UserJoined) => {
+            console.log("User joined:", data);
+            this.userJoined$.next(data);
+        });
 
-    //error handling for socket events
-    this.socket.on('error', (error: { message: string }) => {
-      console.error('Socket error:', error.message);
-      this.error$.next(error.message);
-    });
+        // User left room
+        this.socket.on("user-left", (data: UserLeft) => {
+            console.log("User left:", data);
+            this.userLeft$.next(data);
+        });
 
-    this.socket.on('reconnect', (attemptNumber: number) => {
-      console.log('Socket reconnected after', attemptNumber, 'attempts');
-      this.requestUnreadCount();
-    });
+        // Connection requested by late joiner
+        this.socket.on("connection-requested", (data: ConnectionRequested) => {
+            console.log("Connection requested:", data);
+            this.connectionRequested$.next(data);
+        });
 
-    this.socket.on('reconnect_error', (error: Error) => {
-      console.error('Reconnection error:', error);
-    });
+        // WebRTC offer received
+        this.socket.on("webrtc-offer", (data: WebRTCOffer) => {
+            console.log("WebRTC offer received:", data);
+            this.webrtcOffer$.next(data);
+        });
 
-    this.socket.on('reconnect_failed', () => {
-      console.error('Reconnection failed after all attempts');
-      this.error$.next('Failed to reconnect to notification server');
-    });
-  }
+        // WebRTC answer received
+        this.socket.on("webrtc-answer", (data: WebRTCAnswer) => {
+            console.log("WebRTC answer received:", data);
+            this.webrtcAnswer$.next(data);
+        });
 
-  /**
-   * Disconnect socket
-   */
-  disconnect(): void {
-    if (this.socket) {
-      this.socket.disconnect();
-      this.socket = null;
-      this.connected$.next(false);
+        // ICE candidate received
+        this.socket.on("ice-candidate", (data: ICECandidate) => {
+            console.log("ICE candidate received");
+            this.iceCandidate$.next(data);
+        });
+
+        // Interview ended
+        this.socket.on("interview-ended", () => {
+            console.log("Interview ended");
+            this.interviewEnded$.next();
+        });
+
+        //error handling for socket events
+        this.socket.on("error", (error: { message: string }) => {
+            console.error("Socket error:", error.message);
+            this.error$.next(error.message);
+        });
+
+        this.socket.on("reconnect", (attemptNumber: number) => {
+            console.log("Socket reconnected after", attemptNumber, "attempts");
+            this.requestUnreadCount();
+        });
+
+        this.socket.on("reconnect_error", (error: Error) => {
+            console.error("Reconnection error:", error);
+        });
+
+        this.socket.on("reconnect_failed", () => {
+            console.error("Reconnection failed after all attempts");
+            this.error$.next("Failed to reconnect to notification server");
+        });
     }
-  }
 
-  /**
-   * Check if socket is connected
-   */
-  isConnected(): Observable<boolean> {
-    return this.connected$.asObservable();
-  }
-
-  /**
-   * Get new notifications stream
-   */
-  onNotification(): Observable<INotification> {
-    return this.notification$.asObservable();
-  }
-
-  /**
-   * Get unread count stream
-   */
-  getUnreadCount(): Observable<number> {
-    return this.unreadCount$.asObservable();
-  }
-
-  /**
-   * Get error stream
-   */
-  onError(): Observable<string> {
-    return this.error$.asObservable();
-  }
-
-  /**
-   * Request current unread count from server
-   */
-  requestUnreadCount(): void {
-    if (this.socket?.connected) {
-      this.socket.emit('notification:getCount');
+    /**
+     * Disconnect socket
+     */
+    disconnect(): void {
+        if (this.socket) {
+            this.socket.disconnect();
+            this.socket = null;
+            this.connected$.next(false);
+        }
     }
-  }
 
-  /**
-   * Mark notification as read
-   */
-  markAsRead(notificationId: string): void {
-    if (this.socket?.connected) {
-      this.socket.emit('notification:markRead', { notificationId });
-      this.decrementUnreadCount();
+    /**
+     * Check if socket is connected
+     */
+    isConnected(): Observable<boolean> {
+        return this.connected$.asObservable();
     }
-  }
 
-  /**
-   * Mark all notifications as read
-   */
-  markAllAsRead(): void {
-    if (this.socket?.connected) {
-      this.socket.emit('notification:markAllRead');
-      this.unreadCount$.next(0);
+    /**
+     * Get new notifications stream
+     */
+    onNotification(): Observable<INotification> {
+        return this.notification$.asObservable();
     }
-  }
 
-  // ============ WEBRTC SIGNALING METHODS ============
-
-  /**
-   * Join interview room
-   */
-  joinInterview(
-    applicationId: string,
-    interviewId: string,
-    roomId: string,
-    userId: string,
-    role: 'user' | 'company' | 'admin',
-  ): void {
-    if (this.socket?.connected) {
-      this.socket.emit('join-interview', {
-        applicationId,
-        interviewId,
-        roomId,
-        userId,
-        role,
-      });
-    } else {
-      this.error$.next('Cannot join interview: Socket not connected');
+    /**
+     * Get unread count stream
+     */
+    getUnreadCount(): Observable<number> {
+        return this.unreadCount$.asObservable();
     }
-  }
 
-  /**
-   * Leave interview room
-   */
-  leaveInterview(roomId: string, userId: string): void {
-    if (this.socket?.connected) {
-      this.socket.emit('leave-interview', { roomId, userId });
+    /**
+     * Get error stream
+     */
+    onError(): Observable<string> {
+        return this.error$.asObservable();
     }
-  }
 
-  /**
-   * Request connection from existing participant
-   */
-  requestConnection(roomId: string, to: string): void {
-    if (this.socket?.connected) {
-      this.socket.emit('request-connection', { roomId, to });
+    /**
+     * Request current unread count from server
+     */
+    requestUnreadCount(): void {
+        if (this.socket?.connected) {
+            this.socket.emit("notification:getCount");
+        }
     }
-  }
 
-  /**
-   * Send WebRTC offer
-   */
-  sendOffer(
-    roomId: string,
-    offer: RTCSessionDescriptionInit,
-    to: string,
-  ): void {
-    if (this.socket?.connected) {
-      this.socket.emit('webrtc-offer', { roomId, offer, to });
+    /**
+     * Mark notification as read
+     */
+    markAsRead(notificationId: string): void {
+        if (this.socket?.connected) {
+            this.socket.emit("notification:markRead", { notificationId });
+            this.decrementUnreadCount();
+        }
     }
-  }
 
-  /**
-   * Send WebRTC answer
-   */
-  sendAnswer(
-    roomId: string,
-    answer: RTCSessionDescriptionInit,
-    to: string,
-  ): void {
-    if (this.socket?.connected) {
-      this.socket.emit('webrtc-answer', { roomId, answer, to });
+    /**
+     * Mark all notifications as read
+     */
+    markAllAsRead(): void {
+        if (this.socket?.connected) {
+            this.socket.emit("notification:markAllRead");
+            this.unreadCount$.next(0);
+        }
     }
-  }
 
-  /**
-   * Send ICE candidate
-   */
-  sendIceCandidate(
-    roomId: string,
-    candidate: RTCIceCandidateInit,
-    to: string,
-  ): void {
-    if (this.socket?.connected) {
-      this.socket.emit('ice-candidate', { roomId, candidate, to });
+    // ============ CHAT METHODS ============
+
+    /**
+     * Join conversation room
+     */
+    joinConversation(conversationId: string): void {
+        if (this.socket?.connected) {
+            this.socket.emit("chat:join", { conversationId });
+        }
     }
-  }
 
-  /**
-   * End interview for all participants
-   */
-  endInterview(roomId: string): void {
-    if (this.socket?.connected) {
-      this.socket.emit('end-interview', { roomId });
+    /**
+     * Leave conversation room
+     */
+    leaveConversation(conversationId: string): void {
+        if (this.socket?.connected) {
+            this.socket.emit("chat:leave", { conversationId });
+        }
     }
-  }
 
-  // ============ WEBRTC EVENT OBSERVABLES ============
-
-  onJoinedInterview(): Observable<JoinedInterview> {
-    return this.joinedInterview$.asObservable();
-  }
-
-  onUserJoined(): Observable<UserJoined> {
-    return this.userJoined$.asObservable();
-  }
-
-  onUserLeft(): Observable<UserLeft> {
-    return this.userLeft$.asObservable();
-  }
-
-  onConnectionRequested(): Observable<ConnectionRequested> {
-    return this.connectionRequested$.asObservable();
-  }
-
-  onWebRTCOffer(): Observable<WebRTCOffer> {
-    return this.webrtcOffer$.asObservable();
-  }
-
-  onWebRTCAnswer(): Observable<WebRTCAnswer> {
-    return this.webrtcAnswer$.asObservable();
-  }
-
-  onICECandidate(): Observable<ICECandidate> {
-    return this.iceCandidate$.asObservable();
-  }
-
-  onInterviewEnded(): Observable<void> {
-    return this.interviewEnded$.asObservable();
-  }
-
-  /**
-   * Get current connection state
-   */
-  getConnectionState(): boolean {
-    return this.connected$.value;
-  }
-
-  /**
-   * Increment unread count locally
-   */
-  private incrementUnreadCount(): void {
-    const current = this.unreadCount$.value;
-    this.unreadCount$.next(current + 1);
-  }
-
-  /**
-   * Decrement unread count locally
-   */
-  private decrementUnreadCount(): void {
-    const current = this.unreadCount$.value;
-    if (current > 0) {
-      this.unreadCount$.next(current - 1);
+    /**
+     * Send message via socket
+     */
+    sendChatMessage(data: {
+        conversationId: string;
+        content: string;
+        messageType?: "text" | "file" | "system";
+        attachments?: any[];
+    }): void {
+        if (this.socket?.connected) {
+            this.socket.emit("chat:sendMessage", data);
+        }
     }
-  }
 
-  /**
-   * Set unread count
-   */
-  setUnreadCount(count: number): void {
-    this.unreadCount$.next(count);
-  }
+    /**
+     * Emit typing start
+     */
+    startTyping(conversationId: string, receiverId: string): void {
+        if (this.socket?.connected) {
+            this.socket.emit("chat:typing:start", { conversationId, receiverId });
+        }
+    }
 
-  getSocketId(): string | undefined {
-    return this.socket?.id;
-  }
+    /**
+     * Emit typing stop
+     */
+    stopTyping(conversationId: string, receiverId: string): void {
+        if (this.socket?.connected) {
+            this.socket.emit("chat:typing:stop", { conversationId, receiverId });
+        }
+    }
 
-  ngOnDestroy(): void {
-    this.disconnect();
-  }
+    /**
+     * Mark messages as read
+     */
+    markChatMessagesAsRead(conversationId: string, messageIds: string[]): void {
+        if (this.socket?.connected) {
+            this.socket.emit("chat:markAsRead", { conversationId, messageIds });
+        }
+    }
+
+    /**
+     * Mark messages as delivered
+     */
+    markChatMessagesAsDelivered(messageIds: string[]): void {
+        if (this.socket?.connected) {
+            this.socket.emit("chat:markAsDelivered", { messageIds });
+        }
+    }
+
+    // ============ CHAT EVENT OBSERVABLES ============
+
+    onChatNewMessage(): Observable<Message> {
+        return this.chatNewMessage$.asObservable();
+    }
+
+    onChatMessageNotification(): Observable<{ conversationId: string; message: Message }> {
+        return this.chatMessageNotification$.asObservable();
+    }
+
+    onChatTyping(): Observable<TypingIndicator> {
+        return this.chatTyping$.asObservable();
+    }
+
+    onChatMessagesDelivered(): Observable<{ conversationId: string; messageIds: string[] }> {
+        return this.chatMessagesDelivered$.asObservable();
+    }
+
+    onChatMessagesRead(): Observable<{ conversationId: string; messageIds: string[]; readBy: string }> {
+        return this.chatMessagesRead$.asObservable();
+    }
+
+    getChatUnreadCount(): Observable<number> {
+        return this.chatUnreadCount$.asObservable();
+    }
+
+    onChatJoined(): Observable<{ conversationId: string; success: boolean }> {
+        return this.chatJoined$.asObservable();
+    }
+
+    /**
+     * Set chat unread count
+     */
+    setChatUnreadCount(count: number): void {
+        this.chatUnreadCount$.next(count);
+    }
+
+    // ============ WEBRTC SIGNALING METHODS ============
+
+    /**
+     * Join interview room
+     */
+    joinInterview(
+        applicationId: string,
+        interviewId: string,
+        roomId: string,
+        userId: string,
+        role: "user" | "company" | "admin",
+    ): void {
+        if (this.socket?.connected) {
+            this.socket.emit("join-interview", {
+                applicationId,
+                interviewId,
+                roomId,
+                userId,
+                role,
+            });
+        } else {
+            this.error$.next("Cannot join interview: Socket not connected");
+        }
+    }
+
+    /**
+     * Leave interview room
+     */
+    leaveInterview(roomId: string, userId: string): void {
+        if (this.socket?.connected) {
+            this.socket.emit("leave-interview", { roomId, userId });
+        }
+    }
+
+    /**
+     * Request connection from existing participant
+     */
+    requestConnection(roomId: string, to: string): void {
+        if (this.socket?.connected) {
+            this.socket.emit("request-connection", { roomId, to });
+        }
+    }
+
+    /**
+     * Send WebRTC offer
+     */
+    sendOffer(roomId: string, offer: RTCSessionDescriptionInit, to: string): void {
+        if (this.socket?.connected) {
+            this.socket.emit("webrtc-offer", { roomId, offer, to });
+        }
+    }
+
+    /**
+     * Send WebRTC answer
+     */
+    sendAnswer(roomId: string, answer: RTCSessionDescriptionInit, to: string): void {
+        if (this.socket?.connected) {
+            this.socket.emit("webrtc-answer", { roomId, answer, to });
+        }
+    }
+
+    /**
+     * Send ICE candidate
+     */
+    sendIceCandidate(roomId: string, candidate: RTCIceCandidateInit, to: string): void {
+        if (this.socket?.connected) {
+            this.socket.emit("ice-candidate", { roomId, candidate, to });
+        }
+    }
+
+    /**
+     * End interview for all participants
+     */
+    endInterview(roomId: string): void {
+        if (this.socket?.connected) {
+            this.socket.emit("end-interview", { roomId });
+        }
+    }
+
+    // ============ WEBRTC EVENT OBSERVABLES ============
+
+    onJoinedInterview(): Observable<JoinedInterview> {
+        return this.joinedInterview$.asObservable();
+    }
+
+    onUserJoined(): Observable<UserJoined> {
+        return this.userJoined$.asObservable();
+    }
+
+    onUserLeft(): Observable<UserLeft> {
+        return this.userLeft$.asObservable();
+    }
+
+    onConnectionRequested(): Observable<ConnectionRequested> {
+        return this.connectionRequested$.asObservable();
+    }
+
+    onWebRTCOffer(): Observable<WebRTCOffer> {
+        return this.webrtcOffer$.asObservable();
+    }
+
+    onWebRTCAnswer(): Observable<WebRTCAnswer> {
+        return this.webrtcAnswer$.asObservable();
+    }
+
+    onICECandidate(): Observable<ICECandidate> {
+        return this.iceCandidate$.asObservable();
+    }
+
+    onInterviewEnded(): Observable<void> {
+        return this.interviewEnded$.asObservable();
+    }
+
+    /**
+     * Get current connection state
+     */
+    getConnectionState(): boolean {
+        return this.connected$.value;
+    }
+
+    /**
+     * Increment unread count locally
+     */
+    private incrementUnreadCount(): void {
+        const current = this.unreadCount$.value;
+        this.unreadCount$.next(current + 1);
+    }
+
+    /**
+     * Decrement unread count locally
+     */
+    private decrementUnreadCount(): void {
+        const current = this.unreadCount$.value;
+        if (current > 0) {
+            this.unreadCount$.next(current - 1);
+        }
+    }
+
+    /**
+     * Set unread count
+     */
+    setUnreadCount(count: number): void {
+        this.unreadCount$.next(count);
+    }
+
+    getSocketId(): string | undefined {
+        return this.socket?.id;
+    }
+
+    ngOnDestroy(): void {
+        this.disconnect();
+    }
 }

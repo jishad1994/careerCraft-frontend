@@ -60,6 +60,13 @@ export const COMPANY_ROUTES: Routes = [
             (m) => m.companySubscriptionRoutes,
           ),
       },
+      {
+        path: 'messages',
+        loadComponent: () =>
+          import('../../shared/components/chat/chat-page/chat-page.component').then(
+            (m) => m.ChatPageComponent,
+          ),
+      },
     ],
   },
 ];

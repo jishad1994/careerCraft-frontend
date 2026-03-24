@@ -8,10 +8,12 @@
     <!-- Main Content Area -->
     <main class="flex-1">
         <router-outlet></router-outlet>
+        <!-- user-layout.component.html -->
+        <app-floating-chat-bar></app-floating-chat-bar>
     </main>
 
     <!-- Footer -->
-    <app-footer *ngIf="showFooter" [logoUrl]="logoUrl" 
+    <app-footer *ngIf="showFooter" [logoUrl]="logoUrl"
         [description]="'Find your dream job or discover top talent. Connecting opportunities with excellence.'"
         [sections]="footerSections" [socialLinks]="socialLinks">
     </app-footer>

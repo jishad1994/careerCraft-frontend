@@ -25,8 +25,8 @@
               <h1 class="text-2xl font-bold text-gray-900 mb-1">{{ application.jobDetails.title }}</h1>
               <p class="text-gray-700 mb-1">{{ application.jobDetails.company }}</p>
               <p class="text-gray-600 text-sm">
-                {{ application.jobDetails.location }} • 
-                {{ application.jobDetails.employmentType | titlecase }} • 
+                {{ application.jobDetails.location }} •
+                {{ application.jobDetails.employmentType | titlecase }} •
                 {{ application.jobDetails.workMode | titlecase }}
               </p>
             </div>
@@ -49,16 +49,20 @@
 
           <!-- Actions -->
           <div class="flex flex-wrap gap-3">
-            <button (click)="viewJob()" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 font-medium text-sm">
+            <button (click)="viewJob()"
+              class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 font-medium text-sm">
               View Job
             </button>
-            <button *ngIf="hasInterviews()" (click)="viewInterviews()" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 font-medium text-sm flex items-center gap-2">
+            <button *ngIf="hasInterviews()" (click)="viewInterviews()"
+              class="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 font-medium text-sm flex items-center gap-2">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
               </svg>
               Interviews ({{ getUpcomingInterviewsCount() }} upcoming)
             </button>
-            <button *ngIf="canWithdraw()" (click)="openWithdrawModal()" class="px-4 py-2 border border-red-300 text-red-700 rounded-md hover:bg-red-50 font-medium text-sm">
+            <button *ngIf="canWithdraw()" (click)="openWithdrawModal()"
+              class="px-4 py-2 border border-red-300 text-red-700 rounded-md hover:bg-red-50 font-medium text-sm">
               Withdraw
             </button>
           </div>
@@ -71,7 +75,8 @@
         <div class="flex items-center gap-3 overflow-x-auto pb-2">
           <div *ngFor="let status of getRecentStatusHistory(); let i = index" class="flex items-center flex-shrink-0">
             <div class="flex flex-col items-center">
-              <div [class]="getStatusClass(status.status)" class="w-10 h-10 rounded-full flex items-center justify-center font-semibold text-xs">
+              <div [class]="getStatusClass(status.status)"
+                class="w-10 h-10 rounded-full flex items-center justify-center font-semibold text-xs">
                 {{ i + 1 }}
               </div>
               <p class="text-xs font-medium text-gray-900 mt-2 whitespace-nowrap">{{ status.status | titlecase }}</p>
@@ -91,14 +96,17 @@
           <div class="flex items-center justify-between p-3 bg-gray-50 rounded border border-gray-200">
             <div class="flex items-center gap-3">
               <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z">
+                </path>
               </svg>
               <div>
                 <p class="font-medium text-gray-900 text-sm">{{ application.resume.fileName }}</p>
                 <p class="text-xs text-gray-500">{{ formatDate(application.resume.uploadedAt) }}</p>
               </div>
             </div>
-            <button (click)="downloadResume()" class="px-3 py-1.5 bg-blue-600 text-white rounded text-xs hover:bg-blue-700">
+            <button (click)="downloadResume()"
+              class="px-3 py-1.5 bg-blue-600 text-white rounded text-xs hover:bg-blue-700">
               Download
             </button>
           </div>
@@ -108,17 +116,22 @@
         <div class="bg-white rounded-lg shadow-sm border border-gray-300 p-6">
           <h3 class="font-semibold text-gray-900 mb-3">Cover Letter</h3>
           <div *ngIf="application.coverLetter; else noCoverLetter">
-            <div *ngIf="application.coverLetter.type === 'text'" class="p-3 bg-gray-50 rounded border border-gray-200 max-h-32 overflow-y-auto">
+            <div *ngIf="application.coverLetter.type === 'text'"
+              class="p-3 bg-gray-50 rounded border border-gray-200 max-h-32 overflow-y-auto">
               <p class="text-sm text-gray-700 line-clamp-4">{{ application.coverLetter.content }}</p>
             </div>
-            <div *ngIf="application.coverLetter.type === 'document'" class="flex items-center justify-between p-3 bg-gray-50 rounded border border-gray-200">
+            <div *ngIf="application.coverLetter.type === 'document'"
+              class="flex items-center justify-between p-3 bg-gray-50 rounded border border-gray-200">
               <div class="flex items-center gap-3">
                 <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                  </path>
                 </svg>
                 <p class="font-medium text-gray-900 text-sm">{{ application.coverLetter.fileName }}</p>
               </div>
-              <button (click)="downloadCoverLetter()" class="px-3 py-1.5 bg-blue-600 text-white rounded text-xs hover:bg-blue-700">
+              <button (click)="downloadCoverLetter()"
+                class="px-3 py-1.5 bg-blue-600 text-white rounded text-xs hover:bg-blue-700">
                 Download
               </button>
             </div>
@@ -134,11 +147,12 @@
       <div class="bg-white rounded-lg shadow-sm border border-gray-300 p-6">
         <h3 class="font-semibold text-gray-900 mb-4">Additional Information</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          
+
           <div *ngIf="application.expectedSalary">
             <p class="text-xs font-medium text-gray-600 mb-1">Expected Salary</p>
             <p class="text-sm text-gray-900">
-              {{ application.expectedSalary.currency }} {{ application.expectedSalary.amount.toLocaleString() }} / {{ application.expectedSalary.period }}
+              {{ application.expectedSalary.currency }} {{ application.expectedSalary.amount.toLocaleString() }} / {{
+              application.expectedSalary.period }}
             </p>
           </div>
 
@@ -154,21 +168,24 @@
 
           <div *ngIf="application.portfolioUrl">
             <p class="text-xs font-medium text-gray-600 mb-1">Portfolio</p>
-            <a [href]="application.portfolioUrl" target="_blank" class="text-sm text-blue-600 hover:underline truncate block">
+            <a [href]="application.portfolioUrl" target="_blank"
+              class="text-sm text-blue-600 hover:underline truncate block">
               {{ application.portfolioUrl }}
             </a>
           </div>
 
           <div *ngIf="application.linkedinUrl">
             <p class="text-xs font-medium text-gray-600 mb-1">LinkedIn</p>
-            <a [href]="application.linkedinUrl" target="_blank" class="text-sm text-blue-600 hover:underline truncate block">
+            <a [href]="application.linkedinUrl" target="_blank"
+              class="text-sm text-blue-600 hover:underline truncate block">
               {{ application.linkedinUrl }}
             </a>
           </div>
 
           <div *ngIf="application.githubUrl">
             <p class="text-xs font-medium text-gray-600 mb-1">GitHub</p>
-            <a [href]="application.githubUrl" target="_blank" class="text-sm text-blue-600 hover:underline truncate block">
+            <a [href]="application.githubUrl" target="_blank"
+              class="text-sm text-blue-600 hover:underline truncate block">
               {{ application.githubUrl }}
             </a>
           </div>
@@ -179,22 +196,37 @@
     </div>
 
     <!-- Withdraw Modal -->
-    <div *ngIf="showWithdrawModal && application" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" (click)="closeWithdrawModal()">
+    <div *ngIf="showWithdrawModal && application"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+      (click)="closeWithdrawModal()">
       <div class="bg-white rounded-lg max-w-md w-full p-6" (click)="$event.stopPropagation()">
         <h3 class="text-lg font-bold text-gray-900 mb-4">Withdraw Application?</h3>
         <p class="text-gray-700 mb-6">
-          Are you sure you want to withdraw your application for <strong>{{ application.jobDetails.title }}</strong>? This cannot be undone.
+          Are you sure you want to withdraw your application for <strong>{{ application.jobDetails.title }}</strong>?
+          This cannot be undone.
         </p>
         <div class="flex gap-3">
-          <button (click)="withdrawApplication()" [disabled]="withdrawing" class="flex-1 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 font-medium disabled:opacity-50">
+          <button (click)="withdrawApplication()" [disabled]="withdrawing"
+            class="flex-1 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 font-medium disabled:opacity-50">
             {{ withdrawing ? 'Withdrawing...' : 'Yes, Withdraw' }}
           </button>
-          <button (click)="closeWithdrawModal()" [disabled]="withdrawing" class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 font-medium">
+          <button (click)="closeWithdrawModal()" [disabled]="withdrawing"
+            class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 font-medium">
             Cancel
           </button>
         </div>
       </div>
     </div>
+    <!-- message company -->
+    <button *ngIf="application?.status=='shortlisted'" (click)="messageCompany()"
+      class="px-6 py-3 bg-white border-2 border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 flex items-center gap-2">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z">
+        </path>
+      </svg>
+      <span>Message Recruiter</span>
+    </button>
 
   </div>
 </div>

@@ -5,6 +5,7 @@ import { IJobApplicationDetails } from '../../../../models/job-application/job-a
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { UserJobApplicationService } from '../../../../services/user/application/user-job-application.service';
+import { ChatInitiationService } from '../../../../shared/services/chat-inititaion-service/chat-initiation.service';
 
 @Component({
   selector: 'app-candidate-application-view',
@@ -27,6 +28,7 @@ export class CandidateApplicationViewComponent implements OnInit, OnDestroy {
     private router: Router,
     private applicationService: UserJobApplicationService,
     private snackBar: MatSnackBar,
+    private chatInitiationService: ChatInitiationService
   ) {}
 
   ngOnInit() {
@@ -42,6 +44,17 @@ export class CandidateApplicationViewComponent implements OnInit, OnDestroy {
     this.destroy$.next();
     this.destroy$.complete();
   }
+
+ messageCompany(): void {
+    if ( !this.application) return;
+ 
+    this.chatInitiationService.initiateFromJobApplication(
+      this.application?.company._id,
+      this.application.jobDetails._id,
+      this.applicationId
+    );
+  }
+  
 
   loadApplication() {
     this.loading = true;

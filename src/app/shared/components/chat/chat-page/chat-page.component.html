@@ -1,0 +1,45 @@
+
+<div class="flex h-screen overflow-hidden bg-gray-50">
+  
+  <!-- Desktop Layout (≥768px) -->
+  <div class="hidden md:flex w-full">
+    
+    <!-- Sidebar (Conversations List) -->
+    <div class="w-80 lg:w-96 flex-shrink-0 border-r border-gray-200 bg-white">
+      <app-chat-list (conversationSelected)="onConversationSelected($event)"></app-chat-list>
+    </div>
+
+    <!-- Main Chat Area -->
+    <div class="flex-1">
+      <app-chat-window [conversation]="selectedConversation"></app-chat-window>
+    </div>
+  </div>
+
+  <!-- Mobile Layout (<768px) -->
+  <div class="md:hidden w-full">
+    
+    <!-- Show List by Default -->
+    <div *ngIf="!showMobileChat" class="h-full">
+      <app-chat-list (conversationSelected)="onConversationSelected($event)"></app-chat-list>
+    </div>
+
+    <!-- Show Chat Window when Conversation Selected -->
+    <div *ngIf="showMobileChat" class="h-full flex flex-col">
+      <!-- Back Button -->
+      <div class="px-4 py-3 bg-white border-b border-gray-200">
+        <button (click)="closeMobileChat()"
+                class="flex items-center text-gray-700 hover:text-gray-900">
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+          </svg>
+          <span class="text-sm font-medium">Back to conversations</span>
+        </button>
+      </div>
+      
+      <!-- Chat Window -->
+      <div class="flex-1 overflow-hidden">
+        <app-chat-window [conversation]="selectedConversation"></app-chat-window>
+      </div>
+    </div>
+  </div>
+</div>

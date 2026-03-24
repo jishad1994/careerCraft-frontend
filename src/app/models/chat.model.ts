@@ -71,3 +71,10 @@ export interface TypingIndicator {
   userId: string;
   isTyping: boolean;
 }
+
+export interface MiniChat {
+  conversation: Conversation;
+  isOpen: boolean;
+  messages: Message[];
+  unreadCount: number;
+}

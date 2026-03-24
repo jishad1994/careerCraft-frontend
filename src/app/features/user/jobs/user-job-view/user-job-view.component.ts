@@ -58,7 +58,8 @@ export class UserJobViewComponent {
     private _jobApplicationService: UserJobApplicationService,
     private _jobService: UserJobService,
     private _profileService: UserProfileService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    
   ) {
     this.initForm();
   }
@@ -115,6 +116,8 @@ export class UserJobViewComponent {
         },
       });
   }
+
+  
 
   loadUserProfile() {
     this._profileService

@@ -1,0 +1,250 @@
+<!-- chat-window.component.html -->
+<div *ngIf="conversation" class="flex flex-col h-full bg-white">
+    <!-- Header -->
+    <div class="px-4 sm:px-6 py-4 border-b border-gray-200 bg-gray-50">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <!-- Avatar -->
+                <div
+                    class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center flex-shrink-0">
+                    <span class="text-white font-bold text-sm">
+                        {{ otherParticipant?.userType === 'company' ? 'C' : 'U' }}
+                    </span>
+                </div>
+
+                <!-- User Info -->
+                <div>
+                    <h3 class="text-base font-bold text-gray-900">
+                        {{ otherParticipant?.userType === 'company' ? 'Company Name' : 'User Name' }}
+                    </h3>
+                    <p class="text-xs text-gray-500">
+                        {{ otherUserTyping ? 'typing...' : 'Click to view profile' }}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center gap-2">
+                <button class="p-2 text-gray-600 hover:bg-gray-200 rounded-lg transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </button>
+                <button class="p-2 text-gray-600 hover:bg-gray-200 rounded-lg transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Messages Container -->
+    <div #messagesContainer (scroll)="onScroll($event)"
+        class="flex-1 overflow-y-auto px-4 sm:px-6 py-4 space-y-4 bg-gray-50">
+
+        <!-- Loading State -->
+        <div *ngIf="loading" class="flex items-center justify-center py-8">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        </div>
+
+        <!-- Load More Button -->
+        <div *ngIf="!loading && hasMoreMessages" class="flex justify-center">
+            <button (click)="loadMoreMessages()" [disabled]="loadingMore"
+                class="px-4 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-lg transition-colors disabled:opacity-50">
+                {{ loadingMore ? 'Loading...' : 'Load older messages' }}
+            </button>
+        </div>
+
+        <!-- Messages -->
+        <ng-container *ngFor="let message of messages; let i = index; trackBy: trackByMessage">
+            <!-- Date Separator -->
+            <div *ngIf="shouldShowDateSeparator(i)" class="flex items-center justify-center my-4">
+                <span class="px-3 py-1 text-xs font-medium text-gray-600 bg-gray-200 rounded-full">
+                    {{ formatDate(message.createdAt) }}
+                </span>
+            </div>
+
+            <!-- Message Bubble -->
+            <div [class.flex-row-reverse]="isMyMessage(message)" class="flex items-end gap-2">
+
+                <!-- Avatar (other user only) -->
+                <div *ngIf="!isMyMessage(message)"
+                    class="w-8 h-8 rounded-full bg-gradient-to-br from-gray-400 to-gray-600 flex items-center justify-center flex-shrink-0">
+                    <span class="text-white text-xs font-bold">
+                        {{ otherParticipant?.userType === 'company' ? 'C' : 'U' }}
+                    </span>
+                </div>
+
+                <!-- Message Content -->
+                <div [class.bg-blue-600]="isMyMessage(message)" [class.text-white]="isMyMessage(message)"
+                    [class.bg-white]="!isMyMessage(message)" [class.text-gray-900]="!isMyMessage(message)"
+                    class="max-w-[70%] sm:max-w-md rounded-2xl px-4 py-2.5 shadow-sm">
+
+                    <!-- Text Message -->
+                    <div *ngIf="message.messageType === 'text'">
+                        <p class="text-sm whitespace-pre-wrap break-words">{{ message.content }}</p>
+                    </div>
+
+                    <!-- File Message -->
+                    <div *ngIf="message.messageType === 'file' && message.attachments.length > 0">
+                        <ng-container *ngFor="let attachment of message.attachments">
+                            <!-- Image Preview -->
+                            <div *ngIf="attachment.fileType.startsWith('image/')" class="mb-2">
+                                <img [src]="attachment.fileUrl" [alt]="attachment.fileName"
+                                    class="max-w-full rounded-lg cursor-pointer hover:opacity-90"
+                                    (click)="downloadFile(attachment)">
+                            </div>
+
+                            <!-- File Download -->
+                            <button (click)="downloadFile(attachment)" [class.bg-blue-700]="isMyMessage(message)"
+                                [class.bg-gray-100]="!isMyMessage(message)" [class.text-white]="isMyMessage(message)"
+                                [class.text-gray-900]="!isMyMessage(message)"
+                                class="flex items-center gap-2 px-3 py-2 rounded-lg hover:opacity-90 transition-opacity w-full">
+                                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                    </path>
+                                </svg>
+                                <div class="flex-1 text-left">
+                                    <p class="text-sm font-medium truncate">{{ attachment.fileName }}</p>
+                                    <p class="text-xs opacity-75">{{ (attachment.fileSize / 1024).toFixed(0) }} KB</p>
+                                </div>
+                            </button>
+                        </ng-container>
+                    </div>
+
+                    <!-- Message Meta -->
+                    <div class="flex items-center justify-end gap-1 mt-1">
+                        <span [class.text-white]="isMyMessage(message)" [class.text-gray-500]="!isMyMessage(message)"
+                            class="text-xs opacity-75">
+                            {{ formatTime(message.createdAt) }}
+                        </span>
+
+                        <!-- Read Receipt (my messages only) -->
+                        <span *ngIf="isMyMessage(message)" [ngClass]="getMessageStatusColor(message)"
+                            class="text-xs font-bold ml-1">
+                            {{ getMessageStatus(message) }}
+                        </span>
+                    </div>
+
+                    <!-- Edited Badge -->
+                    <span *ngIf="message.isEdited" [class.text-white]="isMyMessage(message)"
+                        [class.text-gray-500]="!isMyMessage(message)" class="text-xs opacity-75 italic">
+                        (edited)
+                    </span>
+                </div>
+            </div>
+        </ng-container>
+
+        <!-- Typing Indicator -->
+        <div *ngIf="otherUserTyping" class="flex items-end gap-2">
+            <div
+                class="w-8 h-8 rounded-full bg-gradient-to-br from-gray-400 to-gray-600 flex items-center justify-center">
+                <span class="text-white text-xs font-bold">
+                    {{ otherParticipant?.userType === 'company' ? 'C' : 'U' }}
+                </span>
+            </div>
+            <div class="bg-white rounded-2xl px-4 py-3 shadow-sm">
+                <div class="flex gap-1">
+                    <span class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0ms"></span>
+                    <span class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 150ms"></span>
+                    <span class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 300ms"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- File Preview (if file selected) -->
+    <div *ngIf="selectedFile" class="px-4 sm:px-6 py-3 bg-gray-100 border-t border-gray-200">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <img *ngIf="filePreview" [src]="filePreview" class="w-12 h-12 rounded object-cover">
+                <div *ngIf="!filePreview" class="w-12 h-12 bg-gray-300 rounded flex items-center justify-center">
+                    <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                        </path>
+                    </svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-gray-900 truncate">{{ selectedFile.name }}</p>
+                    <p class="text-xs text-gray-500">{{ (selectedFile.size / 1024).toFixed(0) }} KB</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <button (click)="uploadAndSendFile()" [disabled]="uploading"
+                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 text-sm font-medium">
+                    {{ uploading ? 'Uploading...' : 'Send' }}
+                </button>
+                <button (click)="clearFileSelection()" class="p-2 text-gray-600 hover:bg-gray-200 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Message Input -->
+    <div class="px-4 sm:px-6 py-4 bg-white border-t border-gray-200">
+        <div class="flex items-end gap-2 sm:gap-3">
+            <!-- File Upload Button -->
+            <input #fileInput type="file" (change)="onFileSelected($event)" accept="image/*,.pdf,.doc,.docx"
+                class="hidden">
+            <button (click)="fileInput.click()"
+                class="p-2.5 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors flex-shrink-0">
+                <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13">
+                    </path>
+                </svg>
+            </button>
+
+            <!-- Message Input -->
+            <div class="flex-1 relative">
+                <textarea [(ngModel)]="messageContent" (input)="onInputChange()" (keydown.enter)="handleEnter($event )"
+                    placeholder="Type a message..." rows="1"
+                    class="w-full px-4 py-2.5 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none max-h-32 text-sm sm:text-base"></textarea>
+
+                <!-- Emoji Button (optional) -->
+                <button class="absolute right-3 bottom-2.5 text-gray-400 hover:text-gray-600">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Send Button -->
+            <button (click)="sendMessage()" [disabled]="!messageContent.trim() || sending"
+                class="p-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex-shrink-0">
+                <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Hint Text -->
+        <p class="text-xs text-gray-500 mt-2">Press Enter to send, Shift+Enter for new line</p>
+    </div>
+</div>
+
+<!-- Empty State (no conversation selected) -->
+<div *ngIf="!conversation" class="flex flex-col items-center justify-center h-full bg-gray-50">
+    <svg class="w-20 h-20 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z">
+        </path>
+    </svg>
+    <p class="text-lg font-medium text-gray-900 mb-2">Select a conversation</p>
+    <p class="text-sm text-gray-500">Choose a conversation from the list to start messaging</p>
+</div>
