@@ -1,9 +1,132 @@
-<!-- Main Layout -->
-<main class="flex flex-col min-h-[calc(100vh-120px)] bg-gray-50">
-  <section class="flex-1 flex items-center justify-center px-4 py-10">
-    <div class="max-w-6xl w-full">
-      <img src="assets/images/banner-placeholder.jpg" alt="Job Portal Banner"
-        class="w-full h-64 md:h-96 object-cover rounded-2xl shadow-lg" />
+<div class="p-4 sm:p-6 bg-gray-100 min-h-screen">
+
+  <!-- Welcome Section -->
+  <div class="mb-6">
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">Welcome back, {{employerName}} 👋</h1>
+    <p class="text-gray-500 text-sm mt-1">Here’s what’s happening with your jobs today.</p>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+
+    <div class="bg-white p-5 rounded-xl shadow-sm">
+      <p class="text-sm text-gray-500">Active Jobs</p>
+      <h2 class="text-2xl font-bold text-blue-600 mt-2">12</h2>
     </div>
-  </section>
-</main>
+
+    <div class="bg-white p-5 rounded-xl shadow-sm">
+      <p class="text-sm text-gray-500">Total Applications</p>
+      <h2 class="text-2xl font-bold text-green-600 mt-2">248</h2>
+    </div>
+
+    <div class="bg-white p-5 rounded-xl shadow-sm">
+      <p class="text-sm text-gray-500">Shortlisted</p>
+      <h2 class="text-2xl font-bold text-yellow-500 mt-2">36</h2>
+    </div>
+
+    <div class="bg-white p-5 rounded-xl shadow-sm">
+      <p class="text-sm text-gray-500">Interviews</p>
+      <h2 class="text-2xl font-bold text-purple-600 mt-2">8</h2>
+    </div>
+
+  </div>
+
+  <!-- Main Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+    <!-- Recent Jobs -->
+    <div class="lg:col-span-2 bg-white rounded-xl shadow-sm p-5">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-lg font-semibold text-gray-800">Recent Job Posts</h2>
+        <button class="text-sm text-blue-600 hover:underline">View all</button>
+      </div>
+
+      <div class="space-y-4">
+
+        <div class="border rounded-lg p-4 hover:bg-gray-50 transition">
+          <div class="flex justify-between items-center">
+            <h3 class="font-semibold text-gray-800">Frontend Developer</h3>
+            <span class="text-xs bg-green-100 text-green-600 px-2 py-1 rounded">Active</span>
+          </div>
+          <p class="text-sm text-gray-500 mt-1">23 applicants</p>
+        </div>
+
+        <div class="border rounded-lg p-4 hover:bg-gray-50 transition">
+          <div class="flex justify-between items-center">
+            <h3 class="font-semibold text-gray-800">Backend Developer</h3>
+            <span class="text-xs bg-green-100 text-green-600 px-2 py-1 rounded">Active</span>
+          </div>
+          <p class="text-sm text-gray-500 mt-1">41 applicants</p>
+        </div>
+
+        <div class="border rounded-lg p-4 hover:bg-gray-50 transition">
+          <div class="flex justify-between items-center">
+            <h3 class="font-semibold text-gray-800">UI/UX Designer</h3>
+            <span class="text-xs bg-red-100 text-red-500 px-2 py-1 rounded">Closed</span>
+          </div>
+          <p class="text-sm text-gray-500 mt-1">15 applicants</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Right Side Panel -->
+    <div class="space-y-6">
+
+      <!-- Recent Applications -->
+      <div class="bg-white rounded-xl shadow-sm p-5">
+        <h2 class="text-lg font-semibold text-gray-800 mb-4">Recent Applications</h2>
+
+        <div class="space-y-3">
+
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-800">John Doe</p>
+              <p class="text-xs text-gray-500">Frontend Developer</p>
+            </div>
+            <span class="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded">New</span>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-800">Aisha Khan</p>
+              <p class="text-xs text-gray-500">Backend Developer</p>
+            </div>
+            <span class="text-xs bg-yellow-100 text-yellow-600 px-2 py-1 rounded">Review</span>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-800">Rahul Nair</p>
+              <p class="text-xs text-gray-500">UI Designer</p>
+            </div>
+            <span class="text-xs bg-green-100 text-green-600 px-2 py-1 rounded">Shortlisted</span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="bg-white rounded-xl shadow-sm p-5">
+        <h2 class="text-lg font-semibold text-gray-800 mb-4">Quick Actions</h2>
+
+        <div class="flex flex-col gap-3">
+          <button class="bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition text-sm">
+            + Post New Job
+          </button>
+
+          <button class="bg-gray-100 text-gray-700 py-2 rounded-lg hover:bg-gray-200 transition text-sm">
+            Manage Jobs
+          </button>
+
+          <button class="bg-gray-100 text-gray-700 py-2 rounded-lg hover:bg-gray-200 transition text-sm">
+            View Applications
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

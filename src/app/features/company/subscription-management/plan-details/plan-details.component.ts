@@ -1,6 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { Component, OnDestroy, OnInit } from "@angular/core";
-import { CompanySubscription } from "../../../../models/company/company-subscription.model";
+import { CompanySubscription, IQueuedSubscriptionDTO } from "../../../../models/company/company-subscription.model";
 import { ISubscriptionPlan } from "../../../../models/subscription-plan/subscription-plan.model";
 import { Stripe, loadStripe, StripeElements, StripeCardElement } from "@stripe/stripe-js";
 import { Subject, takeUntil } from "rxjs";
@@ -28,6 +28,8 @@ export class PlanDetailsComponent implements OnInit, OnDestroy {
 
     // For viewing current subscription
     subscription: CompanySubscription | null = null;
+
+    queuedSubscriptions: IQueuedSubscriptionDTO[] = [];
     invoice: Invoice | null = null;
 
     // For selecting new plan
@@ -65,6 +67,7 @@ export class PlanDetailsComponent implements OnInit, OnDestroy {
         if (subscriptionId) {
             this.mode = "current";
             this.loadCurrentSubscription(subscriptionId);
+            this.loadSubscriptionQueue();
         } else {
             this.mode = "plan";
             const planId = this.route.snapshot.paramMap.get("planId");
@@ -546,6 +549,17 @@ export class PlanDetailsComponent implements OnInit, OnDestroy {
                     });
                 },
             });
+    }
+
+    loadSubscriptionQueue(): void {
+        this.subscriptionService.getQueue().subscribe({
+            next: (response) => {
+                if (response.success) {
+                    this.activeSubscription = response.data.active;
+                    this.queuedSubscriptions = response.data.queued;
+                }
+            },
+        });
     }
 
     goBack(): void {

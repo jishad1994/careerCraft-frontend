@@ -1,58 +1,75 @@
-import { Component, HostListener } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
-import { AuthService } from '../../../services/auth/auth.service';
-import { CommonModule } from '@angular/common';
+import { Component, HostListener, OnDestroy, OnInit } from "@angular/core";
+import { Router, RouterModule } from "@angular/router";
+import { AuthService } from "../../../services/auth/auth.service";
+import { CommonModule } from "@angular/common";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { Subject, takeUntil } from "rxjs";
 
 @Component({
-  selector: 'app-company-side-bar',
-  imports: [CommonModule, RouterModule],
-  templateUrl: './company-side-bar.component.html',
-  styleUrl: './company-side-bar.component.css',
+    selector: "app-company-side-bar",
+    imports: [CommonModule, RouterModule],
+    templateUrl: "./company-side-bar.component.html",
+    styleUrl: "./company-side-bar.component.css",
 })
-export class CompanySideBarComponent {
-  collapsed = false;
-  jobMenuOpen = false;
-  isMobileMenuOpen = false;
-  isDesktop = window.innerWidth >= 1024;
+export class CompanySideBarComponent implements OnInit, OnDestroy {
+    collapsed = false;
+    jobMenuOpen = false;
+    isMobileMenuOpen = false;
+    isDesktop = window.innerWidth >= 1024;
+    destroy$ = new Subject<void>();
+    constructor(private router: Router, private authService: AuthService, private _snackBar: MatSnackBar) {}
 
-  constructor(
-    private router: Router,
-    private authService: AuthService
-  ) {}
-
-  @HostListener('window:resize', ['$event'])
-  onResize(event: any) {
-    this.isDesktop = event.target.innerWidth >= 1024;
-    if (this.isDesktop) {
-      this.isMobileMenuOpen = false;
+    @HostListener("window:resize", ["$event"])
+    onResize(event: any) {
+        this.isDesktop = event.target.innerWidth >= 1024;
+        if (this.isDesktop) {
+            this.isMobileMenuOpen = false;
+        }
     }
-  }
 
-  toggleSidebar() {
-    if (this.isDesktop) {
-      this.collapsed = !this.collapsed;
-      if (!this.collapsed) {
-        this.jobMenuOpen = false;
-      }
-    } else {
-      this.isMobileMenuOpen = !this.isMobileMenuOpen;
+    ngOnInit(): void {}
+    ngOnDestroy(): void {
+        this.destroy$.next();
+        this.destroy$.complete();
     }
-  }
 
-  toggleJobMenu() {
-    if (!this.collapsed) {
-      this.jobMenuOpen = !this.jobMenuOpen;
+    toggleSidebar() {
+        if (this.isDesktop) {
+            this.collapsed = !this.collapsed;
+            if (!this.collapsed) {
+                this.jobMenuOpen = false;
+            }
+        } else {
+            this.isMobileMenuOpen = !this.isMobileMenuOpen;
+        }
     }
-  }
 
-  closeMobileMenu() {
-    if (!this.isDesktop) {
-      this.isMobileMenuOpen = false;
+    toggleJobMenu() {
+        if (!this.collapsed) {
+            this.jobMenuOpen = !this.jobMenuOpen;
+        }
     }
-  }
 
-  logout() {
-    this.authService.logout();
-    this.router.navigate(['/auth/login']);
-  }
+    closeMobileMenu() {
+        if (!this.isDesktop) {
+            this.isMobileMenuOpen = false;
+        }
+    }
+
+    logout() {
+        this.authService
+            .logout()
+            .pipe(takeUntil(this.destroy$))
+            .subscribe({
+                next: (res) => {
+                    if (res.success) {
+                        this._snackBar.open("Logout successfull", "close", { duration: 2000 });
+                        this.router.navigate(["/auth/login"]);
+                    }
+                },
+                error: (err) => {
+                    this._snackBar.open(err.message || "Logout failed", "close", { duration: 3000 });
+                },
+            });
+    }
 }

@@ -381,6 +381,8 @@ export class SocketService implements OnDestroy {
     }
 
     /**
+     * 
+     * 
      * Emit typing start
      */
     startTyping(conversationId: string, receiverId: string): void {

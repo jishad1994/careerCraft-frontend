@@ -1,10 +1,11 @@
-import { Component, ElementRef, Input, ViewChild } from "@angular/core";
+import { Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild } from "@angular/core";
 import { Attachment, Conversation, Message } from "../../../../models/chat.model";
 import { debounceTime, Subject, takeUntil } from "rxjs";
 import { ChatService } from "../../../services/chat-service/chat.service";
 import { SocketService } from "../../../services/socket-service/socket.service";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
+import { AuthStateService } from "../../../../services/authState/auth-state.service";
 
 @Component({
     selector: "app-chat-window",
@@ -12,7 +13,7 @@ import { FormsModule } from "@angular/forms";
     templateUrl: "./chat-window.component.html",
     styleUrl: "./chat-window.component.css",
 })
-export class ChatWindowComponent {
+export class ChatWindowComponent implements OnChanges {
     @Input() conversation: Conversation | null = null;
     @ViewChild("messagesContainer") private messagesContainer!: ElementRef;
     @ViewChild("fileInput") private fileInput!: ElementRef;
@@ -43,10 +44,18 @@ export class ChatWindowComponent {
     private shouldScrollToBottom = true;
     private typingSubject = new Subject<void>();
 
-    constructor(private chatService: ChatService, private socketService: SocketService) {}
+    constructor(
+        private chatService: ChatService,
+        private socketService: SocketService,
+        private authState: AuthStateService,
+    ) {}
 
     ngOnInit(): void {
-        this.currentUserId = this.getCurrentUserId();
+        this.authState.authState$.pipe(takeUntil(this.destroy$)).subscribe((state) => {
+            if (state.user) {
+                this.currentUserId = state.user.id;
+            }
+        });
 
         if (this.conversation) {
             this.otherParticipant = this.conversation.participants.find((p) => p.userId !== this.currentUserId);
@@ -77,7 +86,54 @@ export class ChatWindowComponent {
         }
     }
 
+    ngOnChanges(changes: SimpleChanges): void {
+        if (changes["conversation"] && this.conversation) {
+            this.currentPage = 1;
+            this.messages = [];
+            this.loading = true;
+
+            this.otherParticipant = this.conversation.participants.find((p) => p.userId !== this.currentUserId);
+
+            this.loadMessages();
+            this.joinConversation();
+            this.subscribeToSocketEvents();
+            this.setupTypingDebounce();
+        }
+    }
+
     loadMessages(): void {
+        // if (!this.conversation) return;
+
+        // this.loading = true;
+        // this.chatService
+        //     .getMessages(this.conversation._id, this.currentPage, 50)
+        //     .pipe(takeUntil(this.destroy$))
+        //     .subscribe({
+        //         next: (response) => {
+        //             if (response.success && response.data) {
+        //                 // Messages come in reverse chronological order, reverse them
+        //                 const newMessages = response.data.reverse();
+
+        //                 if (this.currentPage === 1) {
+        //                     this.messages = newMessages;
+        //                 } else {
+        //                     this.messages = [...newMessages, ...this.messages];
+        //                     this.shouldScrollToBottom = false;
+        //                 }
+
+        //                 this.hasMoreMessages = response.data.length === 50;
+        //                 this.markMessagesAsRead();
+        //             }
+        //             this.loading = false;
+        //             this.loadingMore = false;
+        //         },
+        //         error: (error) => {
+        //             console.error("Error loading messages:", error);
+        //             this.loading = false;
+        //             this.loadingMore = false;
+        //         },
+        //     });
+
         if (!this.conversation) return;
 
         this.loading = true;
@@ -87,14 +143,19 @@ export class ChatWindowComponent {
             .subscribe({
                 next: (response) => {
                     if (response.success && response.data) {
-                        // Messages come in reverse chronological order, reverse them
                         const newMessages = response.data.reverse();
 
                         if (this.currentPage === 1) {
                             this.messages = newMessages;
+                            this.shouldScrollToBottom = true; // scroll to bottom for first load
                         } else {
+                            const previousScrollHeight = this.messagesContainer.nativeElement.scrollHeight;
                             this.messages = [...newMessages, ...this.messages];
-                            this.shouldScrollToBottom = false;
+                            // maintain scroll position after prepending
+                            setTimeout(() => {
+                                this.messagesContainer.nativeElement.scrollTop =
+                                    this.messagesContainer.nativeElement.scrollHeight - previousScrollHeight;
+                            });
                         }
 
                         this.hasMoreMessages = response.data.length === 50;
@@ -103,8 +164,7 @@ export class ChatWindowComponent {
                     this.loading = false;
                     this.loadingMore = false;
                 },
-                error: (error) => {
-                    console.error("Error loading messages:", error);
+                error: () => {
                     this.loading = false;
                     this.loadingMore = false;
                 },
@@ -313,12 +373,19 @@ export class ChatWindowComponent {
     }
 
     scrollToBottom(): void {
-        try {
-            if (this.messagesContainer) {
+        // try {
+        //     if (this.messagesContainer) {
+        //         this.messagesContainer.nativeElement.scrollTop = this.messagesContainer.nativeElement.scrollHeight;
+        //     }
+        // } catch (error) {
+        //     console.error("Error scrolling to bottom:", error);
+        // }
+
+        if (this.messagesContainer) {
+            setTimeout(() => {
                 this.messagesContainer.nativeElement.scrollTop = this.messagesContainer.nativeElement.scrollHeight;
-            }
-        } catch (error) {
-            console.error("Error scrolling to bottom:", error);
+                this.shouldScrollToBottom = true;
+            });
         }
     }
 

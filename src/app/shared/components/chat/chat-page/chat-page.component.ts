@@ -15,6 +15,7 @@ export class ChatPageComponent {
     showMobileChat = false;
 
     onConversationSelected(conversation: Conversation): void {
+        console.log("selected conversation:", conversation);
         this.selectedConversation = conversation;
         this.showMobileChat = true;
     }

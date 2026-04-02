@@ -65,6 +65,10 @@
               class="px-4 py-2 border border-red-300 text-red-700 rounded-md hover:bg-red-50 font-medium text-sm">
               Withdraw
             </button>
+            <button *ngIf="application?.status=='shortlisted'" (click)="messageCompany()"
+              class="px-4 py-2 border bg-blue-600 text-white rounded-md hover:bg-blue-700 font-medium text-sm">
+              message recruiter
+            </button>
           </div>
         </div>
       </div>
@@ -105,8 +109,7 @@
                 <p class="text-xs text-gray-500">{{ formatDate(application.resume.uploadedAt) }}</p>
               </div>
             </div>
-            <button (click)="downloadResume()"
-              class="px-3 py-1.5 bg-blue-600 text-white rounded text-xs hover:bg-blue-700">
+            <button (click)="viewResume()" class="px-3 py-1.5 bg-blue-600 text-white rounded text-xs hover:bg-blue-700">
               Download
             </button>
           </div>
@@ -218,7 +221,7 @@
       </div>
     </div>
     <!-- message company -->
-    <button *ngIf="application?.status=='shortlisted'" (click)="messageCompany()"
+    <!-- <button *ngIf="application?.status=='shortlisted'" (click)="messageCompany()"
       class="px-6 py-3 bg-white border-2 border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 flex items-center gap-2">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -226,7 +229,7 @@
         </path>
       </svg>
       <span>Message Recruiter</span>
-    </button>
+    </button> -->
 
   </div>
 </div>

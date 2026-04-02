@@ -80,22 +80,62 @@
 
           <!-- Action Buttons -->
           <div class="flex flex-col gap-2 flex-shrink-0">
+
+            <!-- View Profile -->
             <button (click)="viewProfile()"
-              class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors whitespace-nowrap">
-              View Profile
+              class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors flex items-center gap-2">
+              <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M5.121 17.804A9 9 0 1118.879 6.196M15 11a3 3 0 11-6 0 3 3 0 016 0z">
+                </path>
+              </svg>
+              <span>View Profile</span>
             </button>
+
+            <!-- Change Status -->
             <button (click)="openStatusModal()"
-              class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors whitespace-nowrap">
-              Change Status
+              class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 12l2 2l4-4m5 2a9 9 0 11-6.219-8.56">
+                </path>
+              </svg>
+              <span>Change Status</span>
             </button>
+
+            <!-- Notes -->
             <button (click)="openNotesModal()"
-              class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors whitespace-nowrap">
-              {{ application.notes ? 'Edit Notes' : 'Add Notes' }}
+              class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2">
+              <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M11 5h2M12 7v10m-7 4h14a2 2 0 002-2V7l-5-5H7a2 2 0 00-2 2v15a2 2 0 002 2z">
+                </path>
+              </svg>
+              <span>{{ application.notes ? 'Edit Notes' : 'Add Notes' }}</span>
             </button>
+
+            <!-- Schedule Interview -->
             <button (click)="openInterviewModal()"
-              class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors whitespace-nowrap">
-              Schedule Interview
+              class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2">
+              <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10m-13 9h16a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+                </path>
+              </svg>
+              <span>Schedule Interview</span>
             </button>
+
+            <!-- Message -->
+            <button *ngIf="application.status === 'shortlisted'" (click)="messageApplicant(application)"
+              class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z">
+                </path>
+              </svg>
+              <span>Message</span>
+            </button>
+
           </div>
         </div>
       </div>
@@ -107,29 +147,41 @@
           <h2 class="text-lg font-semibold text-gray-900 mb-4">Resume</h2>
 
           <div *ngIf="application.resume"
-            class="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
-            <div class="flex items-center flex-1">
-              <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center mr-3">
+            class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 border border-gray-200 rounded-lg">
+
+            <!-- Left Section -->
+            <div class="flex items-center flex-1 min-w-0">
+              <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center mr-3 flex-shrink-0">
                 <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z">
                   </path>
                 </svg>
               </div>
+
               <div class="flex-1 min-w-0">
-                <p class="font-medium text-gray-900 truncate">{{ application.resume.fileName }}</p>
-                <p class="text-sm text-gray-500">{{ formatShortDate(application.resume.uploadedAt) }}</p>
+                <p class="font-medium text-gray-900 truncate">
+                  {{ application.resume.fileName }}
+                </p>
+                <p class="text-sm text-gray-500">
+                  {{ formatShortDate(application.resume.uploadedAt) }}
+                </p>
               </div>
             </div>
-            <div class="flex gap-2 ml-2">
+
+            <!-- Right Section (Buttons) -->
+            <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+
               <button (click)="viewResume()"
-                class="px-3 py-1.5 text-blue-600 border border-blue-600 rounded hover:bg-blue-50 transition-colors text-sm font-medium">
+                class="w-full sm:w-auto px-3 py-2 text-blue-600 border border-blue-600 rounded hover:bg-blue-50 transition-colors text-sm font-medium">
                 View
               </button>
+
               <button (click)="downloadResume()"
-                class="px-3 py-1.5 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm font-medium">
+                class="w-full sm:w-auto px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm font-medium">
                 Download
               </button>
+
             </div>
           </div>
         </div>
@@ -168,13 +220,13 @@
       <!-- Skills -->
 
 
-      <div *ngIf=" application.applicantDetails.skills.length > 0"
+      <div *ngIf=" application.applicantSkills.length> 0"
         class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
         <h2 class="text-lg font-semibold text-gray-900 mb-4">Skills</h2>
         <div class="flex flex-wrap gap-2">
-          <span *ngFor="let skill of application.applicantDetails.skills"
+          <span *ngFor="let skill of application.applicantSkills"
             class="px-3 py-1.5 bg-blue-50 text-blue-700 rounded-full text-sm font-medium border border-blue-200">
-            {{ skill }}
+            {{ skill.name }}
           </span>
         </div>
 

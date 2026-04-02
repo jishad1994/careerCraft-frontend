@@ -11,7 +11,7 @@ export const userJobApplicationRoutes: Routes = [
   {
     path: 'interviews',
     loadComponent: () =>
-      import('../../pages/user/interview-listing-page/candidate-interview-listing.component').then(
+      import('../../features/user/interview/interview-listing-page/candidate-interview-listing.component').then(
         (m) => m.CandidateInterviewListingComponent,
       ),
   },

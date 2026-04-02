@@ -4,7 +4,7 @@ export const companyInterviewRoutes: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('../../pages/company/interview-listing/company-interview-listing.component').then(
+      import('../../features/company/interview/interview-listing/company-interview-listing.component').then(
         (m) => m.CompanyInterviewListingComponent,
       ),
   },

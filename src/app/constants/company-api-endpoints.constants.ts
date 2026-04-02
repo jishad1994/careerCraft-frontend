@@ -87,7 +87,6 @@ export const COMPANY_API_ENDPOINTS = {
         GET_UPCOMING_INTERVIEWS: `${baseUrl}${companyBaseUrl}/applications/interviews/upcoming`,
     },
 
-
     SUBSCRIPTION: {
         GET_ACTIVE_SUBSCRIPTION: `${baseUrl}${companyBaseUrl}/subscriptions/active`,
 
@@ -111,6 +110,16 @@ export const COMPANY_API_ENDPOINTS = {
         GET_PAYMENT: (paymentId: string) => `${baseUrl}${companyBaseUrl}/subscriptions/payments/${paymentId}`,
 
         UPGRADE: `${baseUrl}${companyBaseUrl}/subscriptions/upgrade`,
+
+        GET_QUEUE: `${baseUrl}${companyBaseUrl}/subscriptions/queue`,
+    },
+
+    ADDONS: {
+        GET_ALL_AVAILABLE_ADDONS: `${baseUrl}${companyBaseUrl}/addons/available`,
+
+        PURCHASE_ADDON: (addonId: string) => `${baseUrl}${companyBaseUrl}/addons/${addonId}/purchase`,
+
+        CONFIRM_ADDON: `${baseUrl}${companyBaseUrl}/addons/confirm`,
     },
     CANDIDATES: {
         getCandidateProfile: (candidateId: string) => `${baseUrl}${companyBaseUrl}/candidates/${candidateId}/profile`,

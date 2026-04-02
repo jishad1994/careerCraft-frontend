@@ -170,6 +170,7 @@ export class CompanyJobListComponent implements OnInit {
   deleteJob(job: Job) {
     if (!confirm(`Are you sure you want to delete "${job.title}"?`)) return;
 
+    
     this._jobService.deleteJob(job._id).subscribe({
       next: () => {
         this.snackBar.open('Job deleted successfully', 'Close', {

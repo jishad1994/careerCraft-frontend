@@ -21,7 +21,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   currentPage = 1;
   totalPages = 1;
   totalItems = 0;
-  pageSize = 20;
+  pageSize = 5;
   hasNextPage = false;
   hasPrevPage = false;
 
