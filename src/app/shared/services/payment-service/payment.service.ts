@@ -9,6 +9,7 @@ interface PaymentIntentResponse {
     clientSecret: string;
     subscriptionId: string;
     intentId: string;
+    paymentId: string;
     isQueued: boolean;
     queuePosition?: number;
     scheduledStartDate?: string;
@@ -54,8 +55,8 @@ export class PaymentService {
         });
     }
 
-    purchaseAddon(): Observable<ApiResponse<PaymentIntentResponse>> {
-        return this._http.get<ApiResponse<PaymentIntentResponse>>(COMPANY_API_ENDPOINTS.ADDONS.GET_ALL_AVAILABLE_ADDONS);
+    purchaseAddon(addonId: string): Observable<ApiResponse<PaymentIntentResponse>> {
+        return this._http.get<ApiResponse<PaymentIntentResponse>>(COMPANY_API_ENDPOINTS.ADDONS.PURCHASE_ADDON(addonId));
     }
 
     confirmAddon(paymentId: string, paymentIntentId: string): Observable<ApiResponse<PaymentResponse>> {

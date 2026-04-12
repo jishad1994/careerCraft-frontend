@@ -11,7 +11,14 @@ import { COMPANY_API_ENDPOINTS } from "../../../constants/company-api-endpoints.
 import { ISubscriptionPlan } from "../../../models/subscription-plan/subscription-plan.model";
 import { ISubscriptionAddon, ISubscriptionAddonWithUsage } from "../../../models/subscription-addons.model";
 import { PaymentIntentResult } from "@stripe/stripe-js";
-
+export interface CancellationResult {
+    success: boolean;
+    message: string;
+    cancelledSubscriptionId: string;
+    activatedSubscriptionId?: string;
+    queueReordered: boolean;
+    remainingQueue: number;
+}
 @Injectable({
     providedIn: "root",
 })
@@ -47,8 +54,8 @@ export class CompanySubscriptionService {
         );
     }
 
-    cancelSubscription(reason: string): Observable<ApiResponse<CompanySubscription>> {
-        return this._http.post<ApiResponse<CompanySubscription>>(COMPANY_API_ENDPOINTS.SUBSCRIPTION.CANCEL_SUSBCRIPTION, {
+    cancelSubscription(reason: string): Observable<ApiResponse<CancellationResult>> {
+        return this._http.post<ApiResponse<CancellationResult>>(COMPANY_API_ENDPOINTS.SUBSCRIPTION.CANCEL_SUSBCRIPTION, {
             reason,
         });
     }

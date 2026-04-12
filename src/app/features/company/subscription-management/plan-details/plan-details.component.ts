@@ -530,7 +530,13 @@ export class PlanDetailsComponent implements OnInit, OnDestroy {
                                 confirmButton: "px-6 py-2.5 rounded-lg font-semibold",
                             },
                         });
-                        this.router.navigate(["/company/dashboard/subscriptions"]);
+
+                        if (response.data.activatedSubscriptionId) {
+                            this.loadCurrentSubscription(response.data.activatedSubscriptionId);
+                            this.loadSubscriptionQueue();
+                        } else {
+                            this.router.navigate(["/company/dashboard/subscriptions"]);
+                        }
                     }
                     this.cancelling = false;
                 },
@@ -583,5 +589,9 @@ export class PlanDetailsComponent implements OnInit, OnDestroy {
         if (percentage >= 90) return "bg-red-600";
         if (percentage >= 70) return "bg-orange-600";
         return "bg-blue-600";
+    }
+
+    viewAddons(): void {
+        this.router.navigate(["/company/dashboard/addons"]);
     }
 }

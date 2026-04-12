@@ -31,6 +31,20 @@ export const COMPANY_ROUTES: Routes = [
                     ),
             },
             {
+                path: "addons/:id",
+                loadComponent: () =>
+                    import("../../features/company/subscription-management/addons-purchase/addons-purchase.component").then(
+                        (m) => m.AddonsPurchaseComponent,
+                    ),
+            },
+            {
+                path: "addons",
+                loadComponent: () =>
+                    import("../../features/company/subscription-management/addons-list/addons-list.component").then(
+                        (m) => m.AddonsListComponent,
+                    ),
+            },
+            {
                 path: "candidates/:userId",
                 loadComponent: () =>
                     import("../../shared/components/candidate-profile/candidate-profile.component").then(
