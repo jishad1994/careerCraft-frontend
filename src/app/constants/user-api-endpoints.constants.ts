@@ -97,4 +97,11 @@ export const USER_API_ENDPOINTS = {
 
         UPLOAD_RESUME: `${baseUrl}${userBaseUrl}/resume/upload`,
     },
+    OFFERS: {
+        LIST_OFFERS: `${baseUrl}${userBaseUrl}/offers`,
+        GET_OFFER: (offerId: string) => `${baseUrl}${userBaseUrl}/offers/${offerId}`,
+        DOWNLOAD_PDF: (offerId: string) => `${baseUrl}${userBaseUrl}/offers/${offerId}/pdf`,
+        RESPOND_TO_OFFER: (offerId: string) => `${baseUrl}${userBaseUrl}/offers/${offerId}/respond`,
+        UPLOAD_SIGNED_OFFERLETTER: (offerId: string) => `${baseUrl}${userBaseUrl}/offers/${offerId}/upload-signed`,
+    },
 } as const;

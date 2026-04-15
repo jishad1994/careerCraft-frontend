@@ -14,7 +14,7 @@
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
         </svg>
-        <span class="font-medium">Back</span>
+        <span class="font-medium">Back to Applications</span>
       </button>
 
       <!-- Header Card -->
@@ -23,9 +23,10 @@
           <div class="flex justify-between items-start gap-4 mb-4">
             <div class="flex-1">
               <h1 class="text-2xl font-bold text-gray-900 mb-1">{{ application.jobDetails.title }}</h1>
-              <p class="text-gray-700 mb-1">{{ application.jobDetails.company }}</p>
+              <p class="text-gray-700 mb-1">{{ application.companyName }}</p>
               <p class="text-gray-600 text-sm">
-                {{ application.jobDetails.location }} •
+                {{ application.jobDetails.location.city|titlecase }} • {{ application.jobDetails.location.state|titlecase }} • {{
+                application.jobDetails.location.country |titlecase}} •
                 {{ application.jobDetails.employmentType | titlecase }} •
                 {{ application.jobDetails.workMode | titlecase }}
               </p>

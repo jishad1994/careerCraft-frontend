@@ -1,0 +1,182 @@
+<div class="min-h-screen bg-gray-50 py-6">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <!-- Header -->
+        <div class="mb-6">
+            <button (click)="goBack()" class="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+                <span class="font-medium">Back to Offers</span>
+            </button>
+            <h1 class="text-2xl font-bold text-gray-900">Create Offer Letter</h1>
+            <p class="text-sm text-gray-500 mt-1">Fill in the details below to generate and send an offer</p>
+        </div>
+
+        <form [formGroup]="offerForm" (ngSubmit)="onSubmit()" class="space-y-5">
+
+            <!-- Application ID -->
+            <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-5">
+                <h2 class="text-base font-semibold text-gray-900 mb-4">Application</h2>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Application ID <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" formControlName="applicationId" placeholder="Paste application ID"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        [class.border-red-500]="hasError('applicationId')">
+                    <p *ngIf="applicationId" class="text-xs text-green-600 mt-1">Pre-filled from application</p>
+                </div>
+            </div>
+
+            <!-- Position Details -->
+            <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-5">
+                <h2 class="text-base font-semibold text-gray-900 mb-4">Position Details</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            Designation <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" formControlName="designation" placeholder="e.g. Software Engineer"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            [class.border-red-500]="hasError('designation')">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            Department <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" formControlName="department" placeholder="e.g. Engineering"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            [class.border-red-500]="hasError('department')">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            Employment Type <span class="text-red-500">*</span>
+                        </label>
+                        <select formControlName="employmentType"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="full-time">Full Time</option>
+                            <option value="part-time">Part Time</option>
+                            <option value="contract">Contract</option>
+                            <option value="internship">Internship</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            Work Mode <span class="text-red-500">*</span>
+                        </label>
+                        <select formControlName="workMode"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="onsite">Onsite</option>
+                            <option value="remote">Remote</option>
+                            <option value="hybrid">Hybrid</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            Work Location <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" formControlName="workLocation" placeholder="e.g. Bangalore, India"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            [class.border-red-500]="hasError('workLocation')">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Probation Period (months)</label>
+                        <input type="number" formControlName="probationPeriod" placeholder="e.g. 6" min="0"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dates -->
+            <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-5">
+                <h2 class="text-base font-semibold text-gray-900 mb-4">Dates</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            Joining Date <span class="text-red-500">*</span>
+                        </label>
+                        <input type="date" formControlName="joiningDate" [min]="today"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            [class.border-red-500]="hasError('joiningDate')">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            Offer Expires On <span class="text-red-500">*</span>
+                        </label>
+                        <input type="date" formControlName="expiresAt" [min]="today"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            [class.border-red-500]="hasError('expiresAt')">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Compensation -->
+            <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-5" formGroupName="compensation">
+                <h2 class="text-base font-semibold text-gray-900 mb-4">Compensation</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            Base Salary <span class="text-red-500">*</span>
+                        </label>
+                        <input type="number" formControlName="baseSalary" placeholder="e.g. 800000" min="1"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            [class.border-red-500]="hasError('compensation.baseSalary')">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Currency</label>
+                        <select formControlName="currency"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="INR">INR</option>
+                            <option value="USD">USD</option>
+                            <option value="EUR">EUR</option>
+                            <option value="GBP">GBP</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Period</label>
+                        <select formControlName="period"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="yearly">Yearly</option>
+                            <option value="monthly">Monthly</option>
+                        </select>
+                    </div>
+                    <div class="sm:col-span-3">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Bonus</label>
+                        <input type="text" formControlName="bonus" placeholder="e.g. Performance bonus up to 15%"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div class="sm:col-span-3">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Other Benefits</label>
+                        <input type="text" formControlName="otherBenefits"
+                            placeholder="e.g. Health insurance, ESOP, meal allowance"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Terms -->
+            <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-5">
+                <h2 class="text-base font-semibold text-gray-900 mb-4">Additional Terms (Optional)</h2>
+                <textarea formControlName="additionalTerms" rows="4"
+                    placeholder="Any additional terms, conditions, or notes..."
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none">
+                </textarea>
+            </div>
+
+            <!-- Submit -->
+            <div class="flex gap-3">
+                <button type="submit" [disabled]="submitting || offerForm.invalid"
+                    class="flex-1 sm:flex-none px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2">
+                    <div *ngIf="submitting"
+                        class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    {{ submitting ? 'Sending...' : 'Send Offer Letter' }}
+                </button>
+                <button type="button" (click)="goBack()"
+                    class="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium">
+                    Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

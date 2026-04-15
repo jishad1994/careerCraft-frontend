@@ -15,6 +15,8 @@ export class CompanySideBarComponent implements OnInit, OnDestroy {
     collapsed = false;
     jobMenuOpen = false;
     isMobileMenuOpen = false;
+    offerMenuOpen = false;
+
     isDesktop = window.innerWidth >= 1024;
     destroy$ = new Subject<void>();
     constructor(private router: Router, private authService: AuthService, private _snackBar: MatSnackBar) {}
@@ -47,12 +49,20 @@ export class CompanySideBarComponent implements OnInit, OnDestroy {
     toggleJobMenu() {
         if (!this.collapsed) {
             this.jobMenuOpen = !this.jobMenuOpen;
+            this.offerMenuOpen = false;
         }
     }
 
     closeMobileMenu() {
         if (!this.isDesktop) {
             this.isMobileMenuOpen = false;
+        }
+    }
+
+    toggleOfferMenu(): void {
+        if (!this.collapsed) {
+            this.offerMenuOpen = !this.offerMenuOpen;
+            this.jobMenuOpen = false;
         }
     }
 

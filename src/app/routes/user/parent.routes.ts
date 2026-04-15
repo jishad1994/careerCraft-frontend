@@ -49,6 +49,20 @@ export const USER_ROUTES: Routes = [
                         (m) => m.ResumeBuilderComponent,
                     ),
             },
+            {
+                path: "offers",
+                loadComponent: () =>
+                    import("../../features/user/candidate-offer-list/candidate-offer-list.component").then(
+                        (m) => m.CandidateOfferListComponent,
+                    ),
+            },
+            {
+                path: "offers/:id",
+                loadComponent: () =>
+                    import("../../features/user/candidate-offer-detail/candidate-offer-detail.component").then(
+                        (m) => m.CandidateOfferDetailComponent,
+                    ),
+            },
            
 
             { path: "**", redirectTo: "home" },

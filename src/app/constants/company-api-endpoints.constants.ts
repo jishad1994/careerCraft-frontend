@@ -134,4 +134,12 @@ export const COMPANY_API_ENDPOINTS = {
         DOWNLOAD_INVOICE: (invoiceId: string) => `${baseUrl}${companyBaseUrl}/invoices/${invoiceId}/download`,
         VIEW_INVOICE: (invoiceId: string) => `${baseUrl}${companyBaseUrl}/invoices/${invoiceId}/view`,
     },
+    OFFERS: {
+        LIST_OFFERS: `${baseUrl}${companyBaseUrl}/offers`,
+        CREATE_OFFER: `${baseUrl}${companyBaseUrl}/offers`,
+        GET_OFFER: (id: string) => `${baseUrl}${companyBaseUrl}/offers/${id}`,
+        DOWNLOAD_OFFERLETTER: (id: string) => `${baseUrl}${companyBaseUrl}/offers/${id}/pdf`,
+        VERIFY_OFFERLETTER: (id: string) => `${baseUrl}${companyBaseUrl}/offers/${id}/verify`,
+        GET_SIGNED_OFFERLETTER: (id: string) => `${baseUrl}${companyBaseUrl}/offers/${id}/signed-document`,
+    },
 } as const;

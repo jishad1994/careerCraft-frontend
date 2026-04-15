@@ -20,7 +20,7 @@ export class FloatingChatBarComponent {
     showConversationList = false;
     totalUnreadCount = 0;
     currentUserId = "";
-    currentUserRole = "user";
+    currentUserRole = "User";
 
     fullConverstaionLink=this.currentUserRole=='user'?'/user/messages':'/company/dashboard/messages'
 

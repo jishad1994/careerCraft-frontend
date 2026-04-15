@@ -66,12 +66,7 @@ export class ChatWindowComponent implements OnChanges {
         }
     }
 
-    ngAfterViewChecked(): void {
-        if (this.shouldScrollToBottom) {
-            this.scrollToBottom();
-        }
-    }
-
+    
     ngOnDestroy(): void {
         if (this.conversation) {
             this.socketService.leaveConversation(this.conversation._id);
@@ -102,38 +97,6 @@ export class ChatWindowComponent implements OnChanges {
     }
 
     loadMessages(): void {
-        // if (!this.conversation) return;
-
-        // this.loading = true;
-        // this.chatService
-        //     .getMessages(this.conversation._id, this.currentPage, 50)
-        //     .pipe(takeUntil(this.destroy$))
-        //     .subscribe({
-        //         next: (response) => {
-        //             if (response.success && response.data) {
-        //                 // Messages come in reverse chronological order, reverse them
-        //                 const newMessages = response.data.reverse();
-
-        //                 if (this.currentPage === 1) {
-        //                     this.messages = newMessages;
-        //                 } else {
-        //                     this.messages = [...newMessages, ...this.messages];
-        //                     this.shouldScrollToBottom = false;
-        //                 }
-
-        //                 this.hasMoreMessages = response.data.length === 50;
-        //                 this.markMessagesAsRead();
-        //             }
-        //             this.loading = false;
-        //             this.loadingMore = false;
-        //         },
-        //         error: (error) => {
-        //             console.error("Error loading messages:", error);
-        //             this.loading = false;
-        //             this.loadingMore = false;
-        //         },
-        //     });
-
         if (!this.conversation) return;
 
         this.loading = true;

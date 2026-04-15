@@ -1,0 +1,112 @@
+<div class="min-h-screen bg-gray-50 py-6">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900">Offer Letters</h1>
+                <p class="text-sm text-gray-500 mt-1">Manage all sent offer letters</p>
+            </div>
+            <button (click)="createOffer()"
+                class="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                Create Offer
+            </button>
+        </div>
+
+        <!-- Filter -->
+        <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-4 mb-6">
+            <div class="flex items-center gap-3">
+                <label class="text-sm font-medium text-gray-700">Status:</label>
+                <select [(ngModel)]="statusFilter" (ngModelChange)="onFilterChange()"
+                    class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <option value="">All</option>
+                    <option value="pending">Pending</option>
+                    <option value="accepted">Accepted</option>
+                    <option value="rejected">Rejected</option>
+                    <option value="verified">Verified</option>
+                </select>
+                <span class="text-sm text-gray-500 ml-auto">{{ total }} offer{{ total !== 1 ? 's' : '' }}</span>
+            </div>
+        </div>
+
+        <!-- Loading -->
+        <div *ngIf="loading" class="flex justify-center py-16">
+            <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="!loading && offers.length === 0"
+            class="bg-white rounded-lg border border-gray-200 shadow-sm p-12 text-center">
+            <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <p class="text-gray-500 text-sm">No offer letters found</p>
+        </div>
+
+        <!-- Offers List -->
+        <div *ngIf="!loading && offers.length > 0" class="space-y-3">
+            <div *ngFor="let offer of offers" (click)="viewOffer(offer._id)"
+                class="bg-white rounded-lg border border-gray-200 shadow-sm p-5 hover:border-blue-300 hover:shadow-md transition-all cursor-pointer">
+                <div class="flex items-start justify-between gap-4">
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-3 mb-2">
+                            <h3 class="font-semibold text-gray-900 truncate">{{ getCandidateName(offer) }}</h3>
+                            <span [class]="getStatusClass(offer.status)"
+                                class="px-2.5 py-0.5 text-xs font-medium rounded-full border whitespace-nowrap">
+                                {{ offer.status | titlecase }}
+                            </span>
+                        </div>
+                        <p class="text-sm text-gray-600 mb-1">
+                            {{ offer.designation }} · {{ offer.department }}
+                        </p>
+                        <p class="text-sm text-gray-500">
+                            {{ offer.job.title }}
+                        </p>
+                    </div>
+                    <div class="text-right flex-shrink-0">
+                        <p class="text-sm font-medium text-gray-900">
+                            {{ offer.compensation.currency }} {{ offer.compensation.baseSalary.toLocaleString() }}
+                        </p>
+                        <p class="text-xs text-gray-500 mt-1">
+                            Sent {{ formatDate(offer.offerDate) }}
+                        </p>
+                        <p class="text-xs text-gray-400 mt-0.5">
+                            Expires {{ formatDate(offer.expiresAt) }}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Signed document indicator -->
+                <div *ngIf="offer.signedDocument" class="mt-3 pt-3 border-t border-gray-100">
+                    <span class="inline-flex items-center gap-1.5 text-xs text-green-700">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Signed document uploaded
+                        <span *ngIf="offer.status !== 'verified'" class="text-amber-600 font-medium">
+                            — awaiting verification
+                        </span>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div *ngIf="totalPages > 1" class="flex items-center justify-between mt-6">
+            <button (click)="prevPage()" [disabled]="page <= 1"
+                class="px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                Previous
+            </button>
+            <span class="text-sm text-gray-600">Page {{ page }} of {{ totalPages }}</span>
+            <button (click)="nextPage()" [disabled]="page >= totalPages"
+                class="px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                Next
+            </button>
+        </div>
+    </div>
+</div>

@@ -143,6 +143,13 @@ export class CompanyApplicationViewComponent implements OnInit, OnDestroy {
             });
     }
 
+    createOfferLetter(): void {
+        if (!this.application) return;
+        this.router.navigate(["/company/dashboard/offers/create"], {
+            queryParams: { applicationId: this.application._id },
+        });
+    }
+
     viewProfile(): void {
         if (this.application) {
             this.router.navigate(["company/dashboard/candidates", this.application.applicantDetails._id], {

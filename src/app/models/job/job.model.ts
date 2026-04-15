@@ -1,4 +1,3 @@
-// models/job.model.ts
 
 import { Skill } from '../skill.model';
 export type JobStatus = 'draft' | 'active' | 'paused' | 'closed' | 'expired';

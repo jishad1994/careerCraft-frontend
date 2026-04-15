@@ -93,6 +93,52 @@
           </ul>
         </li>
 
+
+        <!-- offerLetter management -->
+        <li>
+          <button (click)="toggleOfferMenu()"
+            class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors group">
+
+            <!-- Icon -->
+            <svg class="w-5 h-5 text-gray-400 group-hover:text-gray-600" fill="none" stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 12h6m-6 4h6M7 4h10a2 2 0 012 2v12a2 2 0 01-2 2H7a2 2 0 01-2-2V6a2 2 0 012-2z">
+              </path>
+            </svg>
+
+            <span *ngIf="!collapsed" class="flex-1 text-left text-sm font-medium">
+              Offer Management
+            </span>
+
+            <svg *ngIf="!collapsed" class="w-4 h-4 transition-transform" [class.rotate-180]="offerMenuOpen" fill="none"
+              stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </button>
+
+          <!-- Submenu -->
+          <ul *ngIf="offerMenuOpen && !collapsed" class="mt-1 ml-11 space-y-1">
+
+            <li>
+              <a routerLink="/company/dashboard/offers" (click)="closeMobileMenu()"
+                routerLinkActive="text-blue-700 font-semibold"
+                class="block px-4 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors">
+                All Offers
+              </a>
+            </li>
+
+            <li>
+              <a routerLink="/company/dashboard/offers/create" (click)="closeMobileMenu()"
+                routerLinkActive="text-blue-700 font-semibold"
+                class="block px-4 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors">
+                Create Offer
+              </a>
+            </li>
+
+          </ul>
+        </li>
+
         <!-- Billing and plans -->
         <li>
           <a routerLink="/company/dashboard/subscriptions" (click)="closeMobileMenu()"
@@ -121,6 +167,9 @@
             <span *ngIf="!collapsed" class="text-sm font-medium">Manage Interviews</span>
           </a>
         </li>
+
+
+
 
         <!-- Settings -->
         <li>

@@ -110,7 +110,7 @@ export class SocketService implements OnDestroy {
     private readonly chatJoined$ = new Subject<{ conversationId: string; success: boolean }>();
 
     private readonly error$ = new Subject<string>();
-
+    private listenersInitialized = false;
     constructor() {}
 
     connect(): void {
@@ -133,15 +133,15 @@ export class SocketService implements OnDestroy {
     }
 
     setupEventListeners(): void {
-        if (!this.socket) return;
-
+        if (!this.socket || this.listenersInitialized) return;
+        this.listenersInitialized = true;
         this.socket.on("connect", () => {
             console.log("Socket connected:", this.socket?.id);
             this.connected$.next(true);
             this.requestUnreadCount();
         });
 
-        this.socket.on("dicsonnect", () => {
+        this.socket.on("disconnect", () => {
             console.log("Socket disconnected");
             this.connected$.next(false);
         });
@@ -375,14 +375,17 @@ export class SocketService implements OnDestroy {
         messageType?: "text" | "file" | "system";
         attachments?: any[];
     }): void {
+         
         if (this.socket?.connected) {
+
+           
             this.socket.emit("chat:sendMessage", data);
         }
     }
 
     /**
-     * 
-     * 
+     *
+     *
      * Emit typing start
      */
     startTyping(conversationId: string, receiverId: string): void {

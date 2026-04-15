@@ -26,7 +26,7 @@
           <div
             class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center flex-shrink-0">
             <span class="text-white font-bold text-sm">
-              {{ getOtherParticipant(conversation)?.userType === 'company' ? 'C' : 'U' }}
+              {{ getOtherParticipant(conversation)?.userType === 'Company' ? 'C' : 'U' }}
             </span>
           </div>
 
@@ -34,7 +34,7 @@
           <div class="flex-1 min-w-0">
             <div class="flex items-center justify-between mb-1">
               <h4 class="text-sm font-semibold text-gray-900 truncate">
-                {{ getOtherParticipant(conversation)?.userType === 'company' ? 'Company' : 'User' }}
+                {{ getOtherParticipant(conversation)?.userType === 'Company' ? 'Company' : 'User' }}
               </h4>
               <span *ngIf="getUnreadCount(conversation) > 0"
                 class="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 text-xs font-bold text-white bg-blue-600 rounded-full">
@@ -65,11 +65,11 @@
       <div class="flex items-center gap-2 flex-1 min-w-0">
         <div class="w-8 h-8 rounded-full bg-white bg-opacity-20 flex items-center justify-center flex-shrink-0">
           <span class="text-white font-bold text-xs">
-            {{ getOtherParticipant(miniChat.conversation)?.userType === 'company' ? 'C' : 'U' }}
+            {{ getOtherParticipant(miniChat.conversation)?.userType === 'Company' ? 'C' : 'U' }}
           </span>
         </div>
         <h3 class="text-sm font-semibold truncate">
-          {{ getOtherParticipant(miniChat.conversation)?.userType === 'company' ? 'Company' : 'User' }}
+          {{ getOtherParticipant(miniChat.conversation)?.userType === 'C  ompany' ? 'Company' : 'User' }}
         </h3>
         <span *ngIf="miniChat.unreadCount > 0"
           class="inline-flex items-center justify-center min-w-[16px] h-4 px-1 text-xs font-bold bg-white text-blue-600 rounded-full">
