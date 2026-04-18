@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -34,19 +34,17 @@ import { UserProfile } from '../../../models/user/user-profile.model';
   styleUrl: './user-details.component.css',
 })
 export class UserDetailsComponent implements OnInit, OnDestroy {
+  private _route = inject(ActivatedRoute);
+  private _router = inject(Router);
+  private _adminService = inject(AdminService);
+  private _snackBar = inject(MatSnackBar);
+
   user: UserProfile | null = null;
   loading = false;
-  userId: string = '';
+  userId = '';
   blockComment = '';
   showCommentBox = false;
   destroy$ = new Subject<void>();
-
-  constructor(
-    private _route: ActivatedRoute,
-    private _router: Router,
-    private _adminService: AdminService,
-    private _snackBar: MatSnackBar
-  ) {}
 
   ngOnInit(): void {
     this.userId = this._route.snapshot.paramMap.get('id') || '';

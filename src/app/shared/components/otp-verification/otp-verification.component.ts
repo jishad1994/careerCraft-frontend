@@ -1,11 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject, OnDestroy } from '@angular/core';
 import { OnInit } from '@angular/core';
 import {
   ReactiveFormsModule,
   FormBuilder,
-  ValidationErrors,
-  AbstractControl,
   FormGroup,
   Validators,
   FormsModule,
@@ -14,7 +12,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { OTP_PATTERN } from '../../../constants/form.constants';
 import { Router } from '@angular/router';
-import { FormValidators } from '../../../validators/form.validators';
 import { AuthService } from '../../../services/auth/auth.service';
 import { environment } from '../../../environments/environment';
 @Component({
@@ -23,15 +20,20 @@ import { environment } from '../../../environments/environment';
   templateUrl: './otp-verification.component.html',
   styleUrl: './otp-verification.component.css',
 })
-export class OtpVerificationComponent implements OnInit {
+export class OtpVerificationComponent implements OnInit,OnDestroy {
+  private FB = inject(FormBuilder);
+  private router = inject(Router);
+  private authService = inject(AuthService);
+  private _snackBar = inject(MatSnackBar);
+
   //user email
-  email: string = '';
-  role: string = '';
+  email = '';
+  role = '';
 
   //resend OTP timer variables
-  resendDisabled: boolean = true;
-  timer: number = 60;
-  intervalId: any;
+  resendDisabled = true;
+  timer = 60;
+  intervalId!: ReturnType<typeof setInterval>;
 
   logoUrl: string = environment.logUrl;
 
@@ -39,25 +41,26 @@ export class OtpVerificationComponent implements OnInit {
   otpForm: FormGroup;
 
   //constructor
-  constructor(
-    private FB: FormBuilder,
-    private router: Router,
-    private authService: AuthService,
-    private _snackBar: MatSnackBar
-  ) {
+  constructor() {
     this.otpForm = this.FB.group({
       otp: ['', [Validators.required, Validators.pattern(OTP_PATTERN)]],
     });
   }
 
   ngOnInit(): void {
-    let navState = history.state;
+    const navState = history.state;
     this.email = navState.userEmail || localStorage.getItem('userEmail');
     this.role =
       navState.userRole || (localStorage.getItem('userRole') as string);
 
     this.startResendTimer();
   }
+
+  ngOnDestroy(): void {
+  if (this.intervalId) {
+    clearInterval(this.intervalId);
+  }
+}
 
   //start or resend timer
 

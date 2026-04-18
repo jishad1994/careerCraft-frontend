@@ -1,11 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject } from '@angular/core';
 import { CompanyProfile } from '../../../../models/company/company-profile.model';
 import { Subject, takeUntil } from 'rxjs';
 import { CompanyProfileService } from '../../../../services/company/profile/company-profile.service';
@@ -22,6 +15,11 @@ import { PdfViewerComponent } from '../../../../shared/components/pdf-viewer/pdf
   styleUrl: './company-document-section.component.css',
 })
 export class CompanyDocumentSectionComponent implements OnInit, OnDestroy {
+  private _companyProfileService = inject(CompanyProfileService);
+  private fb = inject(FormBuilder);
+  private _snackBar = inject(MatSnackBar);
+  private dialog = inject(MatDialog);
+
   @Input() profile: CompanyProfile | null = null;
   @Output() updatedProfile = new EventEmitter<CompanyProfile>();
 
@@ -29,13 +27,6 @@ export class CompanyDocumentSectionComponent implements OnInit, OnDestroy {
   loading = false;
 
   destroy$ = new Subject<void>();
-
-  constructor(
-    private _companyProfileService: CompanyProfileService,
-    private fb: FormBuilder,
-    private _snackBar: MatSnackBar,
-    private dialog: MatDialog,
-  ) {}
 
   onSelectDocument(): void {
     const fileInput = document.getElementById(
@@ -100,7 +91,7 @@ export class CompanyDocumentSectionComponent implements OnInit, OnDestroy {
       });
   }
 
-  viewDocument(doc: IDocuments, mode: string = 'view'): void {
+  viewDocument(doc: IDocuments, mode = 'view'): void {
     if (!doc) return;
     // Stream resume from backend
     this._companyProfileService

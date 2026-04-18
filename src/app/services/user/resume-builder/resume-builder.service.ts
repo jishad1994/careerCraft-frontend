@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
 
@@ -14,9 +14,9 @@ import { USER_API_ENDPOINTS } from "../../../constants/user-api-endpoints.consta
 
 @Injectable({ providedIn: "root" })
 export class ResumeBuilderService {
-    private readonly baseUrl = `${environment.apiUrl}/resume-builder`;
+    private readonly http = inject(HttpClient);
 
-    constructor(private readonly http: HttpClient) {}
+    private readonly baseUrl = `${environment.apiUrl}/resume-builder`;
 
     getTemplates(): Observable<ApiResponse<ResumeTemplate[]>> {
         return this.http.get<ApiResponse<ResumeTemplate[]>>(USER_API_ENDPOINTS.RESUME_BULDER.GET_TEMPLATES);

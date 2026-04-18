@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ApiResponse, PaginationMeta } from '../../models/api-response.model';
 import { API_ENDPOINTS } from '../../constants/api-endpoints.constants';
 import { Observable } from 'rxjs';
@@ -9,7 +9,8 @@ import { Skill } from '../../models/skill.model';
   providedIn: 'root',
 })
 export class SkillService {
-  constructor(private _http: HttpClient) {}
+  private _http = inject(HttpClient);
+
 
   createSkill(skill: Skill): Observable<ApiResponse<Skill>> {
     return this._http.post<ApiResponse<Skill>>(

@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { Observable } from "rxjs";
 import { ApiResponse } from "../../../models/api-response.model";
 import {
@@ -23,7 +23,8 @@ export interface CancellationResult {
     providedIn: "root",
 })
 export class CompanySubscriptionService {
-    constructor(private readonly _http: HttpClient) {}
+    private readonly _http = inject(HttpClient);
+
 
     getActiveSubscription(): Observable<ApiResponse<CompanySubscription>> {
         return this._http.get<ApiResponse<CompanySubscription>>(COMPANY_API_ENDPOINTS.SUBSCRIPTION.GET_ACTIVE_SUBSCRIPTION);

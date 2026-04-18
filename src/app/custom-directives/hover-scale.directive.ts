@@ -1,20 +1,17 @@
-import {
-  Directive,
-  HostListener,
-  ElementRef,
-  Input,
-  Renderer2,
-} from '@angular/core';
+import { Directive, HostListener, ElementRef, Input, Renderer2, inject } from '@angular/core';
 
 @Directive({
   selector: '[appHoverScale]',
   standalone: true,
 })
 export class HoverScaleDirective {
+  private el = inject(ElementRef);
+  private renderer = inject(Renderer2);
+
   @Input() scale = 1.05;
   @Input() transition = '200ms';
 
-  constructor(private el: ElementRef, private renderer: Renderer2) {
+  constructor() {
     this.renderer.setStyle(
       this.el.nativeElement,
       'transition',

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output, OnDestroy } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnDestroy, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import {
   IDocuments,
@@ -16,6 +16,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrl: './document-section.component.css',
 })
 export class DocumentSectionComponent implements OnDestroy {
+  private _userProfileService = inject(UserProfileService);
+  private _snackBar = inject(MatSnackBar);
+
   @Input() profile: UserProfile | null = null;
   @Output() updatedProfile = new EventEmitter<UserProfile>();
 
@@ -23,11 +26,6 @@ export class DocumentSectionComponent implements OnDestroy {
   loading = false;
 
   private destroy$ = new Subject<void>();
-
-  constructor(
-    private _userProfileService: UserProfileService,
-    private _snackBar: MatSnackBar
-  ) {}
 
   onSelectDocument(): void {
     const fileInput = document.getElementById('documentInput') as HTMLInputElement;

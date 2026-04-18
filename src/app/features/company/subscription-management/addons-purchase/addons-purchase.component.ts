@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit, inject } from "@angular/core";
 import { ISubscriptionAddonWithUsage } from "../../../../models/subscription-addons.model";
 import { loadStripe, Stripe, StripeCardElement, StripeElements } from "@stripe/stripe-js";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -16,8 +16,13 @@ import Swal from "sweetalert2";
     styleUrl: "./addons-purchase.component.css",
 })
 export class AddonsPurchaseComponent implements OnInit, OnDestroy {
+    private readonly route = inject(ActivatedRoute);
+    private readonly router = inject(Router);
+    private readonly subscriptionService = inject(CompanySubscriptionService);
+    private readonly paymentService = inject(PaymentService);
+
     addon: ISubscriptionAddonWithUsage | null = null;
-    addonId: string = "";
+    addonId = "";
 
     // Stripe
     stripe: Stripe | null = null;
@@ -30,13 +35,6 @@ export class AddonsPurchaseComponent implements OnInit, OnDestroy {
     paymentError: string | null = null;
 
     private readonly destroy$ = new Subject<void>();
-
-    constructor(
-        private readonly route: ActivatedRoute,
-        private readonly router: Router,
-        private readonly subscriptionService: CompanySubscriptionService,
-        private readonly paymentService: PaymentService,
-    ) {}
 
     async ngOnInit(): Promise<void> {
         this.addonId = this.route.snapshot.paramMap.get("id") || "";
@@ -214,7 +212,7 @@ export class AddonsPurchaseComponent implements OnInit, OnDestroy {
     }
 
     getTypeLabel(type: string): string {
-        const labels: { [key: string]: string } = {
+        const labels: Record<string, string> = {
             jobs: "Job Posts",
             resumeViews: "Resume Views",
             featuredJobs: "Featured Jobs",

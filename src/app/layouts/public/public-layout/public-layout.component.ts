@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import {
   HeaderComponent,
@@ -29,12 +29,17 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   templateUrl: './public-layout.component.html',
   styleUrl: './public-layout.component.css',
 })
-export class PublicLayoutComponent {
+export class PublicLayoutComponent implements OnInit, OnDestroy {
+  private _authStateService = inject(AuthStateService);
+  private _authService = inject(AuthService);
+  private _router = inject(Router);
+  private _snackBar = inject(MatSnackBar);
+
   destroy$ = new Subject<void>();
 
   logoUrl = environment.logUrl;
   logoRoute = '/home';
-  showFooter: boolean = true;
+  showFooter = true;
 
   // Navigation Items for User
   navItems: NavItem[] = [
@@ -55,41 +60,6 @@ export class PublicLayoutComponent {
     //   route: '/companies',
     // },
   ];
-
-  // User Dropdown Menu Items
-  // userMenuItems: NavItem[] = [
-  //   {
-  //     label: 'My Profile',
-  //     route: '/user/profile',
-  //     icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z',
-  //   },
-  //   {
-  //     label: 'Resume',
-  //     route: '/user/resume',
-  //     icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z',
-  //   },
-  //   {
-  //     label: 'Settings',
-  //     route: '/user/settings',
-  //     icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z',
-  //   },
-  //   {
-  //     label: 'divider', // Special item for divider
-  //     route: '',
-  //   },
-  //   {
-  //     label: 'Help & Support',
-  //     route: '/help',
-  //     icon: 'M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
-  //   },
-  // ];
-
-  constructor(
-    private _authStateService: AuthStateService,
-    private _authService: AuthService,
-    private _router: Router,
-    private _snackBar: MatSnackBar
-  ) {}
 
   ngOnInit(): void {
     // this._authService

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CompanyJobService } from '../../../../services/company/job/company-job.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -12,17 +12,15 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   templateUrl: './company-job-view.component.html',
   styleUrl: './company-job-view.component.css',
 })
-export class CompanyJobViewComponent {
+export class CompanyJobViewComponent implements OnInit {
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private _jobService = inject(CompanyJobService);
+  private snackBar = inject(MatSnackBar);
+
   job: Job | null = null;
   loading = false;
-  jobId: string = '';
-
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private _jobService: CompanyJobService,
-    private snackBar: MatSnackBar,
-  ) {}
+  jobId = '';
 
   ngOnInit() {
     this.route.params.subscribe((params) => {

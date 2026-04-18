@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import {
   Education,
@@ -14,7 +14,8 @@ import { USER_API_ENDPOINTS } from '../../../constants/user-api-endpoints.consta
   providedIn: 'root',
 })
 export class UserProfileService {
-  constructor(private _http: HttpClient) {}
+  private _http = inject(HttpClient);
+
   getProfile(): Observable<ApiResponse<UserProfile>> {
     return this._http.get<ApiResponse<UserProfile>>(
       USER_API_ENDPOINTS.PROFILE.GET_PROFILE,
@@ -155,7 +156,7 @@ export class UserProfileService {
     });
   }
   
-  viewDocument(documentKey: string, mode: string = 'view') {
+  viewDocument(documentKey: string, mode = 'view') {
     return this._http.get(
       USER_API_ENDPOINTS.CERTIFICATES.VIEW(documentKey, mode),
       {

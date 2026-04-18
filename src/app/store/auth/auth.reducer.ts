@@ -34,7 +34,7 @@ export const authReducer = createReducer(
 
   on(loginFailure, (state, { error }) => ({ ...state, error, loading: false })),
   on(logoutRequest, (state) => ({ ...state, loading: true, error: null })),
-  on(logoutSuccess, (state) => initialState),
+  on(logoutSuccess, () => initialState),
   on(logoutFailure, (state, { error }) => ({
     ...state,
     loading: false,
@@ -61,5 +61,5 @@ export const authReducer = createReducer(
     isLoggedIn: true,
     user,
   })),
-  on(loadUserFailure, (state) => initialState)
+  on(loadUserFailure, () => initialState)
 );

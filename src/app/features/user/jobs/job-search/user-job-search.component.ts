@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Job, JobSearchFilters } from '../../../../models/job/job.model';
 import { PaginationMeta } from '../../../../models/api-response.model';
@@ -13,19 +13,17 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   templateUrl: './user-job-search.component.html',
   styleUrl: './user-job-search.component.css',
 })
-export class UserJobSearchComponent {
+export class UserJobSearchComponent implements OnInit {
+  private jobService = inject(UserJobService);
+  private router = inject(Router);
+  private snackBar = inject(MatSnackBar);
+
   jobs: Job[] = [];
   pagination: PaginationMeta | null = null;
   loading = false;
   currentPage = 1;
 
   filters: JobSearchFilters = {};
-
-  constructor(
-    private jobService: UserJobService,
-    private router: Router,
-    private snackBar: MatSnackBar
-  ) {}
 
   ngOnInit() {
     this.searchJobs();

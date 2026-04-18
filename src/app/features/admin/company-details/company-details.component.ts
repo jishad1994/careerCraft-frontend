@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import {
   COMPANY_VERIFICATION_STATUS,
   CompanyProfile,
@@ -45,6 +45,12 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './company-details.component.css',
 })
 export class CompanyDetailsComponent implements OnInit, OnDestroy {
+  private readonly _route = inject(ActivatedRoute);
+  private readonly _router = inject(Router);
+  private readonly _adminService = inject(AdminService);
+  private readonly _snackBar = inject(MatSnackBar);
+  private readonly _dialog = inject(MatDialog);
+
   company: CompanyProfile | null = null;
   loading = false;
   companyId = '';
@@ -54,14 +60,6 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
   rejectionCodes = Object.values(CompanyRejectionCodes);
   selectedRejectionCode?: CompanyRejectionCodes;
   rejectionComment = '';
-
-  constructor(
-    private readonly _route: ActivatedRoute,
-    private readonly _router: Router,
-    private readonly _adminService: AdminService,
-    private readonly _snackBar: MatSnackBar,
-    private readonly _dialog: MatDialog
-  ) {}
 
   ngOnInit(): void {
     this.companyId = this._route.snapshot.paramMap.get('id') || '';

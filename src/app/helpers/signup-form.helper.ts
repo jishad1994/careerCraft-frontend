@@ -1,5 +1,5 @@
 // src/app/helpers/signup-form.helper.ts
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FormValidators } from '../validators/form.validators';
 import {
@@ -24,10 +24,9 @@ export interface SignupFormData {
   providedIn: 'root',
 })
 export class SignupFormHelper {
-  constructor(
-    private formBuilder: FormBuilder,
-    private formValidator: FormValidators
-  ) {}
+  private formBuilder = inject(FormBuilder);
+  private formValidator = inject(FormValidators);
+
 
   updateValidatorsForRole(form: FormGroup, role: 'user' | 'company'): void {
     if (role === 'company') {

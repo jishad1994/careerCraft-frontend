@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { CompanyProfile } from '../../../../models/company/company-profile.model';
 import { Subject, takeUntil } from 'rxjs';
 import { CompanyProfileService } from '../../../../services/company/profile/company-profile.service';
@@ -23,16 +23,14 @@ import { CompanyAddressSectionComponent } from '../company-address-section/compa
   styleUrl: './company-profile.component.css',
 })
 export class CompanyProfileComponent implements OnInit, OnDestroy {
+  private _companyProfileService = inject(CompanyProfileService);
+  private _snackBar = inject(MatSnackBar);
+
   profile: CompanyProfile | null = null;
 
   loading = false;
 
   destroy$ = new Subject<void>();
-
-  constructor(
-    private _companyProfileService: CompanyProfileService,
-    private _snackBar: MatSnackBar
-  ) {}
 
   ngOnInit(): void {
     this.loadProfile();

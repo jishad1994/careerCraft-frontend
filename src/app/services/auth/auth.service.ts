@@ -1,5 +1,5 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { environment } from '../../environments/environment';
 import {
   BehaviorSubject,
@@ -20,11 +20,10 @@ import { ApiResponse } from '../../models/api-response.model';
   providedIn: 'root',
 })
 export class AuthService {
-  constructor(
-    private _http: HttpClient,
-    private _authStateService: AuthStateService,
-    private _router: Router,
-  ) {}
+  private _http = inject(HttpClient);
+  private _authStateService = inject(AuthStateService);
+  private _router = inject(Router);
+
 
   //base url from environment files
   private baseUrl = environment.apiUrl;

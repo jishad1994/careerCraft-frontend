@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import {
   FormBuilder,
@@ -21,6 +21,8 @@ import { NoSpaceDirective } from '../../../custom-directives/no-space.directive'
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent {
+  private FB = inject(FormBuilder);
+
   loginForm: FormGroup;
   selectedRole: 'user' | 'company' = 'user';
 
@@ -29,14 +31,14 @@ export class LoginComponent {
     elementId: string;
   }>();
 
-  @Input() loading: boolean = false;
+  @Input() loading = false;
   @Output() formSubmit = new EventEmitter<{
     role: string;
     email: string;
     password: string;
   }>();
 
-  constructor(private FB: FormBuilder) {
+  constructor() {
     this.loginForm = this.FB.group({
       role: ['user', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],

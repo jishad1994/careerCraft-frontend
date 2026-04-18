@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { PaginationMeta } from '../../../../models/api-response.model';
 import { Job, JobStatus } from '../../../../models/job/job.model';
 import { AdminJobService } from '../../../../services/admin/job/admin-job.service';
@@ -14,7 +14,11 @@ import { Router } from '@angular/router';
   templateUrl: './admin-job-list.component.html',
   styleUrl: './admin-job-list.component.css',
 })
-export class AdminJobListComponent {
+export class AdminJobListComponent implements OnInit {
+  private _jobService = inject(AdminJobService);
+  private _router = inject(Router);
+  private snackBar = inject(MatSnackBar);
+
   jobs: Job[] = [];
   pagination: PaginationMeta | null = null;
   loading = false;
@@ -23,12 +27,6 @@ export class AdminJobListComponent {
   verifiedFilter = '';
 
   Math = Math;
-
-  constructor(
-    private _jobService: AdminJobService,
-    private _router: Router,
-    private snackBar: MatSnackBar
-  ) {}
 
   ngOnInit() {
     this.loadJobs();

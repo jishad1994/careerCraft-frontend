@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit, inject } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -24,13 +24,22 @@ import { ChatInitiationService } from "../../../../shared/services/chat-inititai
     styleUrl: "./company-application-view.component.css",
 })
 export class CompanyApplicationViewComponent implements OnInit, OnDestroy {
+    private readonly route = inject(ActivatedRoute);
+    private readonly router = inject(Router);
+    private readonly applicationService = inject(CompanyApplicationService);
+    private readonly _interviewService = inject(InterviewService);
+    private readonly snackBar = inject(MatSnackBar);
+    private readonly dialog = inject(MatDialog);
+    private readonly _resumeService = inject(ResumeService);
+    private readonly chatInitiationService = inject(ChatInitiationService);
+
     application: IJobApplicationDetails | null = null;
     loading = false;
-    applicationId: string = "";
+    applicationId = "";
 
     today: string = new Date().toISOString().split("T")[0];
 
-    previousPageUrl: string = "";
+    previousPageUrl = "";
 
     // Modals
     showStatusModal = false;
@@ -73,17 +82,6 @@ export class CompanyApplicationViewComponent implements OnInit, OnDestroy {
     ];
 
     private readonly destroy$ = new Subject<void>();
-
-    constructor(
-        private readonly route: ActivatedRoute,
-        private readonly router: Router,
-        private readonly applicationService: CompanyApplicationService,
-        private readonly _interviewService: InterviewService,
-        private readonly snackBar: MatSnackBar,
-        private readonly dialog: MatDialog,
-        private readonly _resumeService: ResumeService,
-        private readonly chatInitiationService: ChatInitiationService,
-    ) {}
 
     ngOnInit(): void {
         this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {

@@ -1,5 +1,5 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
   IInterview,
   InterviewFilter,
@@ -13,15 +13,16 @@ import { COMPANY_API_ENDPOINTS } from '../../../constants/company-api-endpoints.
   providedIn: 'root',
 })
 export class InterviewService {
-  constructor(private _http: HttpClient) {}
+  private _http = inject(HttpClient);
+
 
   /**
    * Get interviews with full context by filters if present
    */
   getAllInterviews(
     filter: InterviewFilter,
-    page: number = 1,
-    limit: number = 10,
+    page = 1,
+    limit = 10,
   ): Observable<ApiResponse<InterviewWithPopulated[]>> {
     let params = new HttpParams()
       .set('page', page.toString())
@@ -171,9 +172,9 @@ export class InterviewService {
    */
   getUpcomingInterviews(
     filter: Partial<InterviewFilter>,
-    days: number = 7,
-    page: number = 1,
-    limit: number = 10,
+    days = 7,
+    page = 1,
+    limit = 10,
   ): Observable<ApiResponse<InterviewWithPopulated[]>> {
     let params = new HttpParams()
       .set('days', days.toString())

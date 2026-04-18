@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, Query } from '@angular/core';
+import { Injectable, Query, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiResponse } from '../../../models/api-response.model';
 import {
@@ -17,11 +17,12 @@ import { ADMIN_API_END_POINTS } from '../../../constants/admin-endpoints.constan
   providedIn: 'root',
 })
 export class AdminService {
-  constructor(private _http: HttpClient) {}
+  private _http = inject(HttpClient);
+
 
   getUsers(
-    page: number = 1,
-    limit: number = 10,
+    page = 1,
+    limit = 10,
     query?: string,
   ): Observable<ApiResponse<IUserListItem[]>> {
     return this._http.get<ApiResponse<IUserListItem[]>>(
@@ -36,8 +37,8 @@ export class AdminService {
   }
 
   getCompanies(
-    page: number = 1,
-    limit: number = 10,
+    page = 1,
+    limit = 10,
     query?: string,
     verificationStatus?: string,
   ): Observable<ApiResponse<ICompanyListItem[]>> {

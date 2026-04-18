@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { LocationSuggestion } from '../../../models/user/user-profile.model';
 import { API_ENDPOINTS } from '../../../constants/api-endpoints.constants';
@@ -8,7 +8,8 @@ import { API_ENDPOINTS } from '../../../constants/api-endpoints.constants';
   providedIn: 'root',
 })
 export class LocationService {
-  constructor(private _http: HttpClient) {}
+  private _http = inject(HttpClient);
+
 
   getLocations(query: string): Observable<LocationSuggestion[]> {
     return this._http.get<LocationSuggestion[]>(

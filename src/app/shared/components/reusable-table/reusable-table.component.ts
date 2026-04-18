@@ -3,12 +3,10 @@ import {
   Component,
   EventEmitter,
   Input,
-  OnDestroy,
   OnInit,
   Output,
 } from '@angular/core';
-import { AdminService } from '../../../services/admin/user-management/admin.service';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {  FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { PaginationMeta } from '../../../models/api-response.model';
 import {
@@ -25,18 +23,18 @@ type PageItem = number | string;
   styleUrl: './reusable-table.component.css',
 })
 export class ReusableTableComponent implements OnInit {
-  @Input() title: string = 'Data Table';
+  @Input() title = 'Data Table';
   @Input() columns: TableColumn[] = [];
-  @Input() data: any[] = [];
+  @Input() data: unknown[] = [];
   @Input() actions: TableAction[] = [];
   @Input() pagination: PaginationMeta | null = null;
-  @Input() loading: boolean = false;
-  @Input() showSearch: boolean = true;
+  @Input() loading = false;
+  @Input() showSearch = true;
   @Output() pageChange = new EventEmitter<number>();
   @Output() searchChange = new EventEmitter<string>();
   @Output() actionClick = new EventEmitter<{ type: string; row: any }>();
 
-  searchQuery: string = '';
+  searchQuery = '';
   private searchSubject = new Subject<string>();
 
   ngOnInit() {
@@ -93,7 +91,7 @@ export class ReusableTableComponent implements OnInit {
   }
 
   getIconPath(icon: string): string {
-    const icons: { [key: string]: string } = {
+    const icons: Record<string, string> = {
       view: 'M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z',
       block:
         'M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636',

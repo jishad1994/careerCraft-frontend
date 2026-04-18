@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { OfferLetter, OfferLetterStatus } from '../../../models/offerLetter.model';
 import { Subject, takeUntil } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -13,6 +13,11 @@ import { CompanyOfferLetterService } from '../../../shared/services/offerLetter-
   styleUrl: './company-offer-detail.component.css'
 })
 export class CompanyOfferDetailComponent implements OnInit,OnDestroy {
+private route = inject(ActivatedRoute);
+private router = inject(Router);
+private offerService = inject(CompanyOfferLetterService);
+private snackBar = inject(MatSnackBar);
+
 offer: OfferLetter | null = null;
     loading = false;
     verifying = false;
@@ -20,13 +25,6 @@ offer: OfferLetter | null = null;
  
     private offerId = "";
     private destroy$ = new Subject<void>();
- 
-    constructor(
-        private route: ActivatedRoute,
-        private router: Router,
-        private offerService: CompanyOfferLetterService,
-        private snackBar: MatSnackBar,
-    ) {}
  
     ngOnInit(): void {
         this.offerId = this.route.snapshot.params["id"];

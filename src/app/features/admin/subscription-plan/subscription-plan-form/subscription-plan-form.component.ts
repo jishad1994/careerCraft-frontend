@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { SubscriptionPlanService } from '../../../../services/admin/subscription-plan/subscription-plan.service';
 import { Subject, takeUntil } from 'rxjs';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -13,22 +13,20 @@ import { CommonModule } from '@angular/common';
   styleUrl: './subscription-plan-form.component.css',
 })
 export class SubscriptionPlanFormComponent implements OnInit, OnDestroy {
+  private _planService = inject(SubscriptionPlanService);
+  private _fb = inject(FormBuilder);
+  private _snackBar = inject(MatSnackBar);
+
   planForm!: FormGroup;
   plans: ISubscriptionPlan[] = [];
-  isEditing: boolean = false;
+  isEditing = false;
   editingId: string | null = null;
-  showForm: boolean = false;
-  loading: boolean = false;
+  showForm = false;
+  loading = false;
   success = '';
   error = '';
 
   destroy$ = new Subject<void>();
-
-  constructor(
-    private _planService: SubscriptionPlanService,
-    private _fb: FormBuilder,
-    private _snackBar: MatSnackBar,
-  ) {}
   ngOnInit(): void {
     this.initForm();
     this.loadPlans();

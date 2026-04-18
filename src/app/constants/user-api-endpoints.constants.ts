@@ -14,7 +14,7 @@ export const USER_API_ENDPOINTS = {
 
         DELETE_BANNER_IMAGE: `${baseUrl}${userBaseUrl}/me/banner-image`,
 
-        GET_RESUME: (resumeName: string, mode: string = "view") =>
+        GET_RESUME: (resumeName: string, mode = "view") =>
             `${baseUrl}${userBaseUrl}/me/resume/${resumeName}?mode=${mode}`,
     },
 
@@ -100,8 +100,12 @@ export const USER_API_ENDPOINTS = {
     OFFERS: {
         LIST_OFFERS: `${baseUrl}${userBaseUrl}/offers`,
         GET_OFFER: (offerId: string) => `${baseUrl}${userBaseUrl}/offers/${offerId}`,
+
         DOWNLOAD_PDF: (offerId: string) => `${baseUrl}${userBaseUrl}/offers/${offerId}/pdf`,
+
         RESPOND_TO_OFFER: (offerId: string) => `${baseUrl}${userBaseUrl}/offers/${offerId}/respond`,
+
         UPLOAD_SIGNED_OFFERLETTER: (offerId: string) => `${baseUrl}${userBaseUrl}/offers/${offerId}/upload-signed`,
+        
     },
 } as const;

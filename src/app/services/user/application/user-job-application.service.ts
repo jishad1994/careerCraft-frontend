@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ApiResponse } from '../../../models/api-response.model';
 import { API_ENDPOINTS } from '../../../constants/api-endpoints.constants';
 import { Observable } from 'rxjs';
@@ -14,7 +14,8 @@ import { USER_API_ENDPOINTS } from '../../../constants/user-api-endpoints.consta
   providedIn: 'root',
 })
 export class UserJobApplicationService {
-  constructor(private _http: HttpClient) {}
+  private _http = inject(HttpClient);
+
 
   checkApplicationStatus(
     jobId: string,

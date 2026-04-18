@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit, inject } from "@angular/core";
 import { CompanySubscription, IQueuedSubscriptionDTO } from "../../../../models/company/company-subscription.model";
 import { ISubscriptionPlan } from "../../../../models/subscription-plan/subscription-plan.model";
 import { Stripe, loadStripe, StripeElements, StripeCardElement } from "@stripe/stripe-js";
@@ -24,6 +24,14 @@ type ViewMode = "current" | "plan" | "retry";
     styleUrl: "./plan-details.component.css",
 })
 export class PlanDetailsComponent implements OnInit, OnDestroy {
+    private readonly route = inject(ActivatedRoute);
+    private readonly router = inject(Router);
+    private readonly subscriptionService = inject(CompanySubscriptionService);
+    private readonly paymentService = inject(PaymentService);
+    private readonly invoiceService = inject(InvoiceService);
+    private readonly dialog = inject(MatDialog);
+    private readonly _snackBar = inject(MatSnackBar);
+
     mode: ViewMode = "plan";
 
     // For viewing current subscription
@@ -50,16 +58,6 @@ export class PlanDetailsComponent implements OnInit, OnDestroy {
     downloadingInvoice = false;
 
     private readonly destroy$ = new Subject<void>();
-
-    constructor(
-        private readonly route: ActivatedRoute,
-        private readonly router: Router,
-        private readonly subscriptionService: CompanySubscriptionService,
-        private readonly paymentService: PaymentService,
-        private readonly invoiceService: InvoiceService,
-        private readonly dialog: MatDialog,
-        private readonly _snackBar: MatSnackBar,
-    ) {}
 
     async ngOnInit(): Promise<void> {
         const subscriptionId = this.route.snapshot.paramMap.get("id");

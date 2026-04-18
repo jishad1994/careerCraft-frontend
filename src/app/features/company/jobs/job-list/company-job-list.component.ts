@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import {
   Job,
   JobSearchFilters,
@@ -19,7 +19,11 @@ import { debounceTime, Subject } from 'rxjs';
   templateUrl: './company-job-list.component.html',
   styleUrl: './company-job-list.component.css',
 })
-export class CompanyJobListComponent implements OnInit {
+export class CompanyJobListComponent implements OnInit, OnDestroy {
+  private _jobService = inject(CompanyJobService);
+  private router = inject(Router);
+  private snackBar = inject(MatSnackBar);
+
   jobs: Job[] = [];
   pagination: PaginationMeta | null = null;
   loading = false;
@@ -31,7 +35,7 @@ export class CompanyJobListComponent implements OnInit {
   employmentTypeFilter = '';
   workModeFilter = '';
   showFilters = false;
-  currentPageLimit: number = 0;
+  currentPageLimit = 0;
 
   private searchSubject = new Subject<string>();
 
@@ -43,12 +47,6 @@ export class CompanyJobListComponent implements OnInit {
     paused: 0,
     closed: 0,
   };
-
-  constructor(
-    private _jobService: CompanyJobService,
-    private router: Router,
-    private snackBar: MatSnackBar
-  ) {}
 
   ngOnInit() {
     this.searchSubject.pipe(debounceTime(500)).subscribe(() => {

@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { COMPANY_API_ENDPOINTS } from '../../../constants/company-api-endpoints.constants';
 import { USER_API_ENDPOINTS } from '../../../constants/user-api-endpoints.constants';
 
@@ -7,9 +7,10 @@ import { USER_API_ENDPOINTS } from '../../../constants/user-api-endpoints.consta
   providedIn: 'root',
 })
 export class ResumeService {
-  constructor(private _http: HttpClient) {}
+  private _http = inject(HttpClient);
 
-  getUserResumeByApplicationId(applicationId: string, mode: string = 'view') {
+
+  getUserResumeByApplicationId(applicationId: string, mode = 'view') {
     return this._http.get(
       COMPANY_API_ENDPOINTS.APPLICATIONS.GET_RESUME(applicationId, mode),
       {
@@ -18,7 +19,7 @@ export class ResumeService {
     );
   }
 
-  getUserResumeByName(resumeName: string, mode: string = 'view') {
+  getUserResumeByName(resumeName: string, mode = 'view') {
     return this._http.get(
       USER_API_ENDPOINTS.PROFILE.GET_RESUME(resumeName, mode),
       {
@@ -30,7 +31,7 @@ export class ResumeService {
   getResumeByCandidateId(
     candidateId: string,
     resumeKey: string,
-    mode: string = 'view',
+    mode = 'view',
   ) {
     return this._http.get(
       COMPANY_API_ENDPOINTS.CANDIDATES.GET_RESUME_BY_CANDIDATE_ID(

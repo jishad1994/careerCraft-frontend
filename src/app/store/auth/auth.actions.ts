@@ -1,4 +1,4 @@
-import { createAction, props, StoreRootModule } from '@ngrx/store';
+import { createAction, props } from '@ngrx/store';
 import { AuthResponseUserDTO } from '../../models/auth.dto';
 
 //normal login actions

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit, inject } from "@angular/core";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { Subject, takeUntil, debounceTime, distinctUntilChanged, catchError, of } from "rxjs";
@@ -17,6 +17,13 @@ import { CompanyApplicationService } from "../../../services/company/application
     styleUrl: "./create-offer.component.css",
 })
 export class CreateOfferComponent implements OnInit, OnDestroy {
+    private fb = inject(FormBuilder);
+    private route = inject(ActivatedRoute);
+    private router = inject(Router);
+    private offerService = inject(CompanyOfferLetterService);
+    private applicationService = inject(CompanyApplicationService);
+    private snackBar = inject(MatSnackBar);
+
     offerForm: FormGroup;
     submitting = false;
     isFetchingApplication = false;
@@ -26,14 +33,7 @@ export class CreateOfferComponent implements OnInit, OnDestroy {
 
     private destroy$ = new Subject<void>();
 
-    constructor(
-        private fb: FormBuilder,
-        private route: ActivatedRoute,
-        private router: Router,
-        private offerService: CompanyOfferLetterService,
-        private applicationService: CompanyApplicationService,
-        private snackBar: MatSnackBar,
-    ) {
+    constructor() {
         this.applicationId = this.route.snapshot.queryParams["applicationId"] ?? "";
 
         this.offerForm = this.fb.group({

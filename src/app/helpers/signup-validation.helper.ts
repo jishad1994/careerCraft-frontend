@@ -23,7 +23,7 @@ export class SignupValidationHelper {
     const errors = field.errors;
 
     // Common validation messages
-    const errorMessages: { [key: string]: string } = {
+    const errorMessages: Record<string, string> = {
       required: this.getRequiredMessage(fieldName),
       email: 'Enter a valid email address',
       minlength: this.getMinLengthMessage(
@@ -93,7 +93,7 @@ export class SignupValidationHelper {
   }
 
   private getRequiredMessage(fieldName: string): string {
-    const fieldDisplayNames: { [key: string]: string } = {
+    const fieldDisplayNames: Record<string, string> = {
       firstName: 'First name',
       lastName: 'Last name',
       companyName: 'Company name',
@@ -122,7 +122,7 @@ export class SignupValidationHelper {
   }
 
   private getPatternMessage(fieldName: string): string {
-    const patternMessages: { [key: string]: string } = {
+    const patternMessages: Record<string, string> = {
       firstName: 'Only alphabets allowed',
       lastName: 'Only alphabets allowed',
       companyName: 'Enter a valid company name',

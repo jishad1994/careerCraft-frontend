@@ -1,13 +1,6 @@
-
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit, inject } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import {
-    FormArray,
-    FormBuilder,
-    FormGroup,
-    ReactiveFormsModule,
-    Validators,
-} from "@angular/forms";
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Subject, catchError, debounceTime, EMPTY, switchMap, takeUntil, tap } from "rxjs";
 import { MatSnackBar } from "@angular/material/snack-bar";
 
@@ -29,16 +22,15 @@ const AUTO_SAVE_DEBOUNCE_MS = 1500;
 
 @Component({
     selector: "app-resume-builder",
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        ResumePreviewComponent,
-        TemplateSelectorComponent,
-    ],
+    imports: [CommonModule, ReactiveFormsModule, ResumePreviewComponent, TemplateSelectorComponent],
     templateUrl: "./resume-builder.component.html",
     styleUrl: "./resume-builder.component.css",
 })
 export class ResumeBuilderComponent implements OnInit, OnDestroy {
+    private fb = inject(FormBuilder);
+    private resumeService = inject(ResumeBuilderService);
+    private snackBar = inject(MatSnackBar);
+
     resumeForm!: FormGroup;
     templates: ResumeTemplate[] = [];
     selectedTemplate: ResumeTemplateId = "classic";
@@ -54,21 +46,35 @@ export class ResumeBuilderComponent implements OnInit, OnDestroy {
     autoSaving = false;
     lastSavedAt: Date | null = null;
 
-    // Derived live-preview data (recomputed on every form change)
-    previewData!: ResumeData;
+    // FIX: Initialize previewData with a safe default so the template
+    // never passes undefined to the child component
+    previewData: ResumeData = {
+        personalInfo: {
+            fullName: "",
+            email: "",
+            phone: "",
+            location: "",
+            linkedIn: "",
+            portfolio: "",
+        },
+        summary: { text: "" },
+        experience: [],
+        education: [],
+        skills: [],
+        templateId: "classic",
+    };
 
-   
+    // Validation error messages shown above buttons
+    validationErrors: string[] = [];
+
     private suppressAutoSaveCount = 0;
 
     private destroy$ = new Subject<void>();
     private savetrigger$ = new Subject<ResumeData>();
 
-    constructor(
-        private fb: FormBuilder,
-        private resumeService: ResumeBuilderService,
-        private snackBar: MatSnackBar
-    ) {}
-
+    // ────────────────────────────────────────────────────────────
+    // Lifecycle
+    // ────────────────────────────────────────────────────────────
 
     ngOnInit(): void {
         this.initForm();
@@ -78,18 +84,21 @@ export class ResumeBuilderComponent implements OnInit, OnDestroy {
         this.loadDraft();
 
         // Live preview + auto-save trigger on every value change
-        this.resumeForm.valueChanges
-            .pipe(takeUntil(this.destroy$))
-            .subscribe(() => {
-                this.computePreview();
+        this.resumeForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
+            this.computePreview();
 
-                if (this.suppressAutoSaveCount > 0) {
-                    this.suppressAutoSaveCount--;
-                    return;
-                }
+            // Clear validation errors as user types
+            if (this.validationErrors.length > 0) {
+                this.validationErrors = this.getValidationErrors();
+            }
 
-                this.savetrigger$.next(this.buildResumeData());
-            });
+            if (this.suppressAutoSaveCount > 0) {
+                this.suppressAutoSaveCount--;
+                return;
+            }
+
+            this.savetrigger$.next(this.buildResumeData());
+        });
     }
 
     ngOnDestroy(): void {
@@ -97,7 +106,10 @@ export class ResumeBuilderComponent implements OnInit, OnDestroy {
         this.destroy$.complete();
     }
 
-    
+    // ────────────────────────────────────────────────────────────
+    // Form initialisation
+    // ────────────────────────────────────────────────────────────
+
     private initForm(): void {
         this.resumeForm = this.fb.group({
             personalInfo: this.fb.group({
@@ -117,7 +129,10 @@ export class ResumeBuilderComponent implements OnInit, OnDestroy {
         });
     }
 
-   
+    // ────────────────────────────────────────────────────────────
+    // Auto-save pipeline
+    // ────────────────────────────────────────────────────────────
+
     private setupAutoSave(): void {
         this.savetrigger$
             .pipe(
@@ -129,10 +144,10 @@ export class ResumeBuilderComponent implements OnInit, OnDestroy {
                             this.autoSaving = false;
                             console.error("Auto-save failed");
                             return EMPTY;
-                        })
-                    )
+                        }),
+                    ),
                 ),
-                takeUntil(this.destroy$)
+                takeUntil(this.destroy$),
             )
             .subscribe({
                 next: (res) => {
@@ -142,7 +157,9 @@ export class ResumeBuilderComponent implements OnInit, OnDestroy {
             });
     }
 
-   
+    // ────────────────────────────────────────────────────────────
+    // Draft loading
+    // ────────────────────────────────────────────────────────────
 
     private loadDraft(): void {
         this.loadingDraft = true;
@@ -165,7 +182,10 @@ export class ResumeBuilderComponent implements OnInit, OnDestroy {
             });
     }
 
-    
+    // ────────────────────────────────────────────────────────────
+    // Patch form from draft / profile data
+    // ────────────────────────────────────────────────────────────
+
     private patchFormFromDraft(
         d:
             | SavedResumeResponse
@@ -175,44 +195,22 @@ export class ResumeBuilderComponent implements OnInit, OnDestroy {
                   experience: ResumeExperience[];
                   education: ResumeEducation[];
                   skills: ResumeSkill[];
-              }
+              },
     ): void {
         // ── 1. Rebuild arrays silently (no valueChanges fired) ──
 
         // Experience
         this.experienceArray.clear({ emitEvent: false });
         d.experience.forEach((exp) => {
-            this.experienceArray.push(
-                this.fb.group({
-                    jobTitle: [exp.jobTitle, Validators.required],
-                    company: [exp.company, Validators.required],
-                    startDate: [exp.startDate, Validators.required],
-                    endDate: [exp.endDate || ""],
-                    isCurrent: [exp.isCurrent],
-                    description: [exp.description],
-                    achievements: this.fb.array(
-                        (exp.achievements ?? []).map((a) => this.fb.control(a))
-                    ),
-                }),
-                { emitEvent: false }
-            );
+            const group = this.createExperienceGroup(exp);
+            this.experienceArray.push(group, { emitEvent: false });
         });
 
         // Education
         this.educationArray.clear({ emitEvent: false });
         d.education.forEach((edu) => {
-            this.educationArray.push(
-                this.fb.group({
-                    degree: [edu.degree, Validators.required],
-                    institution: [edu.institution, Validators.required],
-                    fieldOfStudy: [edu.fieldOfStudy, Validators.required],
-                    startDate: [edu.startDate, Validators.required],
-                    endDate: [edu.endDate || ""],
-                    isCurrent: [edu.isCurrent],
-                    grade: [edu.grade || ""],
-                }),
-                { emitEvent: false }
-            );
+            const group = this.createEducationGroup(edu);
+            this.educationArray.push(group, { emitEvent: false });
         });
 
         // Skills
@@ -220,10 +218,10 @@ export class ResumeBuilderComponent implements OnInit, OnDestroy {
         d.skills.forEach((s) => {
             this.skillsArray.push(
                 this.fb.group({
-                    name: [s.name, Validators.required],
+                    name: [s.name],
                     category: [""],
                 }),
-                { emitEvent: false }
+                { emitEvent: false },
             );
         });
 
@@ -235,7 +233,78 @@ export class ResumeBuilderComponent implements OnInit, OnDestroy {
         });
     }
 
-    
+    // ────────────────────────────────────────────────────────────
+    // Factory helpers (centralised group creation + isCurrent wiring)
+    // ────────────────────────────────────────────────────────────
+
+    /**
+     * Creates an experience FormGroup and wires the isCurrent ↔ endDate
+     * toggle so we never use [disabled] in the template (which conflicts
+     * with reactive forms).
+     */
+    private createExperienceGroup(exp: Partial<ResumeExperience> = {}): FormGroup {
+        const group = this.fb.group({
+            jobTitle: [exp.jobTitle ?? "", Validators.required],
+            company: [exp.company ?? "", Validators.required],
+            startDate: [exp.startDate ?? "", Validators.required],
+            endDate: [{ value: exp.endDate ?? "", disabled: !!exp.isCurrent }],
+            isCurrent: [exp.isCurrent ?? false],
+            description: [exp.description ?? ""],
+            achievements: this.fb.array((exp.achievements ?? []).map((a) => this.fb.control(a))),
+        });
+
+        // FIX: Reactively toggle endDate enabled/disabled from TS
+        group
+            .get("isCurrent")!
+            .valueChanges.pipe(takeUntil(this.destroy$))
+            .subscribe((isCurrent: boolean | null) => {
+                const endDate = group.get("endDate")!;
+                if (isCurrent) {
+                    endDate.disable({ emitEvent: false });
+                    endDate.setValue("", { emitEvent: false });
+                } else {
+                    endDate.enable({ emitEvent: false });
+                }
+            });
+
+        return group;
+    }
+
+    /**
+     * Creates an education FormGroup with the same isCurrent ↔ endDate
+     * toggle pattern.
+     */
+    private createEducationGroup(edu: Partial<ResumeEducation> = {}): FormGroup {
+        const group = this.fb.group({
+            degree: [edu.degree ?? "", Validators.required],
+            institution: [edu.institution ?? "", Validators.required],
+            fieldOfStudy: [edu.fieldOfStudy ?? "", Validators.required],
+            startDate: [edu.startDate ?? "", Validators.required],
+            endDate: [{ value: edu.endDate ?? "", disabled: !!edu.isCurrent }],
+            isCurrent: [edu.isCurrent ?? false],
+            grade: [edu.grade ?? ""],
+        });
+
+        // FIX: Reactively toggle endDate enabled/disabled from TS
+        group
+            .get("isCurrent")!
+            .valueChanges.pipe(takeUntil(this.destroy$))
+            .subscribe((isCurrent: boolean | null) => {
+                const endDate = group.get("endDate")!;
+                if (isCurrent) {
+                    endDate.disable({ emitEvent: false });
+                    endDate.setValue("", { emitEvent: false });
+                } else {
+                    endDate.enable({ emitEvent: false });
+                }
+            });
+
+        return group;
+    }
+
+    // ────────────────────────────────────────────────────────────
+    // FormArray accessors
+    // ────────────────────────────────────────────────────────────
 
     get experienceArray(): FormArray {
         return this.resumeForm.get("experience") as FormArray;
@@ -249,20 +318,12 @@ export class ResumeBuilderComponent implements OnInit, OnDestroy {
         return this.resumeForm.get("skills") as FormArray;
     }
 
-    
+    // ────────────────────────────────────────────────────────────
+    // Experience CRUD
+    // ────────────────────────────────────────────────────────────
 
     addExperience(): void {
-        this.experienceArray.push(
-            this.fb.group({
-                jobTitle: ["", Validators.required],
-                company: ["", Validators.required],
-                startDate: ["", Validators.required],
-                endDate: [""],
-                isCurrent: [false],
-                description: [""],
-                achievements: this.fb.array([]),
-            })
-        );
+        this.experienceArray.push(this.createExperienceGroup());
     }
 
     removeExperience(index: number): void {
@@ -270,49 +331,39 @@ export class ResumeBuilderComponent implements OnInit, OnDestroy {
     }
 
     getAchievements(expIndex: number): FormArray {
-        return this.experienceArray
-            .at(expIndex)
-            .get("achievements") as FormArray;
+        return this.experienceArray.at(expIndex).get("achievements") as FormArray;
     }
 
     addAchievement(expIndex: number): void {
-        this.getAchievements(expIndex).push(
-            this.fb.control("", Validators.required)
-        );
+        this.getAchievements(expIndex).push(this.fb.control(""));
     }
 
     removeAchievement(expIndex: number, achIndex: number): void {
         this.getAchievements(expIndex).removeAt(achIndex);
     }
 
-  
+    // ────────────────────────────────────────────────────────────
+    // Education CRUD
+    // ────────────────────────────────────────────────────────────
 
     addEducation(): void {
-        this.educationArray.push(
-            this.fb.group({
-                degree: ["", Validators.required],
-                institution: ["", Validators.required],
-                fieldOfStudy: ["", Validators.required],
-                startDate: ["", Validators.required],
-                endDate: [""],
-                isCurrent: [false],
-                grade: [""],
-            })
-        );
+        this.educationArray.push(this.createEducationGroup());
     }
 
     removeEducation(index: number): void {
         this.educationArray.removeAt(index);
     }
 
-    
+    // ────────────────────────────────────────────────────────────
+    // Skills CRUD
+    // ────────────────────────────────────────────────────────────
 
     addSkill(): void {
         this.skillsArray.push(
             this.fb.group({
-                name: ["", Validators.required],
+                name: [""],
                 category: [""],
-            })
+            }),
         );
     }
 
@@ -320,7 +371,9 @@ export class ResumeBuilderComponent implements OnInit, OnDestroy {
         this.skillsArray.removeAt(index);
     }
 
-    
+    // ────────────────────────────────────────────────────────────
+    // Template selection
+    // ────────────────────────────────────────────────────────────
 
     onTemplateSelected(id: ResumeTemplateId): void {
         this.selectedTemplate = id;
@@ -330,7 +383,9 @@ export class ResumeBuilderComponent implements OnInit, OnDestroy {
         this.savetrigger$.next(this.buildResumeData());
     }
 
-   
+    // ────────────────────────────────────────────────────────────
+    // Template loading
+    // ────────────────────────────────────────────────────────────
 
     private loadTemplates(): void {
         this.loadingTemplates = true;
@@ -365,7 +420,9 @@ export class ResumeBuilderComponent implements OnInit, OnDestroy {
             });
     }
 
-   
+    // ────────────────────────────────────────────────────────────
+    // Populate from profile
+    // ────────────────────────────────────────────────────────────
 
     populateFromProfile(): void {
         this.loadingProfile = true;
@@ -380,31 +437,23 @@ export class ResumeBuilderComponent implements OnInit, OnDestroy {
                     // Immediately save the profile-populated data
                     this.savetrigger$.next(this.buildResumeData());
 
-                    this.snackBar.open(
-                        "Profile data loaded successfully",
-                        "Close",
-                        { duration: 3000 }
-                    );
+                    this.snackBar.open("Profile data loaded successfully", "Close", { duration: 3000 });
                 },
                 error: (err) => {
                     this.loadingProfile = false;
-                    this.snackBar.open(
-                        err.error?.message ?? "Failed to load profile data",
-                        "Close",
-                        { duration: 4000 }
-                    );
+                    this.snackBar.open(err.error?.message ?? "Failed to load profile data", "Close", { duration: 4000 });
                 },
             });
     }
 
+    // ────────────────────────────────────────────────────────────
+    // PDF generation
+    // ────────────────────────────────────────────────────────────
+
     generatePdf(): void {
-        if (this.resumeForm.invalid) {
+        this.validationErrors = this.getValidationErrors();
+        if (this.validationErrors.length > 0) {
             this.resumeForm.markAllAsTouched();
-            this.snackBar.open(
-                "Please fill all required fields",
-                "Close",
-                { duration: 3000 }
-            );
             return;
         }
 
@@ -416,10 +465,7 @@ export class ResumeBuilderComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.destroy$))
             .subscribe({
                 next: (blob) => {
-                    this.downloadBlob(
-                        blob,
-                        `${resumeData.personalInfo.fullName.replace(/\s+/g, "_")}_Resume.pdf`
-                    );
+                    this.downloadBlob(blob, `${resumeData.personalInfo.fullName.replace(/\s+/g, "_")}_Resume.pdf`);
                     this.generatingPdf = false;
                     this.snackBar.open("PDF downloaded!", "Close", {
                         duration: 3000,
@@ -434,16 +480,14 @@ export class ResumeBuilderComponent implements OnInit, OnDestroy {
             });
     }
 
-  
+    // ────────────────────────────────────────────────────────────
+    // Upload resume
+    // ────────────────────────────────────────────────────────────
 
     uploadResume(): void {
-        if (this.resumeForm.invalid) {
+        this.validationErrors = this.getValidationErrors();
+        if (this.validationErrors.length > 0) {
             this.resumeForm.markAllAsTouched();
-            this.snackBar.open(
-                "Please fill all required fields",
-                "Close",
-                { duration: 3000 }
-            );
             return;
         }
 
@@ -456,36 +500,35 @@ export class ResumeBuilderComponent implements OnInit, OnDestroy {
             .subscribe({
                 next: () => {
                     this.uploading = false;
-                    this.snackBar.open(
-                        "Resume uploaded to your profile!",
-                        "Close",
-                        { duration: 3000 }
-                    );
+                    this.snackBar.open("Resume uploaded to your profile!", "Close", { duration: 3000 });
                 },
                 error: (err) => {
                     this.uploading = false;
-                    this.snackBar.open(
-                        err.error?.message ?? "Upload failed",
-                        "Close",
-                        { duration: 4000 }
-                    );
+                    this.snackBar.open(err.error?.message ?? "Upload failed", "Close", { duration: 4000 });
                 },
             });
     }
 
-   
+    // ────────────────────────────────────────────────────────────
+    // Data builders
+    // ────────────────────────────────────────────────────────────
 
+    /**
+     * FIX: Use getRawValue() which includes disabled controls (endDate
+     * when isCurrent is true). Without this, disabled endDate fields
+     * would be omitted from the built data.
+     */
     private buildResumeData(): ResumeData {
         const raw = this.resumeForm.getRawValue();
         return {
             ...raw,
             templateId: this.selectedTemplate,
-            experience: raw.experience.map(
-                (exp: Record<string, unknown> & { achievements: string[] }) => ({
-                    ...exp,
-                    achievements: exp.achievements ?? [],
-                })
-            ),
+            experience: raw.experience.map((exp: Record<string, unknown> & { achievements: string[] }) => ({
+                ...exp,
+                achievements: (exp.achievements ?? []).filter((a: string) => a.trim() !== ""),
+            })),
+            // Filter out empty skill entries
+            skills: raw.skills.filter((s: { name: string }) => s.name.trim() !== ""),
         } as ResumeData;
     }
 
@@ -504,13 +547,73 @@ export class ResumeBuilderComponent implements OnInit, OnDestroy {
         URL.revokeObjectURL(url);
     }
 
-    
+    // ────────────────────────────────────────────────────────────
+    // Validation helpers
+    // ────────────────────────────────────────────────────────────
+
+    /**
+     * Collects human-readable validation error messages by walking the
+     * form tree. This tells the user exactly which fields need attention.
+     */
+    getValidationErrors(): string[] {
+        const errors: string[] = [];
+        const pi = this.resumeForm.get("personalInfo") as FormGroup;
+
+        if (pi.get("fullName")?.invalid) {
+            errors.push("Full Name is required");
+        }
+        if (pi.get("email")?.invalid) {
+            const emailCtrl = pi.get("email")!;
+            if (emailCtrl.hasError("required")) {
+                errors.push("Email is required");
+            } else if (emailCtrl.hasError("email")) {
+                errors.push("Email format is invalid");
+            }
+        }
+
+        // Experience validation
+        const expArray = this.experienceArray;
+        for (let i = 0; i < expArray.length; i++) {
+            const exp = expArray.at(i) as FormGroup;
+            const label = `Experience ${i + 1}`;
+            if (exp.get("jobTitle")?.invalid) {
+                errors.push(`${label}: Job Title is required`);
+            }
+            if (exp.get("company")?.invalid) {
+                errors.push(`${label}: Company is required`);
+            }
+            if (exp.get("startDate")?.invalid) {
+                errors.push(`${label}: Start Date is required`);
+            }
+        }
+
+        // Education validation
+        const eduArray = this.educationArray;
+        for (let i = 0; i < eduArray.length; i++) {
+            const edu = eduArray.at(i) as FormGroup;
+            const label = `Education ${i + 1}`;
+            if (edu.get("degree")?.invalid) {
+                errors.push(`${label}: Degree is required`);
+            }
+            if (edu.get("institution")?.invalid) {
+                errors.push(`${label}: Institution is required`);
+            }
+            if (edu.get("fieldOfStudy")?.invalid) {
+                errors.push(`${label}: Field of Study is required`);
+            }
+            if (edu.get("startDate")?.invalid) {
+                errors.push(`${label}: Start Date is required`);
+            }
+        }
+
+        return errors;
+    }
+
     hasError(path: string): boolean {
         const control = this.resumeForm.get(path);
         return !!control && control.invalid && control.touched;
     }
 
-   
     formatLastSaved(): string {
         if (!this.lastSavedAt) return "";
         return this.lastSavedAt.toLocaleTimeString("en-US", {

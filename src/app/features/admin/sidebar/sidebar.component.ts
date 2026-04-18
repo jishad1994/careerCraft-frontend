@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 
 @Component({
@@ -9,8 +9,9 @@ import { Router, RouterModule } from '@angular/router';
   styleUrl: './sidebar.component.css',
 })
 export class SidebarComponent {
+  private router = inject(Router);
+
   isMobileMenuOpen = false;
-  constructor(private router: Router) {}
   
   // Helper method to check if route is active
   isActiveRoute(route: string): boolean {

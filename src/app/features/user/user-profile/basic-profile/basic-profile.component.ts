@@ -1,13 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnChanges,
-  OnDestroy,
-  OnInit,
-  Output,
-  SimpleChanges,
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, inject } from '@angular/core';
 import { UserProfile } from '../../../../models/user/user-profile.model';
 import { CommonModule } from '@angular/common';
 import {
@@ -51,6 +42,11 @@ interface LocationSuggestion {
   styleUrl: './basic-profile.component.css',
 })
 export class BasicProfileComponent implements OnInit, OnChanges, OnDestroy {
+  private readonly fb = inject(FormBuilder);
+  private readonly userProfileService = inject(UserProfileService);
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly http = inject(HttpClient);
+
   @Input() profile: UserProfile | null = null;
   @Output() updatedBasicInfo = new EventEmitter<UserProfile>();
 
@@ -82,13 +78,6 @@ export class BasicProfileComponent implements OnInit, OnChanges, OnDestroy {
 
   private readonly destroy$ = new Subject<void>();
   private readonly locationSearch$ = new Subject<string>();
-
-  constructor(
-    private readonly fb: FormBuilder,
-    private readonly userProfileService: UserProfileService,
-    private readonly snackBar: MatSnackBar,
-    private readonly http: HttpClient,
-  ) {}
 
   ngOnInit(): void {
     this.initializeForm();

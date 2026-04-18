@@ -8,13 +8,7 @@ export const companyApplicationRoutes: Routes = [
         (m) => m.CompanyApplicationsListComponent,
       ),
   },
-  {
-    path: ':applicationId/interviews/:interviewId/join-interview',
-    loadComponent: () =>
-      import('../../shared/components/video-call-component/video-call.component').then(
-        (m) => m.VideoCallComponent,
-      ),
-  },
+  
   {
     path: ':id',
     loadComponent: () =>

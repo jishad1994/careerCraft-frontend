@@ -1,5 +1,5 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiResponse } from '../../../models/api-response.model';
 import { Job } from '../../../models/job/job.model';
@@ -11,11 +11,12 @@ import { ADMIN_API_END_POINTS } from '../../../constants/admin-endpoints.constan
   providedIn: 'root',
 })
 export class AdminJobService {
-  constructor(private _http: HttpClient) {}
+  private _http = inject(HttpClient);
+
 
   getAllJobs(
-    page: number = 1,
-    limit: number = 10,
+    page = 1,
+    limit = 10,
     status?: string,
     isVerified?: boolean,
   ): Observable<ApiResponse<Job[]>> {

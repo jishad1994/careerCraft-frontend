@@ -1,460 +1,320 @@
- <div class="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
-            <!-- Template badge -->
-            <div
-                class="px-4 py-2 bg-gray-50 border-b border-gray-200 flex items-center justify-between"
-            >
-                <span class="text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Live Preview
-                </span>
-                <span
-                    class="text-xs px-2 py-0.5 rounded-full"
-                    [ngClass]="{
-                        'bg-amber-100 text-amber-700': data.templateId === 'classic',
-                        'bg-blue-100 text-blue-700': data.templateId === 'modern',
-                        'bg-gray-200 text-gray-600': data.templateId === 'minimal'
-                    }"
-                >
-                    {{ data.templateId | titlecase }}
-                </span>
-            </div>
- 
-            <!-- Resume content - scaled to fit -->
-            <div
-                class="relative overflow-auto"
-                style="max-height: 85vh;"
-            >
-                <div
-                    #previewContainer
-                    class="origin-top-left p-8 sm:p-10 min-h-[800px]"
-                    [ngClass]="{
-                        'font-serif': data.templateId === 'classic',
-                        'font-sans': data.templateId !== 'classic'
-                    }"
-                >
-                    <!-- ========== CLASSIC TEMPLATE ========== -->
-                    <ng-container *ngIf="data.templateId === 'classic'">
-                        <!-- Header -->
-                        <div class="text-center mb-5 pb-4 border-b-2 border-gray-800">
-                            <h1 class="text-2xl font-bold text-gray-900 mb-1.5">
-                                {{ data.personalInfo.fullName || "Your Name" }}
-                            </h1>
-                            <p class="text-xs text-gray-500 leading-relaxed">
-                                {{ contactLine }}
-                            </p>
-                            <p
-                                *ngIf="linksLine"
-                                class="text-xs text-gray-500"
-                            >
-                                {{ linksLine }}
-                            </p>
+<div class="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+    <!-- Template badge -->
+    <div class="px-4 py-2 bg-gray-50 border-b border-gray-200 flex items-center justify-between">
+        <span class="text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Live Preview
+        </span>
+        <span class="text-xs px-2 py-0.5 rounded-full" [ngClass]="{
+                'bg-amber-100 text-amber-700': data.templateId === 'classic',
+                'bg-blue-100 text-blue-700': data.templateId === 'modern',
+                'bg-gray-200 text-gray-600': data.templateId === 'minimal'
+            }">
+            {{ data.templateId | titlecase }}
+        </span>
+    </div>
+
+    <!-- Resume content - scaled to fit -->
+    <div class="relative overflow-auto" style="max-height: 85vh;">
+        <div #previewContainer class="origin-top-left p-8 sm:p-10 min-h-[800px]" [ngClass]="{
+                'font-serif': data.templateId === 'classic',
+                'font-sans': data.templateId !== 'classic'
+            }">
+
+            <!-- ========== CLASSIC TEMPLATE ========== -->
+            <ng-container *ngIf="data.templateId === 'classic'">
+                <!-- Header -->
+                <div class="text-center mb-5 pb-4 border-b-2 border-gray-800">
+                    <h1 class="text-2xl font-bold text-gray-900 mb-1.5">
+                        {{ data.personalInfo.fullName || "Your Name" }}
+                    </h1>
+                    <p class="text-xs text-gray-500 leading-relaxed">
+                        {{ contactLine }}
+                    </p>
+                    <p *ngIf="linksLine" class="text-xs text-gray-500">
+                        {{ linksLine }}
+                    </p>
+                </div>
+
+                <!-- Summary -->
+                <div *ngIf="data.summary.text" class="mb-5">
+                    <h2
+                        class="text-sm font-bold text-gray-900 uppercase tracking-widest mb-1.5 pb-1 border-b border-gray-300">
+                        Professional Summary
+                    </h2>
+                    <p class="text-xs text-gray-700 leading-relaxed">
+                        {{ data.summary.text }}
+                    </p>
+                </div>
+
+                <!-- Experience -->
+                <div *ngIf="data.experience.length > 0" class="mb-5">
+                    <h2
+                        class="text-sm font-bold text-gray-900 uppercase tracking-widest mb-2 pb-1 border-b border-gray-300">
+                        Experience
+                    </h2>
+                    <div *ngFor="let exp of data.experience" class="mb-3.5">
+                        <div class="flex justify-between items-baseline">
+                            <h3 class="text-sm font-semibold text-gray-900">
+                                {{ exp.jobTitle }}
+                            </h3>
+                            <span class="text-xs text-gray-500 whitespace-nowrap">
+                                {{ formatDate(exp.startDate) }} –
+                                {{ exp.isCurrent ? "Present" : formatDate(exp.endDate) }}
+                            </span>
                         </div>
- 
-                        <!-- Summary -->
-                        <div *ngIf="data.summary.text" class="mb-5">
-                            <h2
-                                class="text-sm font-bold text-gray-900 uppercase tracking-widest mb-1.5 pb-1 border-b border-gray-300"
-                            >
-                                Professional Summary
-                            </h2>
-                            <p class="text-xs text-gray-700 leading-relaxed">
-                                {{ data.summary.text }}
-                            </p>
-                        </div>
- 
-                        <!-- Experience -->
-                        <div *ngIf="data.experience.length > 0" class="mb-5">
-                            <h2
-                                class="text-sm font-bold text-gray-900 uppercase tracking-widest mb-2 pb-1 border-b border-gray-300"
-                            >
-                                Experience
-                            </h2>
-                            <div
-                                *ngFor="let exp of data.experience"
-                                class="mb-3.5"
-                            >
-                                <div class="flex justify-between items-baseline">
-                                    <h3 class="text-sm font-semibold text-gray-900">
-                                        {{ exp.jobTitle }}
-                                    </h3>
-                                    <span class="text-xs text-gray-500 whitespace-nowrap">
-                                        {{ formatDate(exp.startDate) }} –
-                                        {{
-                                            exp.isCurrent
-                                                ? "Present"
-                                                : formatDate(exp.endDate)
-                                        }}
-                                    </span>
-                                </div>
-                                <p class="text-xs text-gray-600 italic mb-1">
-                                    {{ exp.company }}
-                                </p>
-                                <p
-                                    *ngIf="exp.description"
-                                    class="text-xs text-gray-700 leading-relaxed mb-1"
-                                >
-                                    {{ exp.description }}
-                                </p>
-                                <ul
-                                    *ngIf="exp.achievements.length > 0"
-                                    class="list-disc pl-4"
-                                >
-                                    <li
-                                        *ngFor="let a of exp.achievements"
-                                        class="text-xs text-gray-700 leading-relaxed mb-0.5"
-                                    >
-                                        {{ a }}
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
- 
-                        <!-- Education -->
-                        <div *ngIf="data.education.length > 0" class="mb-5">
-                            <h2
-                                class="text-sm font-bold text-gray-900 uppercase tracking-widest mb-2 pb-1 border-b border-gray-300"
-                            >
-                                Education
-                            </h2>
-                            <div
-                                *ngFor="let edu of data.education"
-                                class="mb-2.5"
-                            >
-                                <div class="flex justify-between items-baseline">
-                                    <h3 class="text-sm font-semibold text-gray-900">
-                                        {{ edu.degree }}
-                                        <span *ngIf="edu.fieldOfStudy">
-                                            in {{ edu.fieldOfStudy }}
-                                        </span>
-                                    </h3>
-                                    <span class="text-xs text-gray-500 whitespace-nowrap">
-                                        {{ formatDate(edu.startDate) }} –
-                                        {{
-                                            edu.isCurrent
-                                                ? "Present"
-                                                : formatDate(edu.endDate)
-                                        }}
-                                    </span>
-                                </div>
-                                <p class="text-xs text-gray-600">
-                                    {{ edu.institution }}
-                                </p>
-                                <p
-                                    *ngIf="edu.grade"
-                                    class="text-xs text-gray-500"
-                                >
-                                    Grade: {{ edu.grade }}
-                                </p>
-                            </div>
-                        </div>
- 
-                        <!-- Skills -->
-                        <div *ngIf="data.skills.length > 0">
-                            <h2
-                                class="text-sm font-bold text-gray-900 uppercase tracking-widest mb-2 pb-1 border-b border-gray-300"
-                            >
-                                Skills
-                            </h2>
-                            <p class="text-xs text-gray-700">
-                                {{ skillNames }}
-                            </p>
-                        </div>
-                    </ng-container>
- 
-                    <!-- ========== MODERN TEMPLATE ========== -->
-                    <ng-container *ngIf="data.templateId === 'modern'">
-                        <!-- Header -->
-                        <div class="mb-6">
-                            <h1 class="text-2xl font-bold text-gray-900 mb-1">
-                                {{ data.personalInfo.fullName || "Your Name" }}
-                            </h1>
-                            <div
-                                class="flex flex-wrap gap-3 text-xs text-gray-500"
-                            >
-                                <span *ngIf="data.personalInfo.email">
-                                    ✉ {{ data.personalInfo.email }}
+                        <p class="text-xs text-gray-600 italic mb-1">
+                            {{ exp.company }}
+                        </p>
+                        <p *ngIf="exp.description" class="text-xs text-gray-700 leading-relaxed mb-1">
+                            {{ exp.description }}
+                        </p>
+                        <ul *ngIf="exp.achievements && exp.achievements.length > 0" class="list-disc pl-4">
+                            <li *ngFor="let a of exp.achievements"
+                                class="text-xs text-gray-700 leading-relaxed mb-0.5">
+                                {{ a }}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Education -->
+                <div *ngIf="data.education.length > 0" class="mb-5">
+                    <h2
+                        class="text-sm font-bold text-gray-900 uppercase tracking-widest mb-2 pb-1 border-b border-gray-300">
+                        Education
+                    </h2>
+                    <div *ngFor="let edu of data.education" class="mb-2.5">
+                        <div class="flex justify-between items-baseline">
+                            <h3 class="text-sm font-semibold text-gray-900">
+                                {{ edu.degree }}
+                                <span *ngIf="edu.fieldOfStudy">
+                                    in {{ edu.fieldOfStudy }}
                                 </span>
-                                <span *ngIf="data.personalInfo.phone">
-                                    ☎ {{ data.personalInfo.phone }}
-                                </span>
-                                <span *ngIf="data.personalInfo.location">
-                                    📍 {{ data.personalInfo.location }}
-                                </span>
-                            </div>
-                            <div
-                                *ngIf="linksLine"
-                                class="flex gap-3 text-xs text-blue-600 mt-1"
-                            >
-                                <span *ngIf="data.personalInfo.linkedIn">
-                                    {{ data.personalInfo.linkedIn }}
-                                </span>
-                                <span *ngIf="data.personalInfo.portfolio">
-                                    {{ data.personalInfo.portfolio }}
-                                </span>
-                            </div>
-                            <div
-                                class="h-0.5 bg-gradient-to-r from-blue-600 to-blue-300 mt-4 rounded"
-                            ></div>
+                            </h3>
+                            <span class="text-xs text-gray-500 whitespace-nowrap">
+                                {{ formatDate(edu.startDate) }} –
+                                {{ edu.isCurrent ? "Present" : formatDate(edu.endDate) }}
+                            </span>
                         </div>
- 
-                        <!-- Summary -->
-                        <div *ngIf="data.summary.text" class="mb-5">
-                            <h2
-                                class="text-xs font-bold text-blue-600 uppercase tracking-[0.15em] mb-1.5"
-                            >
-                                Summary
-                            </h2>
-                            <p class="text-xs text-gray-600 leading-relaxed">
-                                {{ data.summary.text }}
-                            </p>
-                        </div>
- 
-                        <!-- Experience -->
-                        <div *ngIf="data.experience.length > 0" class="mb-5">
-                            <h2
-                                class="text-xs font-bold text-blue-600 uppercase tracking-[0.15em] mb-2.5"
-                            >
-                                Experience
-                            </h2>
-                            <div
-                                *ngFor="let exp of data.experience"
-                                class="mb-4 pl-3.5 border-l-[3px] border-blue-600"
-                            >
-                                <h3 class="text-sm font-semibold text-gray-800">
-                                    {{ exp.jobTitle }}
-                                </h3>
-                                <p class="text-xs text-blue-600 mb-0.5">
-                                    {{ exp.company }}
-                                </p>
-                                <p class="text-[11px] text-gray-400 mb-1.5">
-                                    {{ formatDate(exp.startDate) }} –
-                                    {{
-                                        exp.isCurrent
-                                            ? "Present"
-                                            : formatDate(exp.endDate)
-                                    }}
-                                </p>
-                                <p
-                                    *ngIf="exp.description"
-                                    class="text-xs text-gray-600 leading-relaxed mb-1"
-                                >
-                                    {{ exp.description }}
-                                </p>
-                                <ul
-                                    *ngIf="exp.achievements.length > 0"
-                                    class="list-disc pl-4"
-                                >
-                                    <li
-                                        *ngFor="let a of exp.achievements"
-                                        class="text-xs text-gray-600 mb-0.5"
-                                    >
-                                        {{ a }}
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
- 
-                        <!-- Education -->
-                        <div *ngIf="data.education.length > 0" class="mb-5">
-                            <h2
-                                class="text-xs font-bold text-blue-600 uppercase tracking-[0.15em] mb-2.5"
-                            >
-                                Education
-                            </h2>
-                            <div
-                                *ngFor="let edu of data.education"
-                                class="mb-3 pl-3.5 border-l-[3px] border-blue-600"
-                            >
-                                <h3 class="text-sm font-semibold text-gray-800">
-                                    {{ edu.degree }} – {{ edu.fieldOfStudy }}
-                                </h3>
-                                <p class="text-xs text-blue-600">
-                                    {{ edu.institution }}
-                                </p>
-                                <p class="text-[11px] text-gray-400">
-                                    {{ formatDate(edu.startDate) }} –
-                                    {{
-                                        edu.isCurrent
-                                            ? "Present"
-                                            : formatDate(edu.endDate)
-                                    }}
-                                </p>
-                                <p
-                                    *ngIf="edu.grade"
-                                    class="text-xs text-gray-500"
-                                >
-                                    Grade: {{ edu.grade }}
-                                </p>
-                            </div>
-                        </div>
- 
-                        <!-- Skills -->
-                        <div *ngIf="data.skills.length > 0">
-                            <h2
-                                class="text-xs font-bold text-blue-600 uppercase tracking-[0.15em] mb-2"
-                            >
-                                Skills
-                            </h2>
-                            <div class="flex flex-wrap gap-1.5">
-                                <span
-                                    *ngFor="let skill of data.skills"
-                                    class="text-xs px-2.5 py-1 bg-blue-50 text-blue-600 rounded"
-                                >
-                                    {{ skill.name }}
-                                </span>
-                            </div>
-                        </div>
-                    </ng-container>
- 
-                    <!-- ========== MINIMAL TEMPLATE ========== -->
-                    <ng-container *ngIf="data.templateId === 'minimal'">
-                        <!-- Header -->
-                        <div class="mb-7">
-                            <h1 class="text-xl font-semibold text-gray-900 tracking-tight mb-2">
-                                {{ data.personalInfo.fullName || "Your Name" }}
-                            </h1>
-                            <p class="text-xs text-gray-400 tracking-wide">
-                                {{ contactLine }}
-                            </p>
-                            <p
-                                *ngIf="linksLine"
-                                class="text-xs text-gray-400 tracking-wide"
-                            >
-                                {{ linksLine }}
-                            </p>
-                        </div>
- 
-                        <!-- Summary -->
-                        <div
-                            *ngIf="data.summary.text"
-                            class="mb-6 pl-3.5 border-l-2 border-gray-200"
-                        >
-                            <p class="text-xs text-gray-600 leading-relaxed">
-                                {{ data.summary.text }}
-                            </p>
-                        </div>
- 
-                        <!-- Experience -->
-                        <div *ngIf="data.experience.length > 0" class="mb-6">
-                            <h2
-                                class="text-[11px] font-semibold text-gray-400 uppercase tracking-[0.2em] mb-3"
-                            >
-                                Experience
-                            </h2>
-                            <div
-                                *ngFor="let exp of data.experience"
-                                class="mb-4"
-                            >
-                                <div class="flex justify-between items-baseline mb-0.5">
-                                    <span class="text-sm font-semibold text-gray-900">
-                                        {{ exp.jobTitle }}
-                                    </span>
-                                    <span
-                                        class="text-[11px] text-gray-400 tracking-wide whitespace-nowrap"
-                                    >
-                                        {{ formatDate(exp.startDate) }} –
-                                        {{
-                                            exp.isCurrent
-                                                ? "Present"
-                                                : formatDate(exp.endDate)
-                                        }}
-                                    </span>
-                                </div>
-                                <p class="text-xs text-gray-500 mb-1.5">
-                                    {{ exp.company }}
-                                </p>
-                                <p
-                                    *ngIf="exp.description"
-                                    class="text-xs text-gray-600 leading-relaxed mb-1"
-                                >
-                                    {{ exp.description }}
-                                </p>
-                                <ul
-                                    *ngIf="exp.achievements.length > 0"
-                                    class="list-disc pl-4"
-                                >
-                                    <li
-                                        *ngFor="let a of exp.achievements"
-                                        class="text-xs text-gray-600 mb-0.5"
-                                    >
-                                        {{ a }}
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
- 
-                        <!-- Education -->
-                        <div *ngIf="data.education.length > 0" class="mb-6">
-                            <h2
-                                class="text-[11px] font-semibold text-gray-400 uppercase tracking-[0.2em] mb-3"
-                            >
-                                Education
-                            </h2>
-                            <div
-                                *ngFor="let edu of data.education"
-                                class="mb-2.5"
-                            >
-                                <div class="flex justify-between items-baseline">
-                                    <span class="text-sm font-semibold text-gray-900">
-                                        {{ edu.degree }} — {{ edu.fieldOfStudy }}
-                                    </span>
-                                    <span
-                                        class="text-[11px] text-gray-400 whitespace-nowrap"
-                                    >
-                                        {{ formatDate(edu.startDate) }} –
-                                        {{
-                                            edu.isCurrent
-                                                ? "Present"
-                                                : formatDate(edu.endDate)
-                                        }}
-                                    </span>
-                                </div>
-                                <p class="text-xs text-gray-500">
-                                    {{ edu.institution }}
-                                </p>
-                                <p
-                                    *ngIf="edu.grade"
-                                    class="text-[11px] text-gray-400"
-                                >
-                                    Grade: {{ edu.grade }}
-                                </p>
-                            </div>
-                        </div>
- 
-                        <!-- Skills -->
-                        <div *ngIf="data.skills.length > 0">
-                            <h2
-                                class="text-[11px] font-semibold text-gray-400 uppercase tracking-[0.2em] mb-2"
-                            >
-                                Skills
-                            </h2>
-                            <p class="text-xs text-gray-600 leading-loose">
-                                {{ skillNames }}
-                            </p>
-                        </div>
-                    </ng-container>
- 
-                    <!-- Empty state -->
-                    <div
-                        *ngIf="isEmpty"
-                        class="flex flex-col items-center justify-center py-20 text-center"
-                    >
-                        <svg
-                            class="w-16 h-16 text-gray-300 mb-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="1.5"
-                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                            />
-                        </svg>
-                        <p class="text-sm text-gray-400">
-                            Start filling the form to see your resume preview
+                        <p class="text-xs text-gray-600">
+                            {{ edu.institution }}
+                        </p>
+                        <p *ngIf="edu.grade" class="text-xs text-gray-500">
+                            Grade: {{ edu.grade }}
                         </p>
                     </div>
                 </div>
+
+                <!-- Skills -->
+                <div *ngIf="data.skills.length > 0">
+                    <h2
+                        class="text-sm font-bold text-gray-900 uppercase tracking-widest mb-2 pb-1 border-b border-gray-300">
+                        Skills
+                    </h2>
+                    <p class="text-xs text-gray-700">
+                        {{ skillNames }}
+                    </p>
+                </div>
+            </ng-container>
+
+            <!-- ========== MODERN TEMPLATE ========== -->
+            <ng-container *ngIf="data.templateId === 'modern'">
+                <!-- Header -->
+                <div class="mb-6">
+                    <h1 class="text-2xl font-bold text-gray-900 mb-1">
+                        {{ data.personalInfo.fullName || "Your Name" }}
+                    </h1>
+                    <div class="flex flex-wrap gap-3 text-xs text-gray-500">
+                        <span *ngIf="data.personalInfo.email">
+                            ✉ {{ data.personalInfo.email }}
+                        </span>
+                        <span *ngIf="data.personalInfo.phone">
+                            ☎ {{ data.personalInfo.phone }}
+                        </span>
+                        <span *ngIf="data.personalInfo.location">
+                            📍 {{ data.personalInfo.location }}
+                        </span>
+                    </div>
+                    <div *ngIf="linksLine" class="flex gap-3 text-xs text-blue-600 mt-1">
+                        <span *ngIf="data.personalInfo.linkedIn">
+                            {{ data.personalInfo.linkedIn }}
+                        </span>
+                        <span *ngIf="data.personalInfo.portfolio">
+                            {{ data.personalInfo.portfolio }}
+                        </span>
+                    </div>
+                    <div class="h-0.5 bg-gradient-to-r from-blue-600 to-blue-300 mt-4 rounded"></div>
+                </div>
+
+                <!-- Summary -->
+                <div *ngIf="data.summary.text" class="mb-5">
+                    <h2 class="text-xs font-bold text-blue-600 uppercase tracking-[0.15em] mb-1.5">
+                        Summary
+                    </h2>
+                    <p class="text-xs text-gray-600 leading-relaxed">
+                        {{ data.summary.text }}
+                    </p>
+                </div>
+
+                <!-- Experience -->
+                <div *ngIf="data.experience.length > 0" class="mb-5">
+                    <h2 class="text-xs font-bold text-blue-600 uppercase tracking-[0.15em] mb-2.5">
+                        Experience
+                    </h2>
+                    <div *ngFor="let exp of data.experience" class="mb-4 pl-3.5 border-l-[3px] border-blue-600">
+                        <h3 class="text-sm font-semibold text-gray-800">
+                            {{ exp.jobTitle }}
+                        </h3>
+                        <p class="text-xs text-blue-600 mb-0.5">
+                            {{ exp.company }}
+                        </p>
+                        <p class="text-[11px] text-gray-400 mb-1.5">
+                            {{ formatDate(exp.startDate) }} –
+                            {{ exp.isCurrent ? "Present" : formatDate(exp.endDate) }}
+                        </p>
+                        <p *ngIf="exp.description" class="text-xs text-gray-600 leading-relaxed mb-1">
+                            {{ exp.description }}
+                        </p>
+                        <ul *ngIf="exp.achievements && exp.achievements.length > 0" class="list-disc pl-4">
+                            <li *ngFor="let a of exp.achievements" class="text-xs text-gray-600 mb-0.5">
+                                {{ a }}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Education -->
+                <div *ngIf="data.education.length > 0" class="mb-5">
+                    <h2 class="text-xs font-bold text-blue-600 uppercase tracking-[0.15em] mb-2.5">
+                        Education
+                    </h2>
+                    <div *ngFor="let edu of data.education" class="mb-3 pl-3.5 border-l-[3px] border-blue-600">
+                        <h3 class="text-sm font-semibold text-gray-800">
+                            {{ edu.degree }} – {{ edu.fieldOfStudy }}
+                        </h3>
+                        <p class="text-xs text-blue-600">
+                            {{ edu.institution }}
+                        </p>
+                        <p class="text-[11px] text-gray-400">
+                            {{ formatDate(edu.startDate) }} –
+                            {{ edu.isCurrent ? "Present" : formatDate(edu.endDate) }}
+                        </p>
+                        <p *ngIf="edu.grade" class="text-xs text-gray-500">
+                            Grade: {{ edu.grade }}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Skills -->
+                <div *ngIf="data.skills.length > 0">
+                    <h2 class="text-xs font-bold text-blue-600 uppercase tracking-[0.15em] mb-2">
+                        Skills
+                    </h2>
+                    <div class="flex flex-wrap gap-1.5">
+                        <span *ngFor="let skill of data.skills"
+                            class="text-xs px-2.5 py-1 bg-blue-50 text-blue-600 rounded">
+                            {{ skill.name }}
+                        </span>
+                    </div>
+                </div>
+            </ng-container>
+
+            <!-- ========== MINIMAL TEMPLATE ========== -->
+            <ng-container *ngIf="data.templateId === 'minimal'">
+                <!-- Header -->
+                <div class="mb-7">
+                    <h1 class="text-xl font-semibold text-gray-900 tracking-tight mb-2">
+                        {{ data.personalInfo.fullName || "Your Name" }}
+                    </h1>
+                    <p class="text-xs text-gray-400 tracking-wide">
+                        {{ contactLine }}
+                    </p>
+                    <p *ngIf="linksLine" class="text-xs text-gray-400 tracking-wide">
+                        {{ linksLine }}
+                    </p>
+                </div>
+
+                <!-- Summary -->
+                <div *ngIf="data.summary.text" class="mb-6 pl-3.5 border-l-2 border-gray-200">
+                    <p class="text-xs text-gray-600 leading-relaxed">
+                        {{ data.summary.text }}
+                    </p>
+                </div>
+
+                <!-- Experience -->
+                <div *ngIf="data.experience.length > 0" class="mb-6">
+                    <h2 class="text-[11px] font-semibold text-gray-400 uppercase tracking-[0.2em] mb-3">
+                        Experience
+                    </h2>
+                    <div *ngFor="let exp of data.experience" class="mb-4">
+                        <div class="flex justify-between items-baseline mb-0.5">
+                            <span class="text-sm font-semibold text-gray-900">
+                                {{ exp.jobTitle }}
+                            </span>
+                            <span class="text-[11px] text-gray-400 tracking-wide whitespace-nowrap">
+                                {{ formatDate(exp.startDate) }} –
+                                {{ exp.isCurrent ? "Present" : formatDate(exp.endDate) }}
+                            </span>
+                        </div>
+                        <p class="text-xs text-gray-500 mb-1.5">
+                            {{ exp.company }}
+                        </p>
+                        <p *ngIf="exp.description" class="text-xs text-gray-600 leading-relaxed mb-1">
+                            {{ exp.description }}
+                        </p>
+                        <ul *ngIf="exp.achievements && exp.achievements.length > 0" class="list-disc pl-4">
+                            <li *ngFor="let a of exp.achievements" class="text-xs text-gray-600 mb-0.5">
+                                {{ a }}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Education -->
+                <div *ngIf="data.education.length > 0" class="mb-6">
+                    <h2 class="text-[11px] font-semibold text-gray-400 uppercase tracking-[0.2em] mb-3">
+                        Education
+                    </h2>
+                    <div *ngFor="let edu of data.education" class="mb-2.5">
+                        <div class="flex justify-between items-baseline">
+                            <span class="text-sm font-semibold text-gray-900">
+                                {{ edu.degree }} — {{ edu.fieldOfStudy }}
+                            </span>
+                            <span class="text-[11px] text-gray-400 whitespace-nowrap">
+                                {{ formatDate(edu.startDate) }} –
+                                {{ edu.isCurrent ? "Present" : formatDate(edu.endDate) }}
+                            </span>
+                        </div>
+                        <p class="text-xs text-gray-500">
+                            {{ edu.institution }}
+                        </p>
+                        <p *ngIf="edu.grade" class="text-[11px] text-gray-400">
+                            Grade: {{ edu.grade }}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Skills -->
+                <div *ngIf="data.skills.length > 0">
+                    <h2 class="text-[11px] font-semibold text-gray-400 uppercase tracking-[0.2em] mb-2">
+                        Skills
+                    </h2>
+                    <p class="text-xs text-gray-600 leading-loose">
+                        {{ skillNames }}
+                    </p>
+                </div>
+            </ng-container>
+
+            <!-- Empty state -->
+            <div *ngIf="isEmpty" class="flex flex-col items-center justify-center py-20 text-center">
+                <svg class="w-16 h-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <p class="text-sm text-gray-400">
+                    Start filling the form to see your resume preview
+                </p>
             </div>
         </div>
+    </div>
+</div>

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit, inject } from "@angular/core";
 import {
     InterviewFilter,
     InterviewStats,
@@ -19,6 +19,11 @@ import { CandidateInterviewService } from "../../../../services/user/interview/c
     styleUrl: "./candidate-interview-listing.component.css",
 })
 export class CandidateInterviewListingComponent implements OnInit, OnDestroy {
+    private readonly route = inject(ActivatedRoute);
+    private readonly router = inject(Router);
+    private readonly interviewService = inject(CandidateInterviewService);
+    private readonly snackBar = inject(MatSnackBar);
+
     interviews: InterviewWithPopulated[] = [];
     stats: InterviewStats | null = null;
     loading = false;
@@ -57,13 +62,6 @@ export class CandidateInterviewListingComponent implements OnInit, OnDestroy {
     ];
 
     private readonly destroy$ = new Subject<void>();
-
-    constructor(
-        private readonly route: ActivatedRoute,
-        private readonly router: Router,
-        private readonly interviewService: CandidateInterviewService,
-        private readonly snackBar: MatSnackBar,
-    ) {}
 
     ngOnInit(): void {
         this.route.queryParamMap.pipe(takeUntil(this.destroy$)).subscribe((params) => {

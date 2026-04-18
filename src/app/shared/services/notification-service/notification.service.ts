@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiResponse } from '../../../models/api-response.model';
 import { INotification } from '../../../models/notification/notification.model';
@@ -9,7 +9,8 @@ import { NOTIFICATION_ENDPOINTS } from '../../../constants/notification-endpoint
   providedIn: 'root',
 })
 export class NotificationService {
-  constructor(private _http: HttpClient) {}
+  private _http = inject(HttpClient);
+
 
   getNotifications(
     page: number,

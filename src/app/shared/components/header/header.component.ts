@@ -1,14 +1,4 @@
-import {
-    Component,
-    Input,
-    Output,
-    EventEmitter,
-    OnInit,
-    OnDestroy,
-    HostListener,
-    OnChanges,
-    SimpleChanges,
-} from "@angular/core";
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, HostListener, OnChanges, SimpleChanges, inject } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { Router, RouterLink } from "@angular/router";
@@ -35,15 +25,19 @@ export interface NavItem {
     styleUrl: "./header.component.css",
 })
 export class HeaderComponent implements OnInit, OnDestroy, OnChanges {
-    @Input() logoUrl: string = "";
-    @Input() logoRoute: string = "/home";
-    @Input() logoText: string = "";
+    private readonly router = inject(Router);
+    private readonly socketService = inject(SocketService);
+    private readonly userAuthState = inject(AuthStateService);
+
+    @Input() logoUrl = "";
+    @Input() logoRoute = "/home";
+    @Input() logoText = "";
     @Input() navItems: NavItem[] = [];
     @Input() userMenuItems: NavItem[] = [];
     @Input() user: AuthResponseUserDTO | null = null;
-    @Input() userName: string = "";
-    @Input() showSearch: boolean = true;
-    @Input() searchPlaceholder: string = "";
+    @Input() userName = "";
+    @Input() showSearch = true;
+    @Input() searchPlaceholder = "";
 
     @Output() search = new EventEmitter<string>();
     @Output() logout = new EventEmitter<void>();
@@ -57,12 +51,6 @@ export class HeaderComponent implements OnInit, OnDestroy, OnChanges {
 
     private readonly destroy$ = new Subject<void>();
     private notificationsInitialized = false;
-
-    constructor(
-        private readonly router: Router,
-        private readonly socketService: SocketService,
-        private readonly userAuthState: AuthStateService,
-    ) {}
 
     ngOnInit(): void {
         this.userAuthState.authState$.pipe(takeUntil(this.destroy$)).subscribe((state) => (this.user = state.user));

@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ApiResponse } from '../../../models/api-response.model';
 import {
   BasicCompanyUpdate,
@@ -14,7 +14,8 @@ import { COMPANY_API_ENDPOINTS } from '../../../constants/company-api-endpoints.
   providedIn: 'root',
 })
 export class CompanyProfileService {
-  constructor(private _http: HttpClient) {}
+  private _http = inject(HttpClient);
+
 
   getProfile(): Observable<ApiResponse<CompanyProfile>> {
     return this._http.get<ApiResponse<CompanyProfile>>(
@@ -88,7 +89,7 @@ export class CompanyProfileService {
     );
   }
 
-  viewDocument(documentKey: string, mode: string = 'view') {
+  viewDocument(documentKey: string, mode = 'view') {
     return this._http.get(
       COMPANY_API_ENDPOINTS.PROFILE.VIEW_DOCUMENT(documentKey, mode),
       {

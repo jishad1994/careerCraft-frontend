@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, OnInit, OnDestroy, inject } from "@angular/core";
 import { Conversation, Message, MiniChat } from "../../../../models/chat.model";
 import { Subject, takeUntil } from "rxjs";
 import { ChatService } from "../../../services/chat-service/chat.service";
@@ -14,7 +14,11 @@ import { AuthStateService } from "../../../../services/authState/auth-state.serv
     templateUrl: "./floating-chat-bar.component.html",
     styleUrl: "./floating-chat-bar.component.css",
 })
-export class FloatingChatBarComponent {
+export class FloatingChatBarComponent implements OnInit, OnDestroy {
+    private chatService = inject(ChatService);
+    private socketService = inject(SocketService);
+    private authState = inject(AuthStateService);
+
     openChats: MiniChat[] = [];
     allConversations: Conversation[] = [];
     showConversationList = false;
@@ -26,12 +30,6 @@ export class FloatingChatBarComponent {
 
     private readonly MAX_OPEN_CHATS = 3;
     private destroy$ = new Subject<void>();
-
-    constructor(
-        private chatService: ChatService,
-        private socketService: SocketService,
-        private authState: AuthStateService,
-    ) {}
 
     ngOnInit(): void {
         this.authState.authState$.pipe(takeUntil(this.destroy$)).subscribe((state) => {

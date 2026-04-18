@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { InterviewWithPopulated } from '../../../../models/job-application/job-application.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { InterviewService } from '../../../../services/company/interview-service/interview.service';
@@ -15,18 +15,16 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './candidate-interview-details.component.css',
 })
 export class CandidateInterviewDetailsComponent implements OnInit, OnDestroy {
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly interviewService = inject(CandidateInterviewService);
+  private readonly snackBar = inject(MatSnackBar);
+
   interview: InterviewWithPopulated | null = null;
   loading = false;
-  interviewId: string = '';
+  interviewId = '';
 
   private readonly destroy$ = new Subject<void>();
-
-  constructor(
-    private readonly route: ActivatedRoute,
-    private readonly router: Router,
-    private readonly interviewService: CandidateInterviewService,
-    private readonly snackBar: MatSnackBar,
-  ) {}
 
   ngOnInit(): void {
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {

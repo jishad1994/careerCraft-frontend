@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -16,13 +16,13 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrl: './forgot-password.component.css',
 })
 export class ForgotPasswordComponent {
+  private fb = inject(FormBuilder);
+  private _authService = inject(AuthService);
+  private _matSnackBar = inject(MatSnackBar);
+
   forgotForm: FormGroup;
 
-  constructor(
-    private fb: FormBuilder,
-    private _authService: AuthService,
-    private _matSnackBar: MatSnackBar
-  ) {
+  constructor() {
     this.forgotForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       role: ['', [Validators.required]],

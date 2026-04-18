@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { OfferLetter, OfferLetterStatus } from '../../../models/offerLetter.model';
 import { Subject, takeUntil } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -14,6 +14,11 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './candidate-offer-detail.component.css'
 })
 export class CandidateOfferDetailComponent implements OnInit,OnDestroy{
+ private route = inject(ActivatedRoute);
+ private router = inject(Router);
+ private offerService = inject(CandidateOfferLetterService);
+ private snackBar = inject(MatSnackBar);
+
  offer: OfferLetter | null = null;
     loading = false;
     responding = false;
@@ -26,13 +31,6 @@ export class CandidateOfferDetailComponent implements OnInit,OnDestroy{
  
     private offerId = "";
     private destroy$ = new Subject<void>();
- 
-    constructor(
-        private route: ActivatedRoute,
-        private router: Router,
-        private offerService: CandidateOfferLetterService,
-        private snackBar: MatSnackBar,
-    ) {}
  
     ngOnInit(): void {
         this.offerId = this.route.snapshot.params["id"];

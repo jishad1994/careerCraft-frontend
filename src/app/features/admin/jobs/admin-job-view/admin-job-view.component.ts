@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subject, takeUntil } from 'rxjs';
@@ -15,15 +15,13 @@ import { AdminJobService } from '../../../../services/admin/job/admin-job.servic
   templateUrl: './admin-job-view.component.html',
 })
 export class AdminJobViewComponent implements OnInit, OnDestroy {
+  private _jobService = inject(AdminJobService);
+  private _router = inject(Router);
+  private _snackBar = inject(MatSnackBar);
+  private _route = inject(ActivatedRoute);
+
   job: Job | null = null;
   private destroy$ = new Subject<void>();
-
-  constructor(
-    private _jobService: AdminJobService,
-    private _router: Router,
-    private _snackBar: MatSnackBar,
-    private _route: ActivatedRoute
-  ) {}
 
   ngOnInit(): void {
     this._route.paramMap

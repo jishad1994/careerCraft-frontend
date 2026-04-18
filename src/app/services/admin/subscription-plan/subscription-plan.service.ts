@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ApiResponse } from '../../../models/api-response.model';
 import { Observable, retry } from 'rxjs';
 import { ISubscriptionPlan } from '../../../models/subscription-plan/subscription-plan.model';
@@ -10,7 +10,8 @@ import { API_ENDPOINTS } from '../../../constants/api-endpoints.constants';
   providedIn: 'root',
 })
 export class SubscriptionPlanService {
-  constructor(private _http: HttpClient) {}
+  private _http = inject(HttpClient);
+
 
   getPlans(): Observable<ApiResponse<ISubscriptionPlan[]>> {
     return this._http.get<ApiResponse<ISubscriptionPlan[]>>(

@@ -1,11 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject } from '@angular/core';
 import { UserProfile } from '../../../../models/user/user-profile.model';
 import {
   FormBuilder,
@@ -25,6 +18,10 @@ import { Subject, takeUntil } from 'rxjs';
   styleUrl: './education-section.component.css',
 })
 export class EducationSectionComponent implements OnInit, OnDestroy {
+  private _fb = inject(FormBuilder);
+  private _userProfileService = inject(UserProfileService);
+  private _snackBar = inject(MatSnackBar);
+
   @Input() profile: UserProfile | null = null;
   @Output() updatedEducation = new EventEmitter<UserProfile>();
 
@@ -34,12 +31,6 @@ export class EducationSectionComponent implements OnInit, OnDestroy {
   loading = false;
 
   private destroy$ = new Subject<void>();
-
-  constructor(
-    private _fb: FormBuilder,
-    private _userProfileService: UserProfileService,
-    private _snackBar: MatSnackBar
-  ) {}
 
   ngOnInit(): void {
     this.initForm();

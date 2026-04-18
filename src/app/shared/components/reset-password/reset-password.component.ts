@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -20,17 +20,17 @@ import { Router } from '@angular/router';
   styleUrl: './reset-password.component.css',
 })
 export class ResetPasswordComponent implements OnInit {
+  private fb = inject(FormBuilder);
+  private _authService = inject(AuthService);
+  private _route = inject(ActivatedRoute);
+  private _snackBar = inject(MatSnackBar);
+  private _router = inject(Router);
+
   resetForm: FormGroup;
   resetPasswordToken!: string;
   role!: 'user' | 'company' | 'admin';
 
-  constructor(
-    private fb: FormBuilder,
-    private _authService: AuthService,
-    private _route: ActivatedRoute,
-    private _snackBar: MatSnackBar,
-    private _router: Router
-  ) {
+  constructor() {
     this.resetForm = this.fb.group(
       {
         password: ['', [Validators.required]],

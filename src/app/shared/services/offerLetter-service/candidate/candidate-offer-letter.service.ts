@@ -1,5 +1,5 @@
 import { HttpClient, HttpParams } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { ApiResponse } from "../../../../models/api-response.model";
 import { OfferLetter, RespondDto } from "../../../../models/offerLetter.model";
 import { Observable } from "rxjs";
@@ -9,9 +9,10 @@ import { USER_API_ENDPOINTS } from "../../../../constants/user-api-endpoints.con
     providedIn: "root",
 })
 export class CandidateOfferLetterService {
-    constructor(private readonly http: HttpClient) {}
+    private readonly http = inject(HttpClient);
 
-    listOffers(page: number = 1, limit: number = 10, status?: string): Observable<ApiResponse<OfferLetter[]>> {
+
+    listOffers(page = 1, limit = 10, status?: string): Observable<ApiResponse<OfferLetter[]>> {
         let params = new HttpParams().set("page", page.toString()).set("limit", limit.toString());
         if (status) params = params.set("status", status);
 

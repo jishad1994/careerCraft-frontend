@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import {
   INotification,
   NotificationPriority,
@@ -16,6 +16,10 @@ import { NotificationService } from '../../services/notification-service/notific
   styleUrl: './notifications.component.css',
 })
 export class NotificationsComponent implements OnInit, OnDestroy {
+  private readonly notificationService = inject(NotificationService);
+  private readonly socketService = inject(SocketService);
+  private readonly router = inject(Router);
+
   notifications: INotification[] = [];
   loading = false;
   currentPage = 1;
@@ -26,12 +30,6 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   hasPrevPage = false;
 
   private readonly destroy$ = new Subject<void>();
-
-  constructor(
-    private readonly notificationService: NotificationService,
-    private readonly socketService: SocketService,
-    private readonly router: Router,
-  ) {}
 
   ngOnInit(): void {
     this.loadNotifications();
@@ -189,7 +187,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   }
 
   getPriorityBadgeClass(priority: NotificationPriority): string {
-    const classes: { [key in NotificationPriority]: string } = {
+    const classes: Record<NotificationPriority, string> = {
       urgent: 'bg-red-100 text-red-800 border-red-200',
       high: 'bg-orange-100 text-orange-800 border-orange-200',
       medium: 'bg-blue-100 text-blue-800 border-blue-200',
@@ -199,7 +197,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   }
 
   getNotificationIcon(type: string): string {
-    const icons: { [key: string]: string } = {
+    const icons: Record<string, string> = {
       application_status:
         'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z',
       new_application:
@@ -217,7 +215,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   }
 
   getNotificationColorClass(type: string): string {
-    const colors: { [key: string]: string } = {
+    const colors: Record<string, string> = {
       application_status: 'bg-blue-100 text-blue-600',
       new_application: 'bg-green-100 text-green-600',
       interview_scheduled: 'bg-purple-100 text-purple-600',

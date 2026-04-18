@@ -1,4 +1,11 @@
-import { Component, ElementRef, Input, SimpleChanges, ViewChild } from "@angular/core";
+import {
+    Component,
+    ElementRef,
+    Input,
+    SimpleChanges,
+    ViewChild,
+    OnChanges,
+} from "@angular/core";
 import { ResumeData } from "../../../models/user/user-resume.model";
 import { CommonModule } from "@angular/common";
 
@@ -8,10 +15,11 @@ import { CommonModule } from "@angular/common";
     templateUrl: "./resume-preview.component.html",
     styleUrl: "./resume-preview.component.css",
 })
-export class ResumePreviewComponent {
+export class ResumePreviewComponent implements OnChanges {
     @Input() data!: ResumeData;
 
-    @ViewChild("previewContainer") previewContainer!: ElementRef<HTMLDivElement>;
+    @ViewChild("previewContainer")
+    previewContainer!: ElementRef<HTMLDivElement>;
 
     contactLine = "";
     linksLine = "";
@@ -19,13 +27,22 @@ export class ResumePreviewComponent {
     isEmpty = true;
 
     ngOnChanges(_changes: SimpleChanges): void {
-        this.computeDerived();
+        if (this.data) {
+            this.computeDerived();
+        }
     }
 
     private computeDerived(): void {
         const pi = this.data.personalInfo;
-        this.contactLine = [pi.email, pi.phone, pi.location].filter(Boolean).join("  |  ");
-        this.linksLine = [pi.linkedIn, pi.portfolio].filter(Boolean).join("  |  ");
+
+        this.contactLine = [pi.email, pi.phone, pi.location]
+            .filter(Boolean)
+            .join("  |  ");
+
+        this.linksLine = [pi.linkedIn, pi.portfolio]
+            .filter(Boolean)
+            .join("  |  ");
+
         this.skillNames = this.data.skills
             .map((s) => s.name)
             .filter(Boolean)

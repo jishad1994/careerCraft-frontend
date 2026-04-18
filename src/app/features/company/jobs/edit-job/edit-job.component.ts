@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -21,11 +21,17 @@ import { CommonModule } from '@angular/common';
   templateUrl: './edit-job.component.html',
   styleUrl: './edit-job.component.css',
 })
-export class EditJobComponent {
+export class EditJobComponent implements OnInit, OnDestroy {
+  private fb = inject(FormBuilder);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private _jobService = inject(CompanyJobService);
+  private snackBar = inject(MatSnackBar);
+
   jobForm!: FormGroup;
   loading = false;
   submitting = false;
-  jobId: string = '';
+  jobId = '';
   originalJob: Job | null = null;
 
 
@@ -61,13 +67,7 @@ export class EditJobComponent {
     { value: 'yearly', label: 'Yearly' },
   ];
 
-  constructor(
-    private fb: FormBuilder,
-    private route: ActivatedRoute,
-    private router: Router,
-    private _jobService: CompanyJobService,
-    private snackBar: MatSnackBar
-  ) {
+  constructor() {
     this.initForm();
   }
 

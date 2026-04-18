@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { ReusableTableComponent } from '../../../shared/components/reusable-table/reusable-table.component';
 import { AdminService } from '../../../services/admin/user-management/admin.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -26,6 +26,10 @@ import { Subject, takeUntil } from 'rxjs';
   styleUrl: './user-table.component.css',
 })
 export class UserTableComponent implements OnInit, OnDestroy {
+  private _adminService = inject(AdminService);
+  private _snackBar = inject(MatSnackBar);
+  private _router = inject(Router);
+
   title = 'Users Management';
   users: IUserListItem[] = [];
   pagination: PaginationMeta | null = null;
@@ -69,12 +73,6 @@ export class UserTableComponent implements OnInit, OnDestroy {
       show: (row) => row.isBlocked,
     },
   ];
-
-  constructor(
-    private _adminService: AdminService,
-    private _snackBar: MatSnackBar,
-    private _router: Router
-  ) {}
 
   ngOnInit() {
     this.loadUsers();

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import {
   FilterOption,
   IJobApplicationDetails,
@@ -53,6 +53,15 @@ interface Skill {
   styleUrl: './company-applications-list.component.css',
 })
 export class CompanyApplicationsListComponent implements OnInit, OnDestroy {
+  private readonly candidatesService = inject(CompanyApplicationService);
+  private readonly skillsService = inject(SkillService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly dialog = inject(MatDialog);
+  private readonly resumeService = inject(ResumeService);
+  private chatInitiationService = inject(ChatInitiationService);
+
   candidates: IJobApplicationDetails[] = [];
   allSkills: Skill[] = [];
   filteredSkills: Skill[] = [];
@@ -118,17 +127,6 @@ export class CompanyApplicationsListComponent implements OnInit, OnDestroy {
     endDate: undefined,
     jobId: undefined,
   };
-
-  constructor(
-    private readonly candidatesService: CompanyApplicationService,
-    private readonly skillsService: SkillService,
-    private readonly route: ActivatedRoute,
-    private readonly router: Router,
-    private readonly snackBar: MatSnackBar,
-    private readonly dialog: MatDialog,
-    private readonly resumeService: ResumeService,
-    private chatInitiationService: ChatInitiationService
-  ) {}
 
   ngOnInit(): void {
     this.skillSearch$
@@ -202,7 +200,7 @@ export class CompanyApplicationsListComponent implements OnInit, OnDestroy {
     );
   }
 
-  loadCandidates(page: number = 1): void {
+  loadCandidates(page = 1): void {
     this.loading = true;
 
     this.candidatesService
@@ -411,7 +409,7 @@ export class CompanyApplicationsListComponent implements OnInit, OnDestroy {
   }
 
   getStatusBadgeClass(status: string): string {
-    const statusClasses: { [key: string]: string } = {
+    const statusClasses: Record<string, string> = {
       pending: 'bg-yellow-100 text-yellow-800',
       reviewing: 'bg-blue-100 text-blue-800',
       shortlisted: 'bg-green-100 text-green-800',

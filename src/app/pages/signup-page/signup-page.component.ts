@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, inject } from '@angular/core';
 import { SignupComponent } from '../../shared/components/signup/signup.component';
 import { GoogleAuthService } from '../../services/google-auth-service/google-auth.service';
 import { environment } from '../../environments/environment';
@@ -14,14 +14,13 @@ declare const google: any;
   styleUrls: ['./signup-page.component.css'],
 })
 export class SignupPageComponent implements OnDestroy {
+  private _googleAuth = inject(GoogleAuthService);
+  private _snackBar = inject(MatSnackBar);
+  private _router = inject(Router);
+
   private _clientId = environment.GOOGLE_CLIENT_ID;
 
   destroy$ = new Subject<void>();
-  constructor(
-    private _googleAuth: GoogleAuthService,
-    private _snackBar: MatSnackBar,
-    private _router: Router
-  ) {}
 
   onGoogleSignup(event: { role: 'user' | 'company'; elementId: string }) {
     google.accounts.id.initialize({

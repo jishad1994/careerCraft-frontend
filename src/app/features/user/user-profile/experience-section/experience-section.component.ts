@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject } from "@angular/core";
 import { UserProfileService } from "../../../../services/user/profile/user-profile.service";
 import { UserProfile } from "../../../../models/user/user-profile.model";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
@@ -13,22 +13,20 @@ import { Subject, takeUntil } from "rxjs";
     styleUrl: "./experience-section.component.css",
 })
 export class ExperienceSectionComponent implements OnInit, OnDestroy {
+    private _userProfileService = inject(UserProfileService);
+    private _fb = inject(FormBuilder);
+    private _snackBar = inject(MatSnackBar);
+
     @Input() profile: UserProfile | null = null;
     @Output() updatedExperience = new EventEmitter<UserProfile>();
 
     experienceForm!: FormGroup;
     editingExperience: number | null = null;
-    addingExperience: boolean = false;
-    totalYearsOfExperience: number = 0;
+    addingExperience = false;
+    totalYearsOfExperience = 0;
     loading = false;
 
     private destroy$ = new Subject<void>();
-
-    constructor(
-        private _userProfileService: UserProfileService,
-        private _fb: FormBuilder,
-        private _snackBar: MatSnackBar,
-    ) {}
 
     ngOnInit(): void {
         this.initForm();

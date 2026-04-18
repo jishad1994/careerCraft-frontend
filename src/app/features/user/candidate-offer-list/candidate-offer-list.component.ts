@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit, inject } from "@angular/core";
 import { OfferLetter, OfferLetterStatus } from "../../../models/offerLetter.model";
 import { Subject, takeUntil } from "rxjs";
 import { MatSnackBar } from "@angular/material/snack-bar";
@@ -14,6 +14,10 @@ import { FormsModule } from "@angular/forms";
     styleUrl: "./candidate-offer-list.component.css",
 })
 export class CandidateOfferListComponent implements OnInit, OnDestroy {
+    private offerService = inject(CandidateOfferLetterService);
+    private router = inject(Router);
+    private snackBar = inject(MatSnackBar);
+
     offers: OfferLetter[] = [];
     loading = false;
     page = 1;
@@ -23,8 +27,6 @@ export class CandidateOfferListComponent implements OnInit, OnDestroy {
     statusFilter = "";
 
     private destroy$ = new Subject<void>();
-
-    constructor(private offerService: CandidateOfferLetterService, private router: Router, private snackBar: MatSnackBar) {}
 
     ngOnInit(): void {
         this.loadOffers();

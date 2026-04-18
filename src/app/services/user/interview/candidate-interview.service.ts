@@ -1,5 +1,5 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
   InterviewFilter,
   InterviewWithPopulated,
@@ -12,15 +12,16 @@ import { USER_API_ENDPOINTS } from '../../../constants/user-api-endpoints.consta
   providedIn: 'root',
 })
 export class CandidateInterviewService {
-  constructor(private _http: HttpClient) {}
+  private _http = inject(HttpClient);
+
 
   /**
    * Get interviews with full context by filters if present
    */
   getAllInterviews(
     filter: InterviewFilter,
-    page: number = 1,
-    limit: number = 10,
+    page = 1,
+    limit = 10,
   ): Observable<ApiResponse<InterviewWithPopulated[]>> {
     let params = new HttpParams()
       .set('page', page.toString())

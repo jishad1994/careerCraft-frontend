@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit, inject } from "@angular/core";
 import { HeaderComponent } from "../../../shared/components/header/header.component";
 import { AuthService } from "../../../services/auth/auth.service";
 import { FooterComponent } from "../../../shared/components/footer/footer.component";
@@ -17,15 +17,15 @@ import { BehaviorSubject, Subject, takeUntil } from "rxjs";
     styleUrl: "./user-landing-page.component.css",
 })
 export class UserLandingPageComponent implements OnInit, OnDestroy {
+    private _authService = inject(AuthService);
+    private _snackbar = inject(MatSnackBar);
+    private _router = inject(Router);
+    private store = inject<Store<AppState>>(Store);
+    private _authState = inject(AuthStateService);
+
     isLoggedIn$;
     destroy$ = new Subject<void>();
-    constructor(
-        private _authService: AuthService,
-        private _snackbar: MatSnackBar,
-        private _router: Router,
-        private store: Store<AppState>,
-        private _authState: AuthStateService,
-    ) {
+    constructor() {
         this.isLoggedIn$ = this._authState.authState$
             .pipe(takeUntil(this.destroy$))
             .subscribe((authstate) => authstate.isLoggedIn);

@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { ApiResponse } from "../../../models/api-response.model";
 import { Observable } from "rxjs";
 import { HttpClient } from "@angular/common/http";
@@ -33,7 +33,8 @@ interface PaymentResponse {
     providedIn: "root",
 })
 export class PaymentService {
-    constructor(private readonly _http: HttpClient) {}
+    private readonly _http = inject(HttpClient);
+
 
     createPaymentIntent(planId: string, isUpgrade: boolean): Observable<ApiResponse<PaymentIntentResponse>> {
         return this._http.post<ApiResponse<PaymentIntentResponse>>(

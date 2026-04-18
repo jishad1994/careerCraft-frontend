@@ -1,4 +1,4 @@
-import { Component, HostListener, OnDestroy, OnInit } from "@angular/core";
+import { Component, HostListener, OnDestroy, OnInit, inject } from "@angular/core";
 import { Router, RouterModule } from "@angular/router";
 import { AuthService } from "../../../services/auth/auth.service";
 import { CommonModule } from "@angular/common";
@@ -12,6 +12,10 @@ import { Subject, takeUntil } from "rxjs";
     styleUrl: "./company-side-bar.component.css",
 })
 export class CompanySideBarComponent implements OnInit, OnDestroy {
+    private router = inject(Router);
+    private authService = inject(AuthService);
+    private _snackBar = inject(MatSnackBar);
+
     collapsed = false;
     jobMenuOpen = false;
     isMobileMenuOpen = false;
@@ -19,7 +23,6 @@ export class CompanySideBarComponent implements OnInit, OnDestroy {
 
     isDesktop = window.innerWidth >= 1024;
     destroy$ = new Subject<void>();
-    constructor(private router: Router, private authService: AuthService, private _snackBar: MatSnackBar) {}
 
     @HostListener("window:resize", ["$event"])
     onResize(event: any) {

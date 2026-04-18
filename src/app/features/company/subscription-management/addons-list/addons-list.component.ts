@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit, inject } from "@angular/core";
 import { CompanySubscription } from "../../../../models/company/company-subscription.model";
 import { Subject, takeUntil } from "rxjs";
 import { ISubscriptionAddonWithUsage } from "../../../../models/subscription-addons.model";
@@ -14,6 +14,9 @@ import { FormsModule } from "@angular/forms";
     styleUrl: "./addons-list.component.css",
 })
 export class AddonsListComponent implements OnInit, OnDestroy {
+    private readonly subscriptionService = inject(CompanySubscriptionService);
+    private readonly router = inject(Router);
+
     activeSubscription: CompanySubscription | null = null;
     availableAddons: ISubscriptionAddonWithUsage[] = [];
     groupedAddons: Record<"jobs" | "resumeViews" | "featuredJobs", ISubscriptionAddonWithUsage[]> = {
@@ -26,8 +29,6 @@ export class AddonsListComponent implements OnInit, OnDestroy {
     error: string | null = null;
 
     private readonly destroy$ = new Subject<void>();
-
-    constructor(private readonly subscriptionService: CompanySubscriptionService, private readonly router: Router) {}
 
     ngOnInit(): void {
         this.checkActiveSubscription();
@@ -93,7 +94,7 @@ export class AddonsListComponent implements OnInit, OnDestroy {
     }
 
     getTypeLabel(type: string): string {
-        const labels: { [key: string]: string } = {
+        const labels: Record<string, string> = {
             jobs: "Job Posts",
             resumeViews: "Resume Views",
             featuredJobs: "Featured Jobs",
@@ -102,7 +103,7 @@ export class AddonsListComponent implements OnInit, OnDestroy {
     }
 
     getTypeIcon(type: string): string {
-        const icons: { [key: string]: string } = {
+        const icons: Record<string, string> = {
             jobs: "briefcase",
             resumeViews: "eye",
             featuredJobs: "star",

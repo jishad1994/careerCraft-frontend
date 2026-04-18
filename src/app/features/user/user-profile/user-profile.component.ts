@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import {
   Education,
   Experience,
@@ -29,6 +29,10 @@ import { ResumeSectionComponent } from './resume-section/resume-section.componen
   styleUrl: './user-profile.component.css',
 })
 export class UserProfileComponent implements OnInit, OnDestroy {
+  private _userProfileService = inject(UserProfileService);
+  private fb = inject(FormBuilder);
+  private _snackBar = inject(MatSnackBar);
+
   profile: UserProfile | null = null;
   loading = false;
   editMode = false;
@@ -43,11 +47,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
 
   profileForm!: FormGroup;
   destroy$ = new Subject<void>();
-  constructor(
-    private _userProfileService: UserProfileService,
-    private fb: FormBuilder,
-    private _snackBar: MatSnackBar
-  ) {}
 
   ngOnInit() {
     this.initForm();

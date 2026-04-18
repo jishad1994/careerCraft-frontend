@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Skill } from '../../../../models/skill.model';
 import { SkillService } from '../../../../services/skill/skill.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -20,8 +20,14 @@ import {
   styleUrl: './skill-management.component.css',
 })
 export class SkillManagementComponent implements OnInit {
+  private _skillService = inject(SkillService);
+  private _router = inject(Router);
+  private _route = inject(ActivatedRoute);
+  private _snackBar = inject(MatSnackBar);
+  private fb = inject(FormBuilder);
+
   skills: Skill[] = [];
-  search: string = '';
+  search = '';
   page!: number;
   limit = 10;
   total = 0;
@@ -30,14 +36,6 @@ export class SkillManagementComponent implements OnInit {
   skillForm!: FormGroup;
   searchSubject$ = new Subject<string>();
   destroy$ = new Subject<void>();
-
-  constructor(
-    private _skillService: SkillService,
-    private _router: Router,
-    private _route: ActivatedRoute,
-    private _snackBar: MatSnackBar,
-    private fb: FormBuilder,
-  ) {}
   ngOnInit(): void {
     this.skillForm = this.fb.group({
       name: ['', [Validators.required]],

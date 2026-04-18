@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, inject } from "@angular/core";
 import {
     ConnectionRequested,
     ICECandidate,
@@ -15,50 +15,48 @@ import { Subject, takeUntil } from "rxjs";
 import { ActivatedRoute, Params, Router } from "@angular/router";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { CommonModule } from "@angular/common";
-import { AuthState } from "../../../models/auth.model";
 import { AuthStateService } from "../../../services/authState/auth-state.service";
+import { FormsModule } from "@angular/forms";
 
 @Component({
     selector: "app-video-call",
-    imports: [CommonModule],
+    imports: [CommonModule,FormsModule],
     templateUrl: "./video-call.component.html",
     styleUrl: "./video-call.component.css",
 })
 export class VideoCallComponent implements OnInit, OnDestroy, AfterViewInit {
+    private route = inject(ActivatedRoute);
+    private router = inject(Router);
+    private socketService = inject(SocketService);
+    private webrtcService = inject(WebRTCService);
+    private snackBar = inject(MatSnackBar);
+    private _authState = inject(AuthStateService);
+
     @ViewChild("localVideo") localVideo!: ElementRef<HTMLVideoElement>;
     @ViewChild("remoteVideo") remoteVideo!: ElementRef<HTMLVideoElement>;
 
-    roomId: string = "";
-    applicationId: string = "";
-    interviewId: string = "";
-    userId: string = "";
+    roomId = "";
+    applicationId = "";
+    interviewId = "";
+    userId = "";
     userRole: "user" | "company" | "admin" = "user";
-    remoteSocketId: string = "";
+    remoteSocketId = "";
 
-    shouldInitiate: boolean = false;
+    shouldInitiate = false;
     existingParticipants: Participant[] = [];
 
     callState: CallState | null = null;
-    isCallActive: boolean = false;
-    callDuration: number = 0;
+    isCallActive = false;
+    callDuration = 0;
     private durationInterval: ReturnType<typeof setInterval> | null = null;
 
-    loading: boolean = true;
+    loading = true;
     error: string | null = null;
-    waitingForParticipant: boolean = false;
+    waitingForParticipant = false;
 
-    returnPageUrl: string = "";
+    returnPageUrl = "";
 
     private destroy$ = new Subject<void>();
-
-    constructor(
-        private route: ActivatedRoute,
-        private router: Router,
-        private socketService: SocketService,
-        private webrtcService: WebRTCService,
-        private snackBar: MatSnackBar,
-        private _authState: AuthStateService,
-    ) {}
 
     ngOnInit(): void {
         // Get auth state first and set user info

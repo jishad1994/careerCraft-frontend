@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import {
   Education,
   Experience,
@@ -21,21 +21,19 @@ import { CommonModule } from '@angular/common';
   templateUrl: './candidate-profile.component.html',
   styleUrl: './candidate-profile.component.css',
 })
-export class CandidateProfileComponent {
+export class CandidateProfileComponent implements OnInit, OnDestroy {
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly _resumeService = inject(ResumeService);
+  private readonly _candidateService = inject(CandidateService);
+  private readonly dialog = inject(MatDialog);
+  private readonly snackBar = inject(MatSnackBar);
+
   profile: UserProfile | null = null;
   loading = true;
-  previousPageUrl: string = '/';
+  previousPageUrl = '/';
 
   private readonly destroy$ = new Subject<void>();
-
-  constructor(
-    private readonly route: ActivatedRoute,
-    private readonly router: Router,
-    private readonly _resumeService: ResumeService,
-    private readonly _candidateService: CandidateService,
-    private readonly dialog: MatDialog,
-    private readonly snackBar: MatSnackBar,
-  ) {}
 
   ngOnInit(): void {
     const userId = this.route.snapshot.paramMap.get('userId');

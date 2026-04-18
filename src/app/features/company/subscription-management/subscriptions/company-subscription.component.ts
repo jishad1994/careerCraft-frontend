@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import {
   CompanySubscription,
   RemainingLimits,
@@ -17,17 +17,15 @@ import { CommonModule } from '@angular/common';
   styleUrl: './company-subscription.component.css',
 })
 export class CompanySubscriptionComponent implements OnInit, OnDestroy {
+  private readonly subscriptionService = inject(CompanySubscriptionService);
+  private readonly router = inject(Router);
+  private readonly snackBar = inject(MatSnackBar);
+
   activeSubscription: CompanySubscription | null = null;
   plans: ISubscriptionPlan[] = [];
   loading = false;
 
   private readonly destroy$ = new Subject<void>();
-
-  constructor(
-    private readonly subscriptionService: CompanySubscriptionService,
-    private readonly router: Router,
-    private readonly snackBar: MatSnackBar
-  ) {}
 
   ngOnInit(): void {
     this.loadData();

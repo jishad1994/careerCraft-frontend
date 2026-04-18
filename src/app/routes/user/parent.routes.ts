@@ -63,10 +63,9 @@ export const USER_ROUTES: Routes = [
                         (m) => m.CandidateOfferDetailComponent,
                     ),
             },
-           
 
             { path: "**", redirectTo: "home" },
         ],
     },
+   
 ];
-

@@ -111,7 +111,7 @@ export class SocketService implements OnDestroy {
 
     private readonly error$ = new Subject<string>();
     private listenersInitialized = false;
-    constructor() {}
+    // constructor() {}
 
     connect(): void {
         if (this.socket?.connected) {
@@ -373,7 +373,7 @@ export class SocketService implements OnDestroy {
         conversationId: string;
         content: string;
         messageType?: "text" | "file" | "system";
-        attachments?: any[];
+        attachments?: unknown[];
     }): void {
          
         if (this.socket?.connected) {

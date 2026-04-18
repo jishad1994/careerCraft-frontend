@@ -1,26 +1,26 @@
 import { HttpClient } from '@angular/common/http';
-import { AbstractControl, ValidatorFn, ValidationErrors } from '@angular/forms';
+import { AbstractControl, ValidationErrors } from '@angular/forms';
 import {
   Observable,
   of,
-  debounceTime,
   switchMap,
   map,
   catchError,
-  distinctUntilChanged,
   timer,
 } from 'rxjs';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { AuthService } from '../services/auth/auth.service';
 
 @Injectable({ providedIn: 'root' })
 export class FormValidators {
-  constructor(private http: HttpClient, private authService: AuthService) {}
+  private http = inject(HttpClient);
+  private authService = inject(AuthService);
+
 
   //confirm password validator
   static passwordMatchValidator(form: AbstractControl) {
-    let password = form.get('password')?.value;
-    let confirmPassword = form.get('confirmPassword')?.value;
+    const password = form.get('password')?.value;
+    const confirmPassword = form.get('confirmPassword')?.value;
 
     if (password && confirmPassword && password !== confirmPassword) {
       return { passwordMismatch: true };

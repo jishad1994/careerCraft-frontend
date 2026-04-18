@@ -1,10 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  OnDestroy,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output, inject } from '@angular/core';
 import {
   COMPANY_NAME_REGEX,
   NAME_REGEX,
@@ -16,8 +10,6 @@ import {
   ReactiveFormsModule,
   Validators,
   FormGroup,
-  AbstractControl,
-  ValidationErrors,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
@@ -36,6 +28,15 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrls: ['./signup.component.css'],
 })
 export class SignupComponent implements OnInit, OnDestroy {
+  private FB = inject(FormBuilder);
+  private http = inject(HttpClient);
+  private authService = inject(AuthService);
+  private formValidator = inject(FormValidators);
+  private router = inject(Router);
+  private signupFormHelper = inject(SignupFormHelper);
+  private signupServiceHandler = inject(SignupServiceHandler);
+  private _snackBar = inject(MatSnackBar);
+
   registerForm: FormGroup;
   selectedRole: 'user' | 'company' = 'user';
   private destroy$ = new Subject<void>();
@@ -45,16 +46,7 @@ export class SignupComponent implements OnInit, OnDestroy {
     elementId: string;
   }>();
 
-  constructor(
-    private FB: FormBuilder,
-    private http: HttpClient,
-    private authService: AuthService,
-    private formValidator: FormValidators,
-    private router: Router,
-    private signupFormHelper: SignupFormHelper,
-    private signupServiceHandler: SignupServiceHandler,
-    private _snackBar: MatSnackBar
-  ) {
+  constructor() {
     this.registerForm = this.FB.group(
       {
         role: ['user', [Validators.required]],

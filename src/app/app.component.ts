@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { SignupComponent } from './shared/components/signup/signup.component';
 import { SignupPageComponent } from './pages/signup-page/signup-page.component';
@@ -12,9 +12,9 @@ import { LoginPageComponent } from './pages/login-page/login-page.component';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
-  title = 'frontend';
+  private _router = inject(Router);
 
-  constructor(private _router: Router) {}
+  title = 'frontend';
 
   ngOnInit(): void {
     const token = localStorage.getItem('accessToke');

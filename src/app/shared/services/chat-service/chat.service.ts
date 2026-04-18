@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { Observable } from "rxjs";
 import { Attachment, Conversation, CreateConversationDTO, Message, SendMessageDTO } from "../../../models/chat.model";
 import { ApiResponse } from "../../../models/api-response.model";
@@ -9,7 +9,7 @@ import { CHAT_ENDPOINTS } from "../../../constants/chat.endpoints.constants";
     providedIn: "root",
 })
 export class ChatService {
-    constructor(private readonly http: HttpClient) {}
+    private readonly http = inject(HttpClient);
 
     getConversations(): Observable<ApiResponse<Conversation[]>> {
         return this.http.get<ApiResponse<Conversation[]>>(CHAT_ENDPOINTS.GET_CONVERSATIONS);
@@ -23,7 +23,7 @@ export class ChatService {
         return this.http.get<ApiResponse<Conversation>>(CHAT_ENDPOINTS.GET_CONVERSATION_BY_ID(id));
     }
 
-    getMessages(conversationId: string, page: number = 1, limit: number = 50): Observable<ApiResponse<Message[]>> {
+    getMessages(conversationId: string, page = 1, limit = 50): Observable<ApiResponse<Message[]>> {
         return this.http.get<ApiResponse<Message[]>>(CHAT_ENDPOINTS.GET_MESSAGES(conversationId), {
             params: { page: page.toString(), limit: limit.toString() },
         });
@@ -33,7 +33,18 @@ export class ChatService {
         return this.http.post<ApiResponse<Message>>(CHAT_ENDPOINTS.SEND_MESSAGE(conversationId), data);
     }
 
-    uploadFile(file: File, conversationId: string): Observable<ApiResponse<any>> {
+    uploadFile(
+        file: File,
+        conversationId: string,
+    ): Observable<
+        ApiResponse<{
+            fileUrl: string;
+            fileName: string;
+            fileSize: number;
+            fileType: string;
+            s3Key: string;
+        }>
+    > {
         const formData = new FormData();
         formData.append("file", file);
 

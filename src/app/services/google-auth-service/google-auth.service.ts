@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable, OnDestroy, inject } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Router } from '@angular/router';
@@ -14,13 +14,12 @@ declare const google: any;
   providedIn: 'root',
 })
 export class GoogleAuthService {
+  private _http = inject(HttpClient);
+  private _router = inject(Router);
+  private _snackBar = inject(MatSnackBar);
+  private _authStateService = inject(AuthStateService);
+
   private _clientId = environment.GOOGLE_CLIENT_ID;
-  constructor(
-    private _http: HttpClient,
-    private _router: Router,
-    private _snackBar: MatSnackBar,
-    private _authStateService: AuthStateService
-  ) {}
 
   handleCredentialResponse(
     credential: string,

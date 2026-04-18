@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit, inject } from "@angular/core";
 import { Subject, takeUntil } from "rxjs";
 import { IJobApplicationDetails } from "../../../../models/job-application/job-application.model";
 import { ActivatedRoute, Router, RouterModule } from "@angular/router";
@@ -18,23 +18,21 @@ import { PdfViewerComponent } from "../../../../shared/components/pdf-viewer/pdf
     styleUrl: "./application-view.component.css",
 })
 export class CandidateApplicationViewComponent implements OnInit, OnDestroy {
+    private route = inject(ActivatedRoute);
+    private router = inject(Router);
+    private applicationService = inject(UserJobApplicationService);
+    private _userProfileService = inject(UserProfileService);
+    private snackBar = inject(MatSnackBar);
+    private chatInitiationService = inject(ChatInitiationService);
+    private dialog = inject(MatDialog);
+
     application: IJobApplicationDetails | null = null;
     loading = false;
     withdrawing = false;
-    applicationId: string = "";
+    applicationId = "";
     showWithdrawModal = false;
 
     private destroy$ = new Subject<void>();
-
-    constructor(
-        private route: ActivatedRoute,
-        private router: Router,
-        private applicationService: UserJobApplicationService,
-        private _userProfileService: UserProfileService,
-        private snackBar: MatSnackBar,
-        private chatInitiationService: ChatInitiationService,
-        private dialog: MatDialog,
-    ) {}
 
     ngOnInit() {
         this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {

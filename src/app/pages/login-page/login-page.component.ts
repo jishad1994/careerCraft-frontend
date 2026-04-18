@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, inject } from '@angular/core';
 import { LoginComponent } from '../../shared/components/login/login.component';
 import { environment } from '../../environments/environment';
 import { AuthService } from '../../services/auth/auth.service';
@@ -18,6 +18,12 @@ declare const google: any;
   styleUrl: './login-page.component.css',
 })
 export class LoginPageComponent implements OnDestroy {
+  private _authService = inject(AuthService);
+  private _snackBar = inject(MatSnackBar);
+  private _router = inject(Router);
+  private _googleAuth = inject(GoogleAuthService);
+  private store = inject<Store<AppState>>(Store);
+
   logoUrl: string = environment.logUrl;
 
   private _clientId = environment.GOOGLE_CLIENT_ID;
@@ -28,15 +34,7 @@ export class LoginPageComponent implements OnDestroy {
     admin: '/admin/dashboard',
   };
 
-  constructor(
-    private _authService: AuthService,
-    private _snackBar: MatSnackBar,
-    private _router: Router,
-    private _googleAuth: GoogleAuthService,
-    private store: Store<AppState>,
-  ) {}
-
-  loading: boolean = false;
+  loading = false;
   handleLogin(payload: { role: string; email: string; password: string }) {
     this.loading = true;
 

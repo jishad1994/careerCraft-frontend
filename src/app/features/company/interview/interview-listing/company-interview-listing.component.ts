@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, OnInit, OnDestroy, inject } from "@angular/core";
 import {
     InterviewFilter,
     InterviewStats,
@@ -17,7 +17,12 @@ import { FormsModule } from "@angular/forms";
     templateUrl: "./company-interview-listing.component.html",
     styleUrl: "./company-interview-listing.component.css",
 })
-export class CompanyInterviewListingComponent {
+export class CompanyInterviewListingComponent implements OnInit, OnDestroy {
+    private readonly route = inject(ActivatedRoute);
+    private readonly router = inject(Router);
+    private readonly interviewService = inject(InterviewService);
+    private readonly snackBar = inject(MatSnackBar);
+
     interviews: InterviewWithPopulated[] = [];
     stats: InterviewStats | null = null;
     loading = false;
@@ -60,13 +65,6 @@ export class CompanyInterviewListingComponent {
     private readonly destroy$ = new Subject<void>();
 
     private readonly searchSubject$ = new Subject<string>();
-
-    constructor(
-        private readonly route: ActivatedRoute,
-        private readonly router: Router,
-        private readonly interviewService: InterviewService,
-        private readonly snackBar: MatSnackBar,
-    ) {}
 
     ngOnInit(): void {
         // Get context from route params

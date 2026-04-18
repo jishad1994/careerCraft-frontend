@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, inject } from "@angular/core";
 import { HeaderComponent } from "../../../shared/components/header/header.component";
 import { FooterComponent } from "../../../shared/components/footer/footer.component";
 import { AuthService } from "../../../services/auth/auth.service";
@@ -14,16 +14,14 @@ import { Subject, takeUntil } from "rxjs";
     styleUrl: "./company-landing-page.component.css",
 })
 export class CompanyLandingPageComponent implements OnInit {
-    employerName: string = "employer";
+    private _authService = inject(AuthService);
+    private _snackbar = inject(MatSnackBar);
+    private _router = inject(Router);
+    private readonly _authState = inject(AuthStateService);
+
+    employerName = "employer";
 
     destroy$ = new Subject<void>();
-
-    constructor(
-        private _authService: AuthService,
-        private _snackbar: MatSnackBar,
-        private _router: Router,
-        private readonly _authState: AuthStateService,
-    ) {}
 
     handleLogout() {
         this._authService.logout().subscribe({

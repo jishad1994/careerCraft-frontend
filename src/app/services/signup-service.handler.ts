@@ -1,5 +1,5 @@
 // src/app/services/signup-service.handler.ts
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { AuthService } from './auth/auth.service';
@@ -16,11 +16,10 @@ export interface OTPResponse {
   providedIn: 'root',
 })
 export class SignupServiceHandler {
-  constructor(
-    private signupAuthService: AuthService,
-    private router: Router,
-    private _snackBar: MatSnackBar
-  ) {}
+  private signupAuthService = inject(AuthService);
+  private router = inject(Router);
+  private _snackBar = inject(MatSnackBar);
+
 
   handleSignup(
     formData: IRegisterData

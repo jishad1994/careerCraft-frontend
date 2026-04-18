@@ -1,5 +1,5 @@
 import { HttpClient, HttpParams } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { IJobApplicationDetails, IJobApplication } from "../../../models/job-application/job-application.model";
 import { API_ENDPOINTS } from "../../../constants/api-endpoints.constants";
 import { ApiResponse } from "../../../models/api-response.model";
@@ -22,12 +22,13 @@ interface CandidateFilters {
     providedIn: "root",
 })
 export class CompanyApplicationService {
-    constructor(private _http: HttpClient) {}
+    private _http = inject(HttpClient);
+
 
     getApplicants(
-        page: number = 1,
-        limit: number = 10,
-        search: string = "",
+        page = 1,
+        limit = 10,
+        search = "",
         filters: CandidateFilters,
     ): Observable<ApiResponse<IJobApplicationDetails[]>> {
         let params = new HttpParams().set("page", page.toString()).set("limit", limit.toString());

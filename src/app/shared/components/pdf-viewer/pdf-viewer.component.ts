@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   MAT_DIALOG_DATA,
@@ -32,18 +32,16 @@ interface PdfViewerData {
   styleUrl: './pdf-viewer.component.css',
 })
 export class PdfViewerComponent implements OnInit, OnDestroy {
+   private dialogRef = inject<MatDialogRef<PdfViewerComponent>>(MatDialogRef);
+   data = inject<PdfViewerData>(MAT_DIALOG_DATA);
+   private sanitizer = inject(DomSanitizer);
+   private snackBar = inject(MatSnackBar);
+
    resumeUrl: SafeResourceUrl | null = null;
   fileName = 'document.pdf';
   downloading = false;
 
   private objectUrl: string | null = null;
-
-  constructor(
-    private dialogRef: MatDialogRef<PdfViewerComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: PdfViewerData,
-    private sanitizer: DomSanitizer,
-    private snackBar: MatSnackBar
-  ) {}
 
   ngOnInit(): void {
     if (this.data.blob) {

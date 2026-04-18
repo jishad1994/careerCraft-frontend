@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnDestroy, inject } from '@angular/core';
 import {
   IDocuments,
   UserProfile,
@@ -10,6 +10,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { PdfViewerComponent } from '../../../../shared/components/pdf-viewer/pdf-viewer.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-resume-section',
@@ -17,19 +18,17 @@ import { PdfViewerComponent } from '../../../../shared/components/pdf-viewer/pdf
   templateUrl: './resume-section.component.html',
   styleUrl: './resume-section.component.css',
 })
-export class ResumeSectionComponent {
+export class ResumeSectionComponent implements OnDestroy {
+  private _userProfileService = inject(UserProfileService);
+  private _snackBar = inject(MatSnackBar);
+  private dialog = inject(MatDialog);
+private _router = inject(Router);
   @Input() profile: UserProfile | null = null;
   @Output() updatedProfile = new EventEmitter<UserProfile>();
 
   uploadingDocument = false;
   loading = false;
   destroy$ = new Subject<void>();
-
-  constructor(
-    private _userProfileService: UserProfileService,
-    private _snackBar: MatSnackBar,
-    private dialog: MatDialog,
-  ) {}
 
   onSelectResume(): void {
     const fileInput = document.getElementById('documentInput') as HTMLInputElement;
@@ -70,7 +69,9 @@ export class ResumeSectionComponent {
       this.uploadResume(file);
     }
   }
-
+goToResumeBuilder(): void {
+    this._router.navigate(['/user/resume-builder']);
+}
   uploadResume(file: File): void {
     this.uploadingDocument = true;
     

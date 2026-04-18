@@ -1,12 +1,4 @@
-import {
-  Component,
-  ElementRef,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  Output,
-  ViewChild,
-} from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnDestroy, Output, ViewChild, inject } from '@angular/core';
 import { Skill } from '../../../../models/skill.model';
 import { debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
 import { UserProfileService } from '../../../../services/user/profile/user-profile.service';
@@ -23,12 +15,16 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './skills-section.component.css',
 })
 export class SkillsSectionComponent implements OnDestroy {
+  private _userProfileService = inject(UserProfileService);
+  private _skillService = inject(SkillService);
+  private _snackBar = inject(MatSnackBar);
+
   @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
   
   skillsSearchQuery = '';
   searchResults: Skill[] = [];
   loading = false;
-  searchingSkills: boolean = false;
+  searchingSkills = false;
   
   private destroy$ = new Subject<void>();
   private searchSubject$ = new Subject<string>();
@@ -36,11 +32,7 @@ export class SkillsSectionComponent implements OnDestroy {
   @Input() profile: UserProfile | null = null;
   @Output() updatedUser = new EventEmitter<UserProfile>();
 
-  constructor(
-    private _userProfileService: UserProfileService,
-    private _skillService: SkillService,
-    private _snackBar: MatSnackBar
-  ) {
+  constructor() {
    
     this.searchSubject$
       .pipe(

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -22,20 +22,18 @@ import { Skill } from '../../../../models/skill.model';
   styleUrl: './create-job.component.css',
 })
 export class CreateJobComponent implements OnInit, OnDestroy {
+  private _fb = inject(FormBuilder);
+  private _jobService = inject(CompanyJobService);
+  private _router = inject(Router);
+  private _snackBar = inject(MatSnackBar);
+  private _http = inject(HttpClient);
+
   jobForm!: FormGroup;
   submitting = false;
   skillSearch = '';
   skillSearchResults: Skill[] = [];
   selectedSkills: Skill[] = [];
   destroy$ = new Subject<void>();
-
-  constructor(
-    private _fb: FormBuilder,
-    private _jobService: CompanyJobService,
-    private _router: Router,
-    private _snackBar: MatSnackBar,
-    private _http: HttpClient
-  ) {}
 
   ngOnInit() {
     this.initForm();

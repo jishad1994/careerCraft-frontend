@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { AdminService } from '../../../services/admin/user-management/admin.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ReusableTableComponent } from '../../../shared/components/reusable-table/reusable-table.component';
@@ -28,6 +28,10 @@ import { Subject } from 'rxjs';
   styleUrl: './companies-table.component.css',
 })
 export class CompaniesTableComponent implements OnInit, OnDestroy {
+  private _adminService = inject(AdminService);
+  private _snackBar = inject(MatSnackBar);
+  private _router = inject(Router);
+
   title = 'Companies Management';
   companies: ICompanyListItem[] = [];
   pagination: PaginationMeta | null = null;
@@ -38,7 +42,7 @@ export class CompaniesTableComponent implements OnInit, OnDestroy {
   pageLimit = 10;
   searchQuery = '';
 
-  selectedStatus: string = 'all';
+  selectedStatus = 'all';
 
   verificationStatusOptions = [ 
     { label: 'All', value: 'all' },
@@ -86,12 +90,6 @@ export class CompaniesTableComponent implements OnInit, OnDestroy {
       show: (row) => row.isBlocked,
     },
   ];
-
-  constructor(
-    private _adminService: AdminService,
-    private _snackBar: MatSnackBar,
-    private _router: Router,
-  ) {}
 
   ngOnInit() {
     this.loadCompanies();

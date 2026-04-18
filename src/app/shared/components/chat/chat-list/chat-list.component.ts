@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnDestroy, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, OnDestroy, OnInit, Output, inject } from "@angular/core";
 import { Conversation, Participant } from "../../../../models/chat.model";
 import { Subject, takeUntil } from "rxjs";
 import { ChatService } from "../../../services/chat-service/chat.service";
@@ -13,6 +13,10 @@ import { AuthStateService } from "../../../../services/authState/auth-state.serv
     styleUrl: "./chat-list.component.css",
 })
 export class ChatListComponent implements OnInit, OnDestroy {
+    private chatService = inject(ChatService);
+    private socketService = inject(SocketService);
+    private authStateService = inject(AuthStateService);
+
     @Output() conversationSelected = new EventEmitter<Conversation>();
 
     conversations: Conversation[] = [];
@@ -22,12 +26,6 @@ export class ChatListComponent implements OnInit, OnDestroy {
     totalUnreadCount = 0;
 
     private destroy$ = new Subject<void>();
-
-    constructor(
-        private chatService: ChatService,
-        private socketService: SocketService,
-        private authStateService: AuthStateService,
-    ) {}
 
     ngOnInit(): void {
         this.listenAuth();

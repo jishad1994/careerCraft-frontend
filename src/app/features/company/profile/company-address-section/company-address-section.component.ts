@@ -1,11 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   AbstractControl,
@@ -42,6 +35,10 @@ import { Subject, takeUntil } from 'rxjs';
   styleUrl: './company-address-section.component.css',
 })
 export class CompanyAddressSectionComponent implements OnInit, OnDestroy {
+  private readonly fb = inject(FormBuilder);
+  private readonly companyProfileService = inject(CompanyProfileService);
+  private readonly snackBar = inject(MatSnackBar);
+
   @Input() profile!: CompanyProfile;
   @Output() updatedProfile = new EventEmitter<CompanyProfile>();
 
@@ -51,12 +48,6 @@ export class CompanyAddressSectionComponent implements OnInit, OnDestroy {
   maxAddresses = 5;
 
   private readonly destroy$ = new Subject<void>();
-
-  constructor(
-    private readonly fb: FormBuilder,
-    private readonly companyProfileService: CompanyProfileService,
-    private readonly snackBar: MatSnackBar,
-  ) {}
 
   ngOnInit(): void {
     this.initializeForm();
@@ -243,7 +234,7 @@ console.log(addressData);
   }
 
   private getFieldLabel(field: string): string {
-    const labels: { [key: string]: string } = {
+    const labels: Record<string, string> = {
       city: 'City',
       state: 'State',
       country: 'Country',

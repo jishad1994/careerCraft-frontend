@@ -1,11 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject } from '@angular/core';
 import {
   COMPANY_VERIFICATION_STATUS,
   CompanyProfile,
@@ -30,6 +23,10 @@ import { CommonModule } from '@angular/common';
   styleUrl: './company-basic-profile.component.css',
 })
 export class CompanyBasicProfileComponent implements OnInit, OnDestroy {
+  private readonly fb = inject(FormBuilder);
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly companyProfileService = inject(CompanyProfileService);
+
   @Input() profile: CompanyProfile | null = null;
   @Output() updatedProfile = new EventEmitter<CompanyProfile>();
 
@@ -44,12 +41,6 @@ export class CompanyBasicProfileComponent implements OnInit, OnDestroy {
   basicInfoForm!: FormGroup;
 
   private readonly destroy$ = new Subject<void>();
-
-  constructor(
-    private readonly fb: FormBuilder,
-    private readonly snackBar: MatSnackBar,
-    private readonly companyProfileService: CompanyProfileService,
-  ) {}
 
   ngOnInit(): void {
     this.initForm();

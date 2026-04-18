@@ -1,5 +1,5 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Job, JobSearchFilters } from '../../../models/job/job.model';
 import { Observable } from 'rxjs';
 import { ApiResponse } from '../../../models/api-response.model';
@@ -12,13 +12,14 @@ import { USER_API_ENDPOINTS } from '../../../constants/user-api-endpoints.consta
   providedIn: 'root',
 })
 export class UserJobService {
-  constructor(private _http: HttpClient) {}
+  private _http = inject(HttpClient);
+
 
   // Search jobs with filters
   searchJobs(
     filters: JobSearchFilters,
-    page: number = 1,
-    limit: number = 10
+    page = 1,
+    limit = 10
   ): Observable<ApiResponse<Job[]>> {
     let params = new HttpParams()
       .set('page', page.toString())

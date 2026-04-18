@@ -63,19 +63,19 @@ export interface IJobApplication {
     githubUrl?: string;
     otherLinks?: string[];
 
-    screeningAnswers?: Array<{
+    screeningAnswers?: {
         question: string;
         answer: string;
-    }>;
+    }[];
 
     status: JobApplicationStatusTypes;
 
-    statusHistory: Array<{
+    statusHistory: {
         status: JobApplicationStatusTypes;
         changedAt: Date;
         changedBy?: string;
         notes?: string;
-    }>;
+    }[];
 
     notes?: string;
     feedback?: string;

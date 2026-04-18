@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { Job } from '../../../../models/job/job.model';
 import {
   IDocuments,
@@ -26,11 +26,19 @@ import { CommonModule } from '@angular/common';
   templateUrl: './user-job-view.component.html',
   styleUrl: './user-job-view.component.css',
 })
-export class UserJobViewComponent {
+export class UserJobViewComponent implements OnInit, OnDestroy {
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private fb = inject(FormBuilder);
+  private _jobApplicationService = inject(UserJobApplicationService);
+  private _jobService = inject(UserJobService);
+  private _profileService = inject(UserProfileService);
+  private snackBar = inject(MatSnackBar);
+
   job: Job | null = null;
   loading = false;
   submitting = false;
-  jobSlug: string = '';
+  jobSlug = '';
 
   userProfile: UserProfile | null = null;
   userResumes: IResume[] = [];
@@ -51,16 +59,7 @@ export class UserJobViewComponent {
 
   destroy$ = new Subject<void>();
 
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private fb: FormBuilder,
-    private _jobApplicationService: UserJobApplicationService,
-    private _jobService: UserJobService,
-    private _profileService: UserProfileService,
-    private snackBar: MatSnackBar,
-    
-  ) {
+  constructor() {
     this.initForm();
   }
 

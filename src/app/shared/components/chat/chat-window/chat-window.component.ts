@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild } from "@angular/core";
+import { Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild, OnInit, AfterViewChecked, OnDestroy, inject } from "@angular/core";
 import { Attachment, Conversation, Message } from "../../../../models/chat.model";
 import { debounceTime, Subject, takeUntil } from "rxjs";
 import { ChatService } from "../../../services/chat-service/chat.service";
@@ -13,7 +13,11 @@ import { AuthStateService } from "../../../../services/authState/auth-state.serv
     templateUrl: "./chat-window.component.html",
     styleUrl: "./chat-window.component.css",
 })
-export class ChatWindowComponent implements OnChanges {
+export class ChatWindowComponent implements OnChanges, OnInit, AfterViewChecked, OnDestroy {
+    private chatService = inject(ChatService);
+    private socketService = inject(SocketService);
+    private authState = inject(AuthStateService);
+
     @Input() conversation: Conversation | null = null;
     @ViewChild("messagesContainer") private messagesContainer!: ElementRef;
     @ViewChild("fileInput") private fileInput!: ElementRef;
@@ -44,12 +48,6 @@ export class ChatWindowComponent implements OnChanges {
     private shouldScrollToBottom = true;
     private typingSubject = new Subject<void>();
 
-    constructor(
-        private chatService: ChatService,
-        private socketService: SocketService,
-        private authState: AuthStateService,
-    ) {}
-
     ngOnInit(): void {
         this.authState.authState$.pipe(takeUntil(this.destroy$)).subscribe((state) => {
             if (state.user) {
@@ -66,7 +64,13 @@ export class ChatWindowComponent implements OnChanges {
         }
     }
 
-    
+    ngAfterViewChecked(): void {
+        if (this.shouldScrollToBottom) {
+            this.shouldScrollToBottom = false;
+            this.scrollToBottom();
+        }
+    }
+
     ngOnDestroy(): void {
         if (this.conversation) {
             this.socketService.leaveConversation(this.conversation._id);
@@ -335,23 +339,6 @@ export class ChatWindowComponent implements OnChanges {
         }
     }
 
-    scrollToBottom(): void {
-        // try {
-        //     if (this.messagesContainer) {
-        //         this.messagesContainer.nativeElement.scrollTop = this.messagesContainer.nativeElement.scrollHeight;
-        //     }
-        // } catch (error) {
-        //     console.error("Error scrolling to bottom:", error);
-        // }
-
-        if (this.messagesContainer) {
-            setTimeout(() => {
-                this.messagesContainer.nativeElement.scrollTop = this.messagesContainer.nativeElement.scrollHeight;
-                this.shouldScrollToBottom = true;
-            });
-        }
-    }
-
     onScroll(event: Event): void {
         const element = event.target as HTMLElement;
         if (element.scrollTop === 0 && this.hasMoreMessages && !this.loadingMore) {
@@ -379,7 +366,7 @@ export class ChatWindowComponent implements OnChanges {
     }
 
     getMessageStatusColor(message: Message): string {
-        if (message.status === "read") return "text-blue-600";
+        if (message.status === "read") return "text-blue-200";
         return "text-gray-400";
     }
 
@@ -422,5 +409,12 @@ export class ChatWindowComponent implements OnChanges {
 
     trackByMessage(index: number, message: Message): string {
         return message._id;
+    }
+
+    // AFTER
+    scrollToBottom(): void {
+        if (this.messagesContainer) {
+            this.messagesContainer.nativeElement.scrollTop = this.messagesContainer.nativeElement.scrollHeight;
+        }
     }
 }

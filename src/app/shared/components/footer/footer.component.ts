@@ -28,10 +28,10 @@ export interface SocialLink {
   styleUrl: './footer.component.css',
 })
 export class FooterComponent {
-  @Input() logoUrl: string = '';
-  @Input() logoText: string = '';
-  @Input() companyName: string = '';
-  @Input() description: string = '';
+  @Input() logoUrl = '';
+  @Input() logoText = '';
+  @Input() companyName = '';
+  @Input() description = '';
   @Input() sections: FooterSection[] = [
     {
       title: 'For Job Seekers',

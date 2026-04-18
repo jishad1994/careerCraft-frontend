@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { ApiResponse } from "../../../models/api-response.model";
 import { Observable } from "rxjs";
 import { Invoice } from "../../../models/invoice.model";
@@ -9,7 +9,8 @@ import { COMPANY_API_ENDPOINTS } from "../../../constants/company-api-endpoints.
     providedIn: "root",
 })
 export class InvoiceService {
-    constructor(private readonly _http: HttpClient) {}
+    private readonly _http = inject(HttpClient);
+
 
     getInvoiceBySubscription(subscriptionId: string): Observable<ApiResponse<Invoice>> {
         return this._http.get<ApiResponse<Invoice>>(

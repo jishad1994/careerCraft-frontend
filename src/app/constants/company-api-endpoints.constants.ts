@@ -60,7 +60,7 @@ export const COMPANY_API_ENDPOINTS = {
 
         ADD_NOTES: (id: string) => `${baseUrl}${companyBaseUrl}/applications/${id}/add-notes`,
 
-        GET_RESUME: (applicationId: string, mode: string = "view") =>
+        GET_RESUME: (applicationId: string, mode = "view") =>
             `${baseUrl}${companyBaseUrl}/applications/${applicationId}/resume?mode=${mode}`,
 
         SCHEDULE_INTERVIEW: (applicationId: string) =>
@@ -124,7 +124,7 @@ export const COMPANY_API_ENDPOINTS = {
     CANDIDATES: {
         getCandidateProfile: (candidateId: string) => `${baseUrl}${companyBaseUrl}/candidates/${candidateId}/profile`,
 
-        GET_RESUME_BY_CANDIDATE_ID: (candidateId: string, resumeKey: string, mode: string = "view") =>
+        GET_RESUME_BY_CANDIDATE_ID: (candidateId: string, resumeKey: string, mode = "view") =>
             `${baseUrl}${companyBaseUrl}/candidates/${candidateId}/resumes?resumeKey=${resumeKey}&mode=${mode}`,
     },
 

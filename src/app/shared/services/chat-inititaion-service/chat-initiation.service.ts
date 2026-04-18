@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ChatService } from '../chat-service/chat.service';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
@@ -7,10 +7,9 @@ import { firstValueFrom } from 'rxjs';
   providedIn: 'root'
 })
 export class ChatInitiationService {
-constructor(
-    private chatService: ChatService,
-    private router: Router
-  ) {}
+private chatService = inject(ChatService);
+private router = inject(Router);
+
  
   /**
    * Initiate chat from application view (Company → User)
@@ -73,7 +72,7 @@ constructor(
   /**
    * Open existing conversation
    */
-  openConversation(conversationId: string, isCompany: boolean = false): void {
+  openConversation(conversationId: string, isCompany = false): void {
     const basePath = isCompany ? '/company/dashboard/messages' : '/user/messages';
     this.router.navigate([basePath], {
       queryParams: { conversationId },

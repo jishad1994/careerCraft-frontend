@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { SkillService } from '../../../../services/skill/skill.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -15,17 +15,16 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './skill-details.component.css',
 })
 export class SkillDetailsComponent implements OnInit {
+  private _skillService = inject(SkillService);
+  private _route = inject(ActivatedRoute);
+  private _router = inject(Router);
+  private _snackBar = inject(MatSnackBar);
+
   skill: Skill | null = null;
   id!: string;
-  page: number = 1;
-  search: string = '';
+  page = 1;
+  search = '';
   destroy$ = new Subject<void>();
-  constructor(
-    private _skillService: SkillService,
-    private _route: ActivatedRoute,
-    private _router: Router,
-    private _snackBar: MatSnackBar
-  ) {}
 
   ngOnInit(): void {
     this.id = this._route.snapshot.params['id'];

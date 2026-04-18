@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { PaginationMeta } from '../../../../models/api-response.model';
 import {
   IJobApplication,
@@ -19,6 +19,10 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './user-applications.component.css',
 })
 export class UserApplicationsComponent implements OnInit, OnDestroy {
+  private _applicationService = inject(UserJobApplicationService);
+  router = inject(Router);
+  private snackBar = inject(MatSnackBar);
+
   applications: IJobApplication[] = [];
   pagination: PaginationMeta | null = null;
   loading = false;
@@ -42,12 +46,6 @@ export class UserApplicationsComponent implements OnInit, OnDestroy {
   };
 
   destroy$ = new Subject<void>();
-
-  constructor(
-    private _applicationService: UserJobApplicationService,
-    public router: Router,
-    private snackBar: MatSnackBar
-  ) {}
 
   ngOnInit() {
     this.loadApplications();
