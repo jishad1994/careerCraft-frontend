@@ -6,7 +6,6 @@ import {
   Experience,
   UserProfile,
 } from '../../../models/user/user-profile.model';
-import { API_ENDPOINTS } from '../../../constants/api-endpoints.constants';
 import { ApiResponse } from '../../../models/api-response.model';
 import { USER_API_ENDPOINTS } from '../../../constants/user-api-endpoints.constants';
 

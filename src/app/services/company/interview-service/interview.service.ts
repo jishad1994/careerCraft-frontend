@@ -3,6 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import {
   IInterview,
   InterviewFilter,
+  InterviewStats,
   InterviewWithPopulated,
 } from '../../../models/job-application/job-application.model';
 import { ApiResponse } from '../../../models/api-response.model';
@@ -146,7 +147,7 @@ export class InterviewService {
    */
   getInterviewStats(
     filter: Partial<InterviewFilter>,
-  ): Observable<ApiResponse<any>> {
+  ): Observable<ApiResponse<InterviewStats>> {
     let params = new HttpParams();
 
     if (filter.companyId) {
@@ -161,7 +162,7 @@ export class InterviewService {
       params = params.set('applicationId', filter.applicationId);
     }
 
-    return this._http.get<ApiResponse<any>>(
+    return this._http.get<ApiResponse<InterviewStats>>(
       COMPANY_API_ENDPOINTS.APPLICATIONS.GET_INTERVIEW_STATISTICS,
       { params },
     );

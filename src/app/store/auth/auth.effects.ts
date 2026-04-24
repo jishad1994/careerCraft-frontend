@@ -131,11 +131,11 @@ export class AuthEffects {
                 ofType(googleLoginRequest),
                 mergeMap(({ credential, role }) =>
                     this._googleAuth.handleCredentialResponse(credential, role).pipe(
-                        map((res: any) => {
+                        map((res) => {
                             if (!res.success) {
                                 throw new Error(res.message || "google login failed");
                             }
-                            return googleLoginSuccess({ user: res.user });
+                            return googleLoginSuccess({ user: res.data.user });
                         }),
                         catchError(() => of(googleLoginFailure({ error: "google login failed" }))),
                     ),

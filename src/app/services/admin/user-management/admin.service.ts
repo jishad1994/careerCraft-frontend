@@ -1,10 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, Query, inject } from '@angular/core';
+import { Injectable,  inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiResponse } from '../../../models/api-response.model';
 import {
   CompanyProfile,
-  CompanyVerificationStatus,
   ICompanyListItem,
 } from '../../../models/company/company-profile.model';
 import {

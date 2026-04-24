@@ -22,7 +22,7 @@ type PageItem = number | string;
   templateUrl: './reusable-table.component.html',
   styleUrl: './reusable-table.component.css',
 })
-export class ReusableTableComponent implements OnInit {
+export class ReusableTableComponent  implements OnInit {
   @Input() title = 'Data Table';
   @Input() columns: TableColumn[] = [];
   @Input() data: unknown[] = [];
@@ -61,7 +61,7 @@ export class ReusableTableComponent implements OnInit {
     this.actionClick.emit({ type, row });
   }
 
-  getBadgeClass(value: any): string {
+  getBadgeClass(value: unknown): string {
     const lowerValue = String(value).toLowerCase();
     if (lowerValue === 'active' || lowerValue === 'true') {
       return 'bg-green-100 text-green-800';

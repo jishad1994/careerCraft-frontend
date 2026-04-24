@@ -1,9 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
-import { SignupComponent } from './shared/components/signup/signup.component';
-import { SignupPageComponent } from './pages/signup-page/signup-page.component';
-import { LoginComponent } from './shared/components/login/login.component';
-import { LoginPageComponent } from './pages/login-page/login-page.component';
 
 @Component({
   selector: 'app-root',

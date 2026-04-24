@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { ApiResponse } from '../../../models/api-response.model';
-import { API_ENDPOINTS } from '../../../constants/api-endpoints.constants';
 import { Observable } from 'rxjs';
 import {
   IJobApplication,

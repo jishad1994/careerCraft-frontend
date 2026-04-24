@@ -40,65 +40,56 @@
     </div>
 
     <!-- Conversation Items -->
-    <div *ngFor="let conversation of conversations; trackBy: trackByConversation"
-      (click)="selectConversation(conversation)" [class.bg-blue-50]="selectedConversationId === conversation._id"
-      [class.border-l-4]="selectedConversationId === conversation._id"
-      [class.border-blue-600]="selectedConversationId === conversation._id"
-      class="px-4 py-3 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors">
+<button *ngFor="let conversation of conversations; trackBy: trackByConversation"
+    (click)="selectConversation(conversation)"
+    type="button"
+    [class.bg-blue-50]="selectedConversationId === conversation._id"
+    [class.border-l-4]="selectedConversationId === conversation._id"
+    [class.border-blue-600]="selectedConversationId === conversation._id"
+    class="w-full text-left px-4 py-3 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors">
 
-      <div class="flex items-start gap-3">
-
+    <div class="flex items-start gap-3">
         <ng-container *ngIf="getOtherParticipant(conversation) as other">
-          <div class="relative flex-shrink-0">
-
-            <!-- Real profile picture -->
-            <img *ngIf="other.participantAvatar" [src]="other.participantAvatar" [alt]="other.participantName"
-              class="w-12 h-12 rounded-full object-cover">
-
-            <!-- Initials fallback when no avatar -->
-            <div *ngIf="!other.participantAvatar"
-              class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
-              <span class="text-white font-bold text-sm">
-                {{ getInitials(other.participantName) }}
-              </span>
+            <div class="relative flex-shrink-0">
+                <img *ngIf="other.participantAvatar" [src]="other.participantAvatar" [alt]="other.participantName"
+                    class="w-12 h-12 rounded-full object-cover">
+                <div *ngIf="!other.participantAvatar"
+                    class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
+                    <span class="text-white font-bold text-sm">
+                        {{ getInitials(other.participantName) }}
+                    </span>
+                </div>
+                <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
             </div>
 
-            <!-- Online indicator -->
-            <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
-          </div>
+            <!-- Conversation Info -->
+            <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between mb-1">
+                    <h3 class="text-sm font-semibold text-gray-900 truncate">
+                        {{ other.participantName || 'Unknown' }}
+                    </h3>
+                    <span class="text-xs text-gray-500 flex-shrink-0 ml-2">
+                        {{ conversation.lastMessage
+                            ? getTimeAgo(conversation.lastMessage.createdAt)
+                            : getTimeAgo(conversation.createdAt) }}
+                    </span>
+                </div>
 
-          <!-- Conversation Info -->
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center justify-between mb-1">
-
-
-              <h3 class="text-sm font-semibold text-gray-900 truncate">
-                {{ other.participantName || 'Unknown' }}
-              </h3>
-              <span class="text-xs text-gray-500 flex-shrink-0 ml-2">
-                {{ conversation.lastMessage
-                ? getTimeAgo(conversation.lastMessage.createdAt)
-                : getTimeAgo(conversation.createdAt) }}
-              </span>
+                <div class="flex items-center justify-between">
+                    <p class="text-sm text-gray-600 truncate flex-1"
+                        [class.font-semibold]="getUnreadCount(conversation) > 0"
+                        [class.text-gray-900]="getUnreadCount(conversation) > 0">
+                        <span *ngIf="isLastMessageFromMe(conversation)" class="text-gray-500 mr-1">You:</span>
+                        {{ getLastMessagePreview(conversation) }}
+                    </p>
+                    <span *ngIf="getUnreadCount(conversation) > 0"
+                        class="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-xs font-bold text-white bg-blue-600 rounded-full ml-2">
+                        {{ getUnreadCount(conversation) }}
+                    </span>
+                </div>
             </div>
-
-            <div class="flex items-center justify-between">
-              <p class="text-sm text-gray-600 truncate flex-1" [class.font-semibold]="getUnreadCount(conversation) > 0"
-                [class.text-gray-900]="getUnreadCount(conversation) > 0">
-                <span *ngIf="isLastMessageFromMe(conversation)" class="text-gray-500 mr-1">You:</span>
-                {{ getLastMessagePreview(conversation) }}
-              </p>
-
-              <!-- Unread Badge -->
-              <span *ngIf="getUnreadCount(conversation) > 0"
-                class="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-xs font-bold text-white bg-blue-600 rounded-full ml-2">
-                {{ getUnreadCount(conversation) }}
-              </span>
-            </div>
-          </div>
         </ng-container>
-
-      </div>
     </div>
+</button>
   </div>
 </div>

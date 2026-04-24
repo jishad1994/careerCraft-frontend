@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnDestroy, OnInit, Output, inject } from "@angular/core";
-import { Conversation, Participant } from "../../../../models/chat.model";
+import { Conversation, Message, Participant } from "../../../../models/chat.model";
 import { Subject, takeUntil } from "rxjs";
 import { ChatService } from "../../../services/chat-service/chat.service";
 import { SocketService } from "../../../services/socket-service/socket.service";
@@ -87,7 +87,7 @@ export class ChatListComponent implements OnInit, OnDestroy {
             });
     }
 
-    private handleIncomingMessage(conversationId: string, message: any): void {
+    private handleIncomingMessage(conversationId: string, message: Message): void {
         const conversation = this.conversations.find(c => c._id === conversationId);
 
         if (!conversation) {

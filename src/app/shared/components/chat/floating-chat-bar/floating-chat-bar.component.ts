@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, inject } from "@angular/core";
-import { Conversation, Message, MiniChat } from "../../../../models/chat.model";
+import { Conversation, Message, MiniChat, Participant } from "../../../../models/chat.model";
 import { Subject, takeUntil } from "rxjs";
 import { ChatService } from "../../../services/chat-service/chat.service";
 import { SocketService } from "../../../services/socket-service/socket.service";
@@ -207,7 +207,7 @@ export class FloatingChatBarComponent implements OnInit, OnDestroy {
         this.calculateTotalUnread();
     }
 
-    getOtherParticipant(conversation: Conversation): any {
+    getOtherParticipant(conversation: Conversation):Participant |undefined{
         return conversation.participants.find((p) => p.userId !== this.currentUserId);
     }
 

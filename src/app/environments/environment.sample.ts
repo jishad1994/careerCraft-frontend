@@ -1,4 +1,4 @@
-const sampleEnvironment = {
+ const _sampleEnvironment = {
   production: true,
 
   // #urls

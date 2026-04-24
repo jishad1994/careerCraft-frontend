@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { AuthState, } from '../../models/auth.model';
-import { TitleStrategy } from '@angular/router';
 import { AuthResponseUserDTO } from '../../models/auth.dto';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthStateService {
-  constructor() {}
+ 
 
   private _authState = new BehaviorSubject<AuthState>({
     isLoggedIn: false,

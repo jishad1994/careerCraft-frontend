@@ -279,6 +279,9 @@ export interface InterviewStats {
     upcoming: number;
     past: number;
 }
+
+
+
 export interface InterviewReturnState {
     page: number;
     activeTab: "all" | "upcoming" | "completed";

@@ -1,14 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import {
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { AuthService } from '../../../services/auth/auth.service';
-import { Route, Router } from '@angular/router';
 import { PASSWORD_REGEX } from '../../../constants/form.constants';
 import { RouterLink } from '@angular/router';
 import { NoSpaceDirective } from '../../../custom-directives/no-space.directive';
@@ -26,7 +23,7 @@ export class LoginComponent {
   loginForm: FormGroup;
   selectedRole: 'user' | 'company' = 'user';
 
-  @Output() onGoogleLogin = new EventEmitter<{
+  @Output() googleLogin = new EventEmitter<{
     role: 'company' | 'user';
     elementId: string;
   }>();
@@ -69,6 +66,6 @@ export class LoginComponent {
 
   handleGoogleLogin() {
     const role = this.loginForm.get('role')?.value as 'user' | 'company';
-    this.onGoogleLogin.emit({ role, elementId: 'google-login-btn' });
+    this.googleLogin.emit({ role, elementId: 'google-login-btn' });
   }
 }

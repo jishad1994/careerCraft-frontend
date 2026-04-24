@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { ApiResponse } from '../../../models/api-response.model';
-import { filter, Observable } from 'rxjs';
+import {  Observable } from 'rxjs';
 import {
   CreateJobDto,
   Job,
@@ -9,7 +9,6 @@ import {
   JobStatistics,
   UpdateJobDto,
 } from '../../../models/job/job.model';
-import { API_ENDPOINTS } from '../../../constants/api-endpoints.constants';
 import { Skill } from '../../../models/skill.model';
 import { COMPANY_API_ENDPOINTS } from '../../../constants/company-api-endpoints.constants';
 

@@ -47,7 +47,7 @@ export class ForgotPasswordComponent {
     this._authService.forgotPassword(email, role).subscribe({
       next: (res) => {
         if (res.success) {
-          console;
+          
           this._matSnackBar.open(
             'a password reset link has sent to you registered email',
             'close'

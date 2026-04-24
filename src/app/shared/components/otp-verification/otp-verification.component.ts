@@ -131,7 +131,7 @@ export class OtpVerificationComponent implements OnInit,OnDestroy {
           });
         }
       },
-      error: (err) => {
+      error: () => {
         this._snackBar.open(`OTP Verification failed`, 'Close', {
           duration: 3000,
         });

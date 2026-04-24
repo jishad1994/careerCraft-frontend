@@ -4,13 +4,10 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ReusableTableComponent } from '../../../shared/components/reusable-table/reusable-table.component';
 import { FormsModule } from '@angular/forms';
 import {
-  ApiResponse,
   PaginationMeta,
 } from '../../../models/api-response.model';
 import {
   COMPANY_VERIFICATION_STATUS,
-  CompanyProfile,
-  CompanyVerificationStatus,
   ICompanyListItem,
 } from '../../../models/company/company-profile.model';
 import { CommonModule } from '@angular/common';

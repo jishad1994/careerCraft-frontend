@@ -8,8 +8,8 @@
                 <div
                     class="w-10 h-10 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center flex-shrink-0">
 
-                    <img *ngIf="otherParticipant?.participantAvatar" [src]="otherParticipant.participantAvatar"
-                        class="w-full h-full object-cover" />
+                    <img *ngIf="otherParticipant?.participantAvatar" [src]="otherParticipant?.participantAvatar"
+                        class="w-full h-full object-cover" alt="participantAvatar" />
 
                     <span *ngIf="!otherParticipant?.participantAvatar"
                         class="text-white font-bold text-sm bg-gradient-to-br from-blue-400 to-blue-600 w-full h-full flex items-center justify-center">
@@ -100,9 +100,11 @@
                         <ng-container *ngFor="let attachment of message.attachments">
                             <!-- Image Preview -->
                             <div *ngIf="attachment.fileType.startsWith('image/')" class="mb-2">
-                                <img [src]="attachment.fileUrl" [alt]="attachment.fileName"
-                                    class="max-w-full rounded-lg cursor-pointer hover:opacity-90"
-                                    (click)="downloadFile(attachment)">
+                                <button type="button" (click)="downloadFile(attachment)"
+                                    class="block w-full p-0 border-0 bg-transparent cursor-pointer">
+                                    <img [src]="attachment.fileUrl" [alt]="attachment.fileName"
+                                        class="max-w-full rounded-lg hover:opacity-90">
+                                </button>
                             </div>
 
                             <!-- File Download -->
@@ -169,7 +171,7 @@
     <div *ngIf="selectedFile" class="px-4 sm:px-6 py-3 bg-gray-100 border-t border-gray-200">
         <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <img *ngIf="filePreview" [src]="filePreview" class="w-12 h-12 rounded object-cover">
+                <img *ngIf="filePreview" [src]="filePreview" class="w-12 h-12 rounded object-cover" alt="file-preview">
                 <div *ngIf="!filePreview" class="w-12 h-12 bg-gray-300 rounded flex items-center justify-center">
                     <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

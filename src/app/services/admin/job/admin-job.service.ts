@@ -3,7 +3,6 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiResponse } from '../../../models/api-response.model';
 import { Job } from '../../../models/job/job.model';
-import { API_ENDPOINTS } from '../../../constants/api-endpoints.constants';
 import { IJobApplication } from '../../../models/job-application/job-application.model';
 import { ADMIN_API_END_POINTS } from '../../../constants/admin-endpoints.constants';
 

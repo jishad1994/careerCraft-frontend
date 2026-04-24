@@ -1,5 +1,16 @@
-import { Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild, OnInit, AfterViewChecked, OnDestroy, inject } from "@angular/core";
-import { Attachment, Conversation, Message } from "../../../../models/chat.model";
+import {
+    Component,
+    ElementRef,
+    Input,
+    OnChanges,
+    SimpleChanges,
+    ViewChild,
+    OnInit,
+    AfterViewChecked,
+    OnDestroy,
+    inject,
+} from "@angular/core";
+import { Attachment, Conversation, Message, Participant } from "../../../../models/chat.model";
 import { debounceTime, Subject, takeUntil } from "rxjs";
 import { ChatService } from "../../../services/chat-service/chat.service";
 import { SocketService } from "../../../services/socket-service/socket.service";
@@ -28,12 +39,12 @@ export class ChatWindowComponent implements OnChanges, OnInit, AfterViewChecked,
     sending = false;
     uploading = false;
     currentUserId = "";
-    otherParticipant: any = null;
+    otherParticipant: Participant | null = null;
 
     // Typing indicator
     isTyping = false;
     otherUserTyping = false;
-    typingTimeout: any = null;
+    typingTimeout: number | null = null;
 
     // Pagination
     currentPage = 1;
@@ -56,7 +67,7 @@ export class ChatWindowComponent implements OnChanges, OnInit, AfterViewChecked,
         });
 
         if (this.conversation) {
-            this.otherParticipant = this.conversation.participants.find((p) => p.userId !== this.currentUserId);
+            this.otherParticipant = this.conversation.participants.find((p) => p.userId !== this.currentUserId) ?? null;
             this.loadMessages();
             this.joinConversation();
             this.subscribeToSocketEvents();
@@ -91,7 +102,7 @@ export class ChatWindowComponent implements OnChanges, OnInit, AfterViewChecked,
             this.messages = [];
             this.loading = true;
 
-            this.otherParticipant = this.conversation.participants.find((p) => p.userId !== this.currentUserId);
+            this.otherParticipant = this.conversation.participants.find((p) => p.userId !== this.currentUserId) ?? null;
 
             this.loadMessages();
             this.joinConversation();

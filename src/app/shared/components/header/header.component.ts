@@ -39,7 +39,7 @@ export class HeaderComponent implements OnInit, OnDestroy, OnChanges {
     @Input() showSearch = true;
     @Input() searchPlaceholder = "";
 
-    @Output() search = new EventEmitter<string>();
+    @Output() searchOutput = new EventEmitter<string>();
     @Output() logout = new EventEmitter<void>();
 
     searchQuery = "";
@@ -113,7 +113,7 @@ export class HeaderComponent implements OnInit, OnDestroy, OnChanges {
 
     onSearch(): void {
         if (this.searchQuery.trim()) {
-            this.search.emit(this.searchQuery);
+            this.searchOutput.emit(this.searchQuery);
             this.searchQuery = "";
             this.isSearchFocused = false;
         }

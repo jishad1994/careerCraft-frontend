@@ -1,11 +1,9 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient,  } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { environment } from '../../environments/environment';
 import {
-  BehaviorSubject,
   catchError,
   Observable,
-  retry,
   tap,
   throwError,
 } from 'rxjs';

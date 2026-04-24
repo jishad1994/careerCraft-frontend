@@ -1,4 +1,3 @@
-import { environment } from '../environments/environment';
 import { adminBaseUrl, baseUrl } from './api-endpoints.constants';
 
 

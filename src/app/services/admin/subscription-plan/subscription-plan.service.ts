@@ -1,10 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { ApiResponse } from '../../../models/api-response.model';
-import { Observable, retry } from 'rxjs';
+import { Observable,  } from 'rxjs';
 import { ISubscriptionPlan } from '../../../models/subscription-plan/subscription-plan.model';
 import { ADMIN_API_END_POINTS } from '../../../constants/admin-endpoints.constants';
-import { API_ENDPOINTS } from '../../../constants/api-endpoints.constants';
 
 @Injectable({
   providedIn: 'root',

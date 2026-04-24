@@ -7,7 +7,6 @@ import {
   IAddress,
 } from '../../../models/company/company-profile.model';
 import { Observable } from 'rxjs';
-import { API_ENDPOINTS } from '../../../constants/api-endpoints.constants';
 import { COMPANY_API_ENDPOINTS } from '../../../constants/company-api-endpoints.constants';
 
 @Injectable({

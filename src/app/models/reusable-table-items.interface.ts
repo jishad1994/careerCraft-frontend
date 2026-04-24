@@ -1,4 +1,4 @@
-export interface TableColumn {
+export interface TableColumn <T = Record<string, unknown>> {
   key: string;
   label: string;
   type?: 'text' | 'badge' | 'date' | 'image'|'custom';
