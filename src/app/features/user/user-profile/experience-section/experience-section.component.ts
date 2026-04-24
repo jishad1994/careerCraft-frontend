@@ -6,6 +6,15 @@ import { CommonModule } from "@angular/common";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { Subject, takeUntil } from "rxjs";
 
+export interface ExperienceData {
+    jobTitle: string;
+    company: string;
+    startDate: Date;
+    endDate?: Date; // optional because of "isCurrent"
+    isCurrent: boolean;
+    description?: string;
+}
+
 @Component({
     selector: "app-experience-section",
     imports: [ReactiveFormsModule, CommonModule],
@@ -172,11 +181,14 @@ export class ExperienceSectionComponent implements OnInit, OnDestroy {
             });
     }
 
-    private prepareExperienceData(): any {
+    private prepareExperienceData(): ExperienceData {
         const formValue = this.experienceForm.value;
+
         return {
-            ...formValue,
-            // Convert date strings to Date objects
+            jobTitle: formValue.jobTitle,
+            company: formValue.company,
+            isCurrent: formValue.isCurrent,
+            description: formValue.description,
             startDate: new Date(formValue.startDate),
             endDate: formValue.isCurrent ? undefined : new Date(formValue.endDate),
         };

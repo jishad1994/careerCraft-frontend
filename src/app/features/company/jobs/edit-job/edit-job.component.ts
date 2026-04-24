@@ -12,7 +12,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CompanyJobService } from '../../../../services/company/job/company-job.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Skill } from '../../../../models/skill.model';
-import { debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
+import {  Subject, takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -148,7 +148,7 @@ export class EditJobComponent implements OnInit, OnDestroy {
         }
         this.loading = false;
       },
-      error: (error) => {
+      error: (_error) => {
         this.snackBar.open('Failed to load job details', 'Close', {
           duration: 3000,
         });
@@ -329,7 +329,7 @@ export class EditJobComponent implements OnInit, OnDestroy {
         : undefined,
       requirements: requirementsArray,
       responsibilities: responsibilitiesArray,
-      skills: this.selectedSkills.map((s) => s._id) as any,
+      skills: this.selectedSkills.map((s) => s._id) ,
     };
 
     this.updateJob(jobData);
@@ -337,7 +337,7 @@ export class EditJobComponent implements OnInit, OnDestroy {
 
   updateJob(jobData: CreateJobDto) {
     this._jobService.updateJob(this.jobId, jobData).subscribe({
-      next: (response) => {
+      next: (_response) => {
         this.snackBar.open('Job updated successfully', 'Close', {
           duration: 2000,
         });

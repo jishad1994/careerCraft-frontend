@@ -195,7 +195,7 @@
 
                     <!-- Resume Selection -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <label for="resumeOriginalName" class="block text-sm font-medium text-gray-700 mb-2">
                             Select Resume <span class="text-red-500">*</span>
                         </label>
 
@@ -247,7 +247,7 @@
 
                     <!-- Cover Letter Options -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Cover Letter (Optional)</label>
+                        <label for="coverLetterText" class="block text-sm font-medium text-gray-700 mb-2">Cover Letter (Optional)</label>
 
                         <div class="flex gap-2 mb-3">
                             <button type="button" (click)="onCoverLetterTypeChange('none')"
@@ -299,7 +299,7 @@
 
                     <!-- Expected Salary -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Expected Salary (Optional)</label>
+                        <label for="expectedSalary" class="block text-sm font-medium text-gray-700 mb-2">Expected Salary (Optional)</label>
                         <div class="grid grid-cols-3 gap-3">
                             <input type="number" formControlName="expectedSalary" placeholder="Amount"
                                 class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
@@ -321,13 +321,13 @@
                     <!-- Availability -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Available From</label>
+                            <label for="availableFrom" class="block text-sm font-medium text-gray-700 mb-2">Available From</label>
                             <input type="date" formControlName="availableFrom"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Notice Period (days)</label>
+                            <label for="noticePeriod" class="block text-sm font-medium text-gray-700 mb-2">Notice Period (days)</label>
                             <input type="number" formControlName="noticePeriod" placeholder="e.g., 30"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
                         </div>
@@ -336,20 +336,20 @@
                     <!-- Portfolio & Links -->
                     <div class="space-y-3">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Portfolio URL</label>
+                            <label for="portfolioUrl" class="block text-sm font-medium text-gray-700 mb-2">Portfolio URL</label>
                             <input type="url" formControlName="portfolioUrl" placeholder="https://yourportfolio.com"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">LinkedIn Profile</label>
+                            <label for="linkedinUrl" class="block text-sm font-medium text-gray-700 mb-2">LinkedIn Profile</label>
                             <input type="url" formControlName="linkedinUrl"
                                 placeholder="https://linkedin.com/in/yourprofile"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">GitHub Profile</label>
+                            <label for="githubUrl" class="block text-sm font-medium text-gray-700 mb-2">GitHub Profile</label>
                             <input type="url" formControlName="githubUrl" placeholder="https://github.com/yourusername"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
                         </div>

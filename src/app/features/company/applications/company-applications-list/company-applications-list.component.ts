@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import {
   FilterOption,
   IJobApplicationDetails,
-  JOB_APPLICATION_STATUS,
 } from '../../../../models/job-application/job-application.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CompanyApplicationService } from '../../../../services/company/applications/company-application.service';

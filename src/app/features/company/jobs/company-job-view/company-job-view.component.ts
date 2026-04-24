@@ -40,7 +40,7 @@ export class CompanyJobViewComponent implements OnInit {
         }
         this.loading = false;
       },
-      error: (error) => {
+      error: (_error) => {
         this.snackBar.open('Failed to load job details', 'Close', {
           duration: 3000,
         });
@@ -64,13 +64,13 @@ export class CompanyJobViewComponent implements OnInit {
     if (!this.job) return;
 
     this._jobService.updateJobStatus(this.jobId, newStatus).subscribe({
-      next: (response) => {
+      next: (_response) => {
         this.snackBar.open('Job status updated successfully', 'Close', {
           duration: 2000,
         });
         this.loadJob();
       },
-      error: (error) => {
+      error: (_error) => {
         this.snackBar.open('Failed to update job status', 'Close', {
           duration: 3000,
         });

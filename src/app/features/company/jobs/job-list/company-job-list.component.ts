@@ -122,7 +122,7 @@ export class CompanyJobListComponent implements OnInit, OnDestroy {
           }
           this.loading = false;
         },
-        error: (error) => {
+        error: (_error) => {
           this.snackBar.open('Failed to load jobs', 'Close', {
             duration: 3000,
           });

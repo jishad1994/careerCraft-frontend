@@ -19,7 +19,7 @@
             <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-5">
                 <h2 class="text-base font-semibold text-gray-900 mb-4">Application</h2>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                    <label for="applicationId" class="block text-sm font-medium text-gray-700 mb-1">
                         Application ID <span class="text-red-500">*</span>
                     </label>
                     <input type="text" formControlName="applicationId" placeholder="Paste application ID"
@@ -34,7 +34,7 @@
                 <h2 class="text-base font-semibold text-gray-900 mb-4">Position Details</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                        <label for="designation" class="block text-sm font-medium text-gray-700 mb-1">
                             Designation <span class="text-red-500">*</span>
                         </label>
                         <input type="text" formControlName="designation" placeholder="e.g. Software Engineer"
@@ -42,7 +42,7 @@
                             [class.border-red-500]="hasError('designation')">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                        <label for="department" class="block text-sm font-medium text-gray-700 mb-1">
                             Department <span class="text-red-500">*</span>
                         </label>
                         <input type="text" formControlName="department" placeholder="e.g. Engineering"
@@ -50,7 +50,7 @@
                             [class.border-red-500]="hasError('department')">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                        <label for="employmentType" class="block text-sm font-medium text-gray-700 mb-1">
                             Employment Type <span class="text-red-500">*</span>
                         </label>
                         <select formControlName="employmentType"
@@ -62,7 +62,7 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                        <label for="workMode" class="block text-sm font-medium text-gray-700 mb-1">
                             Work Mode <span class="text-red-500">*</span>
                         </label>
                         <select formControlName="workMode"
@@ -73,7 +73,7 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                        <label for="workLocation" class="block text-sm font-medium text-gray-700 mb-1">
                             Work Location <span class="text-red-500">*</span>
                         </label>
                         <input type="text" formControlName="workLocation" placeholder="e.g. Bangalore, India"
@@ -81,7 +81,7 @@
                             [class.border-red-500]="hasError('workLocation')">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Probation Period (months)</label>
+                        <label for="probationPeriod" class="block text-sm font-medium text-gray-700 mb-1">Probation Period (months)</label>
                         <input type="number" formControlName="probationPeriod" placeholder="e.g. 6" min="0"
                             class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                     </div>
@@ -93,7 +93,7 @@
                 <h2 class="text-base font-semibold text-gray-900 mb-4">Dates</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                        <label for="joiningDate" class="block text-sm font-medium text-gray-700 mb-1">
                             Joining Date <span class="text-red-500">*</span>
                         </label>
                         <input type="date" formControlName="joiningDate" [min]="today"
@@ -101,7 +101,7 @@
                             [class.border-red-500]="hasError('joiningDate')">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                        <label for="expiresAt" class="block text-sm font-medium text-gray-700 mb-1">
                             Offer Expires On <span class="text-red-500">*</span>
                         </label>
                         <input type="date" formControlName="expiresAt" [min]="today"
@@ -116,7 +116,7 @@
                 <h2 class="text-base font-semibold text-gray-900 mb-4">Compensation</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                        <label for="baseSalary" class="block text-sm font-medium text-gray-700 mb-1">
                             Base Salary <span class="text-red-500">*</span>
                         </label>
                         <input type="number" formControlName="baseSalary" placeholder="e.g. 800000" min="1"
@@ -124,7 +124,7 @@
                             [class.border-red-500]="hasError('compensation.baseSalary')">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Currency</label>
+                        <label for="currency" class="block text-sm font-medium text-gray-700 mb-1">Currency</label>
                         <select formControlName="currency"
                             class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                             <option value="INR">INR</option>
@@ -134,7 +134,7 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Period</label>
+                        <label for="period" class="block text-sm font-medium text-gray-700 mb-1">Period</label>
                         <select formControlName="period"
                             class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                             <option value="yearly">Yearly</option>
@@ -142,12 +142,12 @@
                         </select>
                     </div>
                     <div class="sm:col-span-3">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Bonus</label>
+                        <label for="bonus" class="block text-sm font-medium text-gray-700 mb-1">Bonus</label>
                         <input type="text" formControlName="bonus" placeholder="e.g. Performance bonus up to 15%"
                             class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                     </div>
                     <div class="sm:col-span-3">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Other Benefits</label>
+                        <label for="otherBenefits" class="block text-sm font-medium text-gray-700 mb-1">Other Benefits</label>
                         <input type="text" formControlName="otherBenefits"
                             placeholder="e.g. Health insurance, ESOP, meal allowance"
                             class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">

@@ -101,7 +101,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       .blockUserWithComment(this.userId, this.blockComment)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (response) => {
+        next: (_response) => {
           this._snackBar.open('User blocked successfully', 'Close', {
             duration: 2000,
           });
@@ -131,7 +131,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       .blockOrUnblockUser(this.userId, false)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (response) => {
+        next: (_response) => {
           this._snackBar.open('User unblocked successfully', 'Close', {
             duration: 2000,
           });
@@ -150,7 +150,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   downloadDocument(
     documentKey: string,
     fileName: string,
-    type: 'resume' | 'certificate'
+    _type: 'resume' | 'certificate'
   ): void {
     this._adminService
       .getDocumentSignedUrl(documentKey)

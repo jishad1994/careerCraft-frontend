@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component,  OnDestroy, inject } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import {
   HeaderComponent,
@@ -9,10 +9,10 @@ import {
   FooterSection,
   SocialLink,
 } from '../../../shared/components/footer/footer.component';
-import { Router, RouterLink, RouterModule } from '@angular/router';
+import { Router,  RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { map, Subject, takeUntil } from 'rxjs';
+import {  Subject, takeUntil } from 'rxjs';
 import { AuthStateService } from '../../../services/authState/auth-state.service';
 import { AuthService } from '../../../services/auth/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -29,7 +29,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   templateUrl: './public-layout.component.html',
   styleUrl: './public-layout.component.css',
 })
-export class PublicLayoutComponent implements OnInit, OnDestroy {
+export class PublicLayoutComponent implements  OnDestroy {
   private _authStateService = inject(AuthStateService);
   private _authService = inject(AuthService);
   private _router = inject(Router);
@@ -61,41 +61,7 @@ export class PublicLayoutComponent implements OnInit, OnDestroy {
     // },
   ];
 
-  ngOnInit(): void {
-    // this._authService
-    //   .refresh()
-    //   .pipe(takeUntil(this.destroy$))
-    //   .subscribe({
-    //     next: () => {
-    //       this._authStateService.authState$
-    //         .pipe(
-    //           takeUntil(this.destroy$),
-    //           map((state) => {
-    //             if (state.user) {
-    //               return {
-    //                 id: state.user.id,
-    //                 firstName: state.user.firstName || 'User',
-    //                 lastName: state.user.lastName || 'User',
-    //                 email: state.user.email || '',
-    //                 profilePicture: state.user.profilePicture,
-    //                 role: state.user.role,
-    //               };
-    //             }
-    //             return null;
-    //           })
-    //         )
-    //         .subscribe((user) => {
-    //           this.currentUser = user;
-    //         });
-    //     },
-    //     error: (error) => {
-    //       this._snackBar.open('User session expired.', 'close', {
-    //         duration: 300,
-    //       });
-    //       this._router.navigate(['/home']);
-    //     },
-    //   });
-  }
+ 
 
   ngOnDestroy(): void {
     this.destroy$.next();

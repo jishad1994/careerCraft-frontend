@@ -26,7 +26,7 @@
       <!-- Basic Info -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Plan Name</label>
+          <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Plan Name</label>
           <input 
             type="text" 
             formControlName="name"
@@ -37,7 +37,7 @@
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Price</label>
+          <label for="price" class="block text-sm font-medium text-gray-700 mb-1">Price</label>
           <input 
             type="number" 
             formControlName="price"
@@ -46,7 +46,7 @@
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Duration (Days)</label>
+          <label for="durationInDays" class="block text-sm font-medium text-gray-700 mb-1">Duration (Days)</label>
           <input 
             type="number" 
             formControlName="durationInDays"
@@ -66,7 +66,7 @@
       </div>
 
       <div class="mb-6">
-        <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+        <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
         <textarea 
           formControlName="description"
           rows="2"
@@ -79,7 +79,7 @@
         <h3 class="text-lg font-semibold mb-3">Usage Limits</h3>
         <div formGroupName="limits" class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Jobs</label>
+            <label for="jobs" class="block text-sm font-medium text-gray-700 mb-1">Jobs</label>
             <input 
               type="number" 
               formControlName="jobs"
@@ -87,7 +87,7 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Resume Views</label>
+            <label for="resumeViews" class="block text-sm font-medium text-gray-700 mb-1">Resume Views</label>
             <input 
               type="number" 
               formControlName="resumeViews"
@@ -95,7 +95,7 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Featured Jobs</label>
+            <label for="featuredJobs" class="block text-sm font-medium text-gray-700 mb-1">Featured Jobs</label>
             <input 
               type="number" 
               formControlName="featuredJobs"

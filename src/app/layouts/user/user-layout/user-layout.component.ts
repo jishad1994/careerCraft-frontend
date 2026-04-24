@@ -5,7 +5,7 @@ import { AuthUser } from "../../../models/auth.model";
 
 import { AuthStateService } from "../../../services/authState/auth-state.service";
 import { AuthService } from "../../../services/auth/auth.service";
-import { Router, RouterLink, RouterModule, RouterOutlet } from "@angular/router";
+import { Router,  RouterModule, RouterOutlet } from "@angular/router";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { FooterComponent, FooterSection, SocialLink } from "../../../shared/components/footer/footer.component";
 import { CommonModule } from "@angular/common";
@@ -116,7 +116,7 @@ export class UserLayoutComponent implements OnInit, OnDestroy {
                             this.currentUser = user;
                         });
                 },
-                error: (error) => {
+                error: () => {
                     this._snackBar.open("User session expired.", "close", {
                         duration: 300,
                     });

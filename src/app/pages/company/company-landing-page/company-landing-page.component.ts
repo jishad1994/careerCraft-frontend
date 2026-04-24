@@ -1,6 +1,4 @@
 import { Component, OnInit, inject } from "@angular/core";
-import { HeaderComponent } from "../../../shared/components/header/header.component";
-import { FooterComponent } from "../../../shared/components/footer/footer.component";
 import { AuthService } from "../../../services/auth/auth.service";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { Router } from "@angular/router";
@@ -34,7 +32,7 @@ export class CompanyLandingPageComponent implements OnInit {
                     this._router.navigate(["/auth/login"]);
                 }
             },
-            error: (error) => {
+            error: () => {
                 this._snackbar.open("some error occured", "close", {
                     duration: 2000,
                 });

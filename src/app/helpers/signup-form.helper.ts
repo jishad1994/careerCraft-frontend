@@ -4,8 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FormValidators } from '../validators/form.validators';
 import {
   NAME_REGEX,
-  PASSWORD_REGEX,
-  PHONE_REGEX,
+  
 } from '../constants/form.constants';
 
 export interface SignupFormData {

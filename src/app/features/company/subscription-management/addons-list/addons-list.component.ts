@@ -5,7 +5,6 @@ import { ISubscriptionAddonWithUsage } from "../../../../models/subscription-add
 import { CompanySubscriptionService } from "../../../../services/company/company-subscription/company-subscription.service";
 import { Router } from "@angular/router";
 import { CommonModule } from "@angular/common";
-import { FormsModule } from "@angular/forms";
 
 @Component({
     selector: "app-addons-list",
@@ -53,7 +52,7 @@ export class AddonsListComponent implements OnInit, OnDestroy {
                         this.loading = false;
                     }
                 },
-                error: (error) => {
+                error: (_error) => {
                     this.error = "Failed to load subscription details";
                     this.loading = false;
                 },
@@ -72,7 +71,7 @@ export class AddonsListComponent implements OnInit, OnDestroy {
                     }
                     this.loading = false;
                 },
-                error: (error) => {
+                error: (_error) => {
                     this.error = "Failed to load available addons";
                     this.loading = false;
                 },

@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { Job } from '../../../../models/job/job.model';
 import {
-  IDocuments,
+  
   IResume,
   UserProfile,
 } from '../../../../models/user/user-profile.model';
@@ -12,7 +12,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { retry, Subject, takeUntil } from 'rxjs';
+import {  Subject, takeUntil } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserJobService } from '../../../../services/user/job/user-job.service';
 import { UserProfileService } from '../../../../services/user/profile/user-profile.service';
@@ -106,7 +106,7 @@ export class UserJobViewComponent implements OnInit, OnDestroy {
           this.checkApplicationStatus();
           this.loading = false;
         },
-        error: (error) => {
+        error: (_error) => {
           this.snackBar.open('Failed to load job details', 'Close', {
             duration: 3000,
           });
@@ -279,7 +279,7 @@ export class UserJobViewComponent implements OnInit, OnDestroy {
       .uploadResume(this.newResumeFile)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (response) => {
+        next: () => {
           this.snackBar.open('Resume uploaded successfully', 'Close', {
             duration: 2000,
           });
@@ -288,7 +288,7 @@ export class UserJobViewComponent implements OnInit, OnDestroy {
 
           this.loadUserProfile();
         },
-        error: (error) => {
+        error: () => {
           this.snackBar.open('Failed to upload resume', 'Close', {
             duration: 3000,
           });
@@ -394,7 +394,7 @@ export class UserJobViewComponent implements OnInit, OnDestroy {
       .applyForJob(formData)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (response) => {
+        next: () => {
           this.snackBar.open('Application submitted successfully!', 'Close', {
             duration: 3000,
           });

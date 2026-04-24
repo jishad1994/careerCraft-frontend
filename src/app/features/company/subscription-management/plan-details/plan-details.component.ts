@@ -236,7 +236,7 @@ export class PlanDetailsComponent implements OnInit, OnDestroy {
                     showConfirmButton: false,
                 });
             },
-            error: (error) => {
+            error: (_error) => {
                 this.downloadingInvoice = false;
                 Swal.fire({
                     title: "Error",

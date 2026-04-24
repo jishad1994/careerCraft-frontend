@@ -287,7 +287,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       .deleteProfilePicture()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (response) => {
+        next: () => {
           if (this.profile) {
             this.profile.profilePicture = undefined;
           }

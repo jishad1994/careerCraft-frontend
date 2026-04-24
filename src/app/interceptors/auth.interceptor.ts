@@ -8,7 +8,6 @@ import { inject } from '@angular/core';
 import { AuthService } from '../services/auth/auth.service';
 import { catchError, switchMap, tap, throwError } from 'rxjs';
 import { API_ENDPOINTS } from '../constants/api-endpoints.constants';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { environment } from '../environments/environment';
 import { ApiResponse } from '../models/api-response.model';

@@ -1,12 +1,10 @@
-import { Component, Output, ViewChild, inject } from '@angular/core';
-import { ReusableTableComponent } from '../../../shared/components/reusable-table/reusable-table.component';
+import { Component, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SidebarComponent } from '../../../features/admin/sidebar/sidebar.component';
 import { AdminService } from '../../../services/admin/user-management/admin.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import {  Router, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../../services/auth/auth.service';
-import { HeaderComponent } from '../../../shared/components/header/header.component';
 
 @Component({
   selector: 'app-admin-dahboard',

@@ -5,7 +5,6 @@ import { AdminJobService } from '../../../../services/admin/job/admin-job.servic
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { withHttpTransferCacheOptions } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 
 @Component({

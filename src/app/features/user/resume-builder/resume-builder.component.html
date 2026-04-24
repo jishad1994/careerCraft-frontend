@@ -76,7 +76,7 @@
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div class="sm:col-span-2">
-                                <label class="block text-sm font-medium text-gray-700 mb-1">
+                                <label for="fullName" class="block text-sm font-medium text-gray-700 mb-1">
                                     Full Name <span class="text-red-500">*</span>
                                 </label>
                                 <input type="text" formControlName="fullName" placeholder="John Doe"
@@ -84,7 +84,7 @@
                                     [class.border-red-500]="hasError('personalInfo.fullName')">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">
+                                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">
                                     Email <span class="text-red-500">*</span>
                                 </label>
                                 <input type="email" formControlName="email" placeholder="john@example.com"
@@ -92,22 +92,22 @@
                                     [class.border-red-500]="hasError('personalInfo.email')">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                                <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
                                 <input type="tel" formControlName="phone" placeholder="+91 98765 43210"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                                <label for="location" class="block text-sm font-medium text-gray-700 mb-1">Location</label>
                                 <input type="text" formControlName="location" placeholder="City, Country"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">LinkedIn</label>
+                                <label for="linkedIn" class="block text-sm font-medium text-gray-700 mb-1">LinkedIn</label>
                                 <input type="url" formControlName="linkedIn" placeholder="linkedin.com/in/johndoe"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                             </div>
                             <div class="sm:col-span-2">
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Portfolio</label>
+                                <label for="portfolio"  class="block text-sm font-medium text-gray-700 mb-1">Portfolio</label>
                                 <input type="url" formControlName="portfolio" placeholder="https://johndoe.dev"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                             </div>
@@ -177,28 +177,28 @@
 
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                     <div>
-                                        <label class="block text-xs font-medium text-gray-600 mb-1">
+                                        <label for="jobTitle" class="block text-xs font-medium text-gray-600 mb-1">
                                             Job Title <span class="text-red-500">*</span>
                                         </label>
                                         <input type="text" formControlName="jobTitle" placeholder="Software Engineer"
                                             class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white">
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-medium text-gray-600 mb-1">
+                                        <label for="company" class="block text-xs font-medium text-gray-600 mb-1">
                                             Company <span class="text-red-500">*</span>
                                         </label>
                                         <input type="text" formControlName="company" placeholder="Acme Corp"
                                             class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white">
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-medium text-gray-600 mb-1">
+                                        <label for="startDate" class="block text-xs font-medium text-gray-600 mb-1">
                                             Start Date <span class="text-red-500">*</span>
                                         </label>
                                         <input type="date" formControlName="startDate"
                                             class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white">
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-medium text-gray-600 mb-1">End Date</label>
+                                        <label for="endDate" class="block text-xs font-medium text-gray-600 mb-1">End Date</label>
                                         <!-- FIX: Removed [disabled] template binding, handled in TS -->
                                         <input type="date" formControlName="endDate"
                                             class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white disabled:bg-gray-100 disabled:text-gray-400">
@@ -211,7 +211,7 @@
                                         </label>
                                     </div>
                                     <div class="sm:col-span-2">
-                                        <label class="block text-xs font-medium text-gray-600 mb-1">Description</label>
+                                        <label for="description" class="block text-xs font-medium text-gray-600 mb-1">Description</label>
                                         <textarea formControlName="description" rows="3"
                                             placeholder="Brief description of your role and responsibilities..."
                                             class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white resize-none">
@@ -222,7 +222,7 @@
                                 <!-- Achievements -->
                                 <div class="mt-3">
                                     <div class="flex items-center justify-between mb-2">
-                                        <label class="text-xs font-medium text-gray-600">Key Achievements</label>
+                                        <label for="achievements" class="text-xs font-medium text-gray-600">Key Achievements</label>
                                         <button type="button" (click)="addAchievement(i)"
                                             class="text-xs text-blue-600 hover:text-blue-700 font-medium">
                                             + Add Achievement
@@ -299,7 +299,7 @@
 
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                     <div>
-                                        <label class="block text-xs font-medium text-gray-600 mb-1">
+                                        <label for="degree" class="block text-xs font-medium text-gray-600 mb-1">
                                             Degree <span class="text-red-500">*</span>
                                         </label>
                                         <select formControlName="degree"
@@ -313,7 +313,7 @@
                                         </select>
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-medium text-gray-600 mb-1">
+                                        <label for="institution" class="block text-xs font-medium text-gray-600 mb-1">
                                             Institution <span class="text-red-500">*</span>
                                         </label>
                                         <input type="text" formControlName="institution"
@@ -321,7 +321,7 @@
                                             class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white">
                                     </div>
                                     <div class="sm:col-span-2">
-                                        <label class="block text-xs font-medium text-gray-600 mb-1">
+                                        <label for="fieldOfStudy" class="block text-xs font-medium text-gray-600 mb-1">
                                             Field of Study <span class="text-red-500">*</span>
                                         </label>
                                         <input type="text" formControlName="fieldOfStudy"
@@ -329,14 +329,14 @@
                                             class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white">
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-medium text-gray-600 mb-1">
+                                        <label for="startDate" class="block text-xs font-medium text-gray-600 mb-1">
                                             Start Date <span class="text-red-500">*</span>
                                         </label>
                                         <input type="date" formControlName="startDate"
                                             class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white">
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-medium text-gray-600 mb-1">End Date</label>
+                                        <label for="endDate" class="block text-xs font-medium text-gray-600 mb-1">End Date</label>
                                         <!-- FIX: Removed [disabled] template binding, handled in TS -->
                                         <input type="date" formControlName="endDate"
                                             class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white disabled:bg-gray-100">
@@ -349,7 +349,7 @@
                                             studying</label>
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-medium text-gray-600 mb-1">Grade</label>
+                                        <label for="grade" class="block text-xs font-medium text-gray-600 mb-1">Grade</label>
                                         <input type="text" formControlName="grade" placeholder="3.8 GPA / First Class"
                                             class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white">
                                     </div>

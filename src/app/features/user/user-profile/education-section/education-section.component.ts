@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject } from '@angular/core';
-import { UserProfile } from '../../../../models/user/user-profile.model';
+import { Education, UserProfile } from '../../../../models/user/user-profile.model';
 import {
   FormBuilder,
   FormGroup,
@@ -185,15 +185,22 @@ export class EducationSectionComponent implements OnInit, OnDestroy {
   }
 
   // Helper method to prepare education data
-  private prepareEducationData(): any {
-    const formValue = this.educationForm.value;
-    return {
-      ...formValue,
-      // Convert date strings to Date objects
-      startDate: new Date(formValue.startDate),
-      endDate: formValue.isCurrent || !formValue.endDate ? undefined : new Date(formValue.endDate),
-    };
-  }
+ private prepareEducationData(): Education {
+  const formValue = this.educationForm.value;
+
+  return {
+    type: formValue.type,
+    institution: formValue.institution,
+    fieldOfStudy: formValue.fieldOfStudy,
+    isCurrent: formValue.isCurrent,
+    grade: formValue.grade,
+    startDate: new Date(formValue.startDate),
+    endDate:
+      formValue.isCurrent || !formValue.endDate
+        ? undefined
+        : new Date(formValue.endDate),
+  };
+}
 
   // Format date for display (e.g., "Jan 2020")
   formatDate(dateString: string): string {

@@ -9,8 +9,7 @@ import {
 } from "../../../models/company/company-subscription.model";
 import { COMPANY_API_ENDPOINTS } from "../../../constants/company-api-endpoints.constants";
 import { ISubscriptionPlan } from "../../../models/subscription-plan/subscription-plan.model";
-import { ISubscriptionAddon, ISubscriptionAddonWithUsage } from "../../../models/subscription-addons.model";
-import { PaymentIntentResult } from "@stripe/stripe-js";
+import {  ISubscriptionAddonWithUsage } from "../../../models/subscription-addons.model";
 export interface CancellationResult {
     success: boolean;
     message: string;

@@ -45,7 +45,7 @@
 
           <!-- Status Filter -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+            <p class="block text-sm font-medium text-gray-700 mb-2">Status</p>
             <div class="space-y-2 max-h-48 overflow-y-auto">
               <label *ngFor="let status of statusOptions"
                 class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
@@ -59,7 +59,7 @@
 
           <!-- Skills Filter with Search -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Skills</label>
+            <p class="block text-sm font-medium text-gray-700 mb-2">Skills</p>
 
             <!-- Search Input -->
             <div class="relative mb-3">
@@ -95,7 +95,7 @@
 
           <!-- Experience Filter -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Experience</label>
+            <p class="block text-sm font-medium text-gray-700 mb-2">Experience</p>
             <div class="space-y-2">
               <label *ngFor="let exp of experienceOptions"
                 class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
@@ -109,7 +109,7 @@
 
           <!-- Education Filter -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Education</label>
+            <p class="block text-sm font-medium text-gray-700 mb-2">Education</p>
             <div class="space-y-2">
               <label *ngFor="let edu of educationOptions"
                 class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
@@ -123,7 +123,7 @@
 
           <!-- Availability Filter -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Availability</label>
+            <p class="block text-sm font-medium text-gray-700 mb-2">Availability</p>
             <div class="space-y-2">
               <label *ngFor="let avail of availabilityOptions"
                 class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
@@ -137,8 +137,8 @@
 
           <!-- Date Range Filter -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Applied Date</label>
-            <select [(ngModel)]="filters.dateRange"
+            <label for="applied-date" class="block text-sm font-medium text-gray-700 mb-2">Applied Date</label>
+            <select id="applied-date" [(ngModel)]="filters.dateRange"
               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
               <option value="">All Time</option>
               <option *ngFor="let range of dateRangeOptions" [value]="range.value">{{ range.label }}</option>
@@ -291,7 +291,7 @@
                   </button>
                 </mat-menu>
               </td>
-             
+
             </tr>
 
             <!-- Empty State -->

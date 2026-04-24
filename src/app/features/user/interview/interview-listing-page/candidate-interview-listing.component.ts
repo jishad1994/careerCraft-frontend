@@ -5,7 +5,6 @@ import {
     InterviewWithPopulated,
 } from "../../../../models/job-application/job-application.model";
 import { ActivatedRoute, Router } from "@angular/router";
-import { InterviewService } from "../../../../services/company/interview-service/interview.service";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { Subject, takeUntil } from "rxjs";
 import { CommonModule } from "@angular/common";

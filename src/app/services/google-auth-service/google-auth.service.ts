@@ -1,4 +1,4 @@
-import { Injectable,  inject } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { environment } from "../../environments/environment";
 import { Router } from "@angular/router";
@@ -22,7 +22,7 @@ export class GoogleAuthService {
     private _clientId = environment.GOOGLE_CLIENT_ID;
 
     handleCredentialResponse(
-        credential: string,
+        credential: google.accounts.id.CredentialResponse,
         role: "user" | "company",
     ): Observable<ApiResponse<{ user: AuthResponseUserDTO }>> {
         // credential is google ID token

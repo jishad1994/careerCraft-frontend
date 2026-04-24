@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ApiResponse } from '../../models/api-response.model';
 import { catchError, throwError } from 'rxjs';
-import { API_ENDPOINTS } from '../../constants/api-endpoints.constants';
 import { AuthService } from '../../services/auth/auth.service';
 
 export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {

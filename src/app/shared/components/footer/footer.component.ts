@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { environment } from '../../../environments/environment';
-import { RouterLink, RouterModule } from '@angular/router';
+import { RouterLink} from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 

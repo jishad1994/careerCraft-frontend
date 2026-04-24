@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, inject } from '@angular/core';
 import { SkillService } from '../../../../services/skill/skill.service';
 import { ActivatedRoute, Router } from '@angular/router';

@@ -14,7 +14,7 @@ import { PdfViewerComponent } from '../../../../shared/components/pdf-viewer/pdf
   templateUrl: './company-document-section.component.html',
   styleUrl: './company-document-section.component.css',
 })
-export class CompanyDocumentSectionComponent implements OnInit, OnDestroy {
+export class CompanyDocumentSectionComponent implements  OnDestroy {
   private _companyProfileService = inject(CompanyProfileService);
   private fb = inject(FormBuilder);
   private _snackBar = inject(MatSnackBar);
@@ -91,7 +91,7 @@ export class CompanyDocumentSectionComponent implements OnInit, OnDestroy {
       });
   }
 
-  viewDocument(doc: IDocuments, mode = 'view'): void {
+  viewDocument(doc: IDocuments, _mode = 'view'): void {
     if (!doc) return;
     // Stream resume from backend
     this._companyProfileService
@@ -159,7 +159,6 @@ export class CompanyDocumentSectionComponent implements OnInit, OnDestroy {
     return 'image';
   }
 
-  ngOnInit(): void {}
 
   ngOnDestroy(): void {
     this.destroy$.next();

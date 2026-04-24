@@ -2,11 +2,11 @@
 
   <h2 class="text-xl font-bold">Skill Details</h2>
 
-  <label>Name</label>
-  <input class="border p-2 w-full" [(ngModel)]="skill.name" />
+  <label for="skillName">Name</label>
+  <input id="skillName" class="border p-2 w-full" [(ngModel)]="skill.name" />
 
-  <label>Description</label>
-  <textarea class="border p-2 w-full" rows="3" [(ngModel)]="skill.description"></textarea>
+  <label for="skillDescription">Description</label>
+  <textarea id="skillDescription" class="border p-2 w-full" rows="3" [(ngModel)]="skill.description"></textarea>
 
   <div class="flex space-x-4 mt-4">
     <button class="bg-blue-600 text-white px-4 py-2 rounded" (click)="saveChanges()">

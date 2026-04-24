@@ -74,7 +74,7 @@ export class AddonsPurchaseComponent implements OnInit, OnDestroy {
                         this.initializeStripe();
                     }
                 },
-                error: (error) => {
+                error: (_error) => {
                     Swal.fire({
                         title: "Error",
                         text: "Failed to load addon details",

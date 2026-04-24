@@ -121,7 +121,7 @@
             </div>
           </div>
 
-        
+
 
         </div>
 
@@ -146,7 +146,7 @@
 
           <!-- Stripe Card Element -->
           <div class="mb-4">
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Card Details</label>
+            <p class="block text-sm font-semibold text-gray-700 mb-2">Card Details</p>
             <div id="card-element"
               class="p-4 border-2 border-gray-300 rounded-lg bg-white hover:border-blue-400 focus-within:border-blue-600 focus-within:ring-2 focus-within:ring-blue-100 transition-all">
             </div>
@@ -381,28 +381,28 @@
             </div>
           </div>
         </div>
-          <!-- Show queued subscriptions -->
-          <div *ngIf="queuedSubscriptions.length > 0" class="mt-6">
-            <h3 class="text-lg font-semibold mb-3">Upcoming Subscriptions</h3>
+        <!-- Show queued subscriptions -->
+        <div *ngIf="queuedSubscriptions.length > 0" class="mt-6">
+          <h3 class="text-lg font-semibold mb-3">Upcoming Subscriptions</h3>
 
-            <div *ngFor="let queued of queuedSubscriptions" class="border rounded-lg p-4 mb-3">
-              <div class="flex justify-between items-start">
-                <div>
-                  <h4 class="font-semibold">{{ queued.snapShot.name }}</h4>
-                  <p class="text-sm text-gray-600">
-                    Position {{ queued.queuePosition }} in queue
-                  </p>
-                  <p class="text-sm text-gray-600">
-                    Starts: {{ queued.scheduledStartDate | date }}
-                    (in {{ queued.daysUntilStart }} days)
-                  </p>
-                </div>
-                <span class="px-3 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
-                  Queued
-                </span>
+          <div *ngFor="let queued of queuedSubscriptions" class="border rounded-lg p-4 mb-3">
+            <div class="flex justify-between items-start">
+              <div>
+                <h4 class="font-semibold">{{ queued.snapShot.name }}</h4>
+                <p class="text-sm text-gray-600">
+                  Position {{ queued.queuePosition }} in queue
+                </p>
+                <p class="text-sm text-gray-600">
+                  Starts: {{ queued.scheduledStartDate | date }}
+                  (in {{ queued.daysUntilStart }} days)
+                </p>
               </div>
+              <span class="px-3 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                Queued
+              </span>
             </div>
           </div>
+        </div>
 
         <!-- No Invoice Message -->
         <div *ngIf="!invoice && subscription.status === 'active'" class="mb-6 pb-6 border-b border-gray-200">
@@ -431,7 +431,7 @@
         <div class="flex justify-end">
           <button (click)="viewAddons()" [disabled]="cancelling"
             class="px-6 py-2 border border-red-300 text-red-700 rounded-lg hover:bg-red-50 transition-colors disabled:opacity-50 font-medium">
-           View available addons
+            View available addons
           </button>
         </div>
       </div>
@@ -562,7 +562,7 @@
 
           <!-- Stripe Card Element -->
           <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700 mb-2">Card Details</label>
+            <p class="block text-sm font-medium text-gray-700 mb-2">Card Details</p>
             <div id="card-element" class="p-3 border border-gray-300 rounded-lg bg-white"></div>
           </div>
 

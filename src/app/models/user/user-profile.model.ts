@@ -1,5 +1,4 @@
 import { IAddress } from '../company/company-profile.model';
-import { Skill } from '../skill.model';
 
 export interface LocationSuggestion {
   display_name: string;
@@ -15,8 +14,8 @@ export interface Education {
   type: string;
   institution: string;
   fieldOfStudy: string;
-  startDate: string;
-  endDate?: string;
+  startDate: Date;
+  endDate?: Date;
   isCurrent: boolean;
   grade?: string;
 }

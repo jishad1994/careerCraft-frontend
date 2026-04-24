@@ -276,7 +276,7 @@ export class BasicProfileComponent implements OnInit, OnChanges, OnDestroy {
     this.croppedProfileImage = event.objectUrl || event.base64 || null;
   }
 
-  profileImageLoaded(image: LoadedImage): void {
+  profileImageLoaded(_image: LoadedImage): void {
     // Image loaded successfully
   }
 
@@ -408,7 +408,7 @@ export class BasicProfileComponent implements OnInit, OnChanges, OnDestroy {
     this.croppedBannerImage = event.objectUrl || event.base64 || null;
   }
 
-  bannerImageLoaded(image: LoadedImage): void {
+  bannerImageLoaded(): void {
     // Image loaded
   }
 

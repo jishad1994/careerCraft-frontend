@@ -67,7 +67,7 @@ export class CompanyApplicationService {
             params = params.set("jobId", filters.jobId);
         }
 
-        return this._http.get<ApiResponse<any[]>>(COMPANY_API_ENDPOINTS.APPLICATIONS.GET_APPLICANTS, {
+        return this._http.get<ApiResponse<IJobApplicationDetails[]>>(COMPANY_API_ENDPOINTS.APPLICATIONS.GET_APPLICANTS, {
             params,
         });
     }

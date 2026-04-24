@@ -6,13 +6,10 @@
 
   <!-- Content -->
   <div *ngIf="!loading && company" class="max-w-5xl mx-auto px-4 py-6 space-y-4">
-    
+
     <!-- Header -->
     <div class="flex items-center gap-4 mb-6">
-      <button 
-        mat-icon-button 
-        (click)="goBack()" 
-        class="hover:bg-gray-100 rounded-full transition-colors"
+      <button mat-icon-button (click)="goBack()" class="hover:bg-gray-100 rounded-full transition-colors"
         matTooltip="Back to companies">
         <mat-icon>arrow_back</mat-icon>
       </button>
@@ -25,7 +22,8 @@
         <mat-icon class="text-red-600 text-3xl">error</mat-icon>
         <div class="flex-1">
           <h3 class="text-red-800 font-semibold text-lg">Verification Rejected</h3>
-          <p class="text-red-700 text-sm mt-1">This company's verification has been rejected. Review the rejection history below.</p>
+          <p class="text-red-700 text-sm mt-1">This company's verification has been rejected. Review the rejection
+            history below.</p>
         </div>
       </div>
     </div>
@@ -35,13 +33,9 @@
       <div class="flex items-start gap-6">
         <!-- Profile Picture -->
         <div class="flex-shrink-0">
-          <img 
-            *ngIf="company.profilePicture" 
-            [src]="company.profilePicture.location" 
-            [alt]="company.name"
+          <img *ngIf="company.profilePicture" [src]="company.profilePicture.location" [alt]="company.name"
             class="w-20 h-20 rounded-lg object-cover border border-gray-200">
-          <div 
-            *ngIf="!company.profilePicture"
+          <div *ngIf="!company.profilePicture"
             class="w-20 h-20 rounded-lg bg-blue-600 flex items-center justify-center text-2xl font-bold text-white">
             {{ company.name.charAt(0).toUpperCase() }}
           </div>
@@ -58,9 +52,7 @@
 
             <!-- Status Badges -->
             <div class="flex gap-2 flex-wrap">
-              <span 
-                class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium border"
-                [ngClass]="{
+              <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium border" [ngClass]="{
                   'bg-green-50 text-green-700 border-green-200': isCompanyVerified,
                   'bg-yellow-50 text-yellow-700 border-yellow-200': isCompanyPending,
                   'bg-red-50 text-red-700 border-red-200': isCompanyRejected
@@ -70,9 +62,7 @@
                 </mat-icon>
                 {{ isCompanyVerified ? 'Verified' : (isCompanyRejected ? 'Rejected' : 'Pending') }}
               </span>
-              <span 
-                class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border"
-                [ngClass]="{
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border" [ngClass]="{
                   'bg-red-50 text-red-700 border-red-200': company.isBlocked,
                   'bg-blue-50 text-blue-700 border-blue-200': !company.isBlocked
                 }">
@@ -104,11 +94,7 @@
             </div>
             <div class="flex items-center gap-3 text-sm">
               <mat-icon class="text-gray-500 text-lg">language</mat-icon>
-              <a 
-                *ngIf="company.website" 
-                [href]="company.website" 
-                target="_blank"
-                class="text-blue-600 hover:underline">
+              <a *ngIf="company.website" [href]="company.website" target="_blank" class="text-blue-600 hover:underline">
                 {{ company.website }}
               </a>
               <span *ngIf="!company.website" class="text-gray-700">Not provided</span>
@@ -167,8 +153,7 @@
       </h3>
 
       <div *ngIf="company.documents && company.documents.length > 0" class="space-y-3">
-        <div 
-          *ngFor="let doc of company.documents"
+        <div *ngFor="let doc of company.documents"
           class="flex items-center gap-4 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
           <mat-icon class="text-blue-600 text-2xl">{{ getFileIcon(doc.mimeType) }}</mat-icon>
           <div class="flex-1 min-w-0">
@@ -176,17 +161,11 @@
             <p class="text-xs text-gray-500">{{ formatFileSize(doc.size) }} • {{ formatDate(doc.uploadedAt) }}</p>
           </div>
           <div class="flex gap-1">
-            <button 
-              mat-icon-button 
-              (click)="viewDocument(doc.key)" 
-              matTooltip="View"
+            <button mat-icon-button (click)="viewDocument(doc.key)" matTooltip="View"
               class="text-blue-600 hover:bg-blue-50 rounded-full">
               <mat-icon class="text-lg">visibility</mat-icon>
             </button>
-            <button 
-              mat-icon-button 
-              (click)="downloadDocument(doc.key, doc.originalName)" 
-              matTooltip="Download"
+            <button mat-icon-button (click)="downloadDocument(doc.key, doc.originalName)" matTooltip="Download"
               class="text-green-600 hover:bg-green-50 rounded-full">
               <mat-icon class="text-lg">download</mat-icon>
             </button>
@@ -194,16 +173,14 @@
         </div>
       </div>
 
-      <div *ngIf="!company.documents || company.documents.length === 0" 
-           class="text-center py-12 text-gray-400">
+      <div *ngIf="!company.documents || company.documents.length === 0" class="text-center py-12 text-gray-400">
         <mat-icon class="text-5xl mb-2">description</mat-icon>
         <p class="text-sm">No documents uploaded</p>
       </div>
     </div>
 
     <!-- Rejection History (Only for Rejected/Pending with history) -->
-    <div 
-      *ngIf="(isCompanyRejected || isCompanyPending) && sortedRejectionHistory.length > 0" 
+    <div *ngIf="(isCompanyRejected || isCompanyPending) && sortedRejectionHistory.length > 0"
       class="bg-red-50 rounded-lg shadow-sm border border-red-200 p-6">
       <h3 class="text-sm font-semibold text-red-900 mb-4 flex items-center gap-2">
         <mat-icon class="text-lg text-red-600">history</mat-icon>
@@ -211,8 +188,7 @@
       </h3>
 
       <div class="space-y-4">
-        <div 
-          *ngFor="let rejection of sortedRejectionHistory; let i = index"
+        <div *ngFor="let rejection of sortedRejectionHistory; let i = index"
           class="bg-white border border-red-200 rounded-lg p-4">
           <div class="flex items-start justify-between gap-4 mb-2">
             <div class="flex-1">
@@ -221,7 +197,8 @@
               </p>
               <p class="text-xs text-gray-500 mt-1">{{ formatDateTime(rejection.rejectedAt) }}</p>
             </div>
-            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700 border border-red-200">
+            <span
+              class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700 border border-red-200">
               #{{ sortedRejectionHistory.length - i }}
             </span>
           </div>
@@ -236,23 +213,17 @@
     </div>
 
     <!-- Verification Actions (ONLY for PENDING status) -->
-    <div 
-      *ngIf="isCompanyPending" 
-      class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+    <div *ngIf="isCompanyPending" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
       <h3 class="text-sm font-semibold text-gray-900 mb-4">Verification Actions</h3>
 
       <!-- Action Buttons -->
       <div *ngIf="!showCommentBox" class="flex gap-3">
-        <button 
-          mat-raised-button 
-          (click)="verifyCompany()"
+        <button mat-raised-button (click)="verifyCompany()"
           class="bg-green-600 text-white hover:bg-green-700 px-6 py-2 rounded-full font-medium text-sm flex items-center gap-2 shadow-sm transition-colors">
           <mat-icon class="text-lg">verified</mat-icon>
           Approve Company
         </button>
-        <button 
-          mat-stroked-button 
-          (click)="toggleCommentBox()"
+        <button mat-stroked-button (click)="toggleCommentBox()"
           class="text-red-600 border-red-600 hover:bg-red-50 px-6 py-2 rounded-full font-medium text-sm flex items-center gap-2 transition-colors">
           <mat-icon class="text-lg">cancel</mat-icon>
           Reject Verification
@@ -262,11 +233,10 @@
       <!-- Rejection Form -->
       <div *ngIf="showCommentBox" class="space-y-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">
+          <label for="rejectionCode" class="block text-sm font-medium text-gray-700 mb-2">
             Rejection Reason <span class="text-red-600">*</span>
           </label>
-          <select 
-            [(ngModel)]="selectedRejectionCode" 
+          <select id="rejectionCode" [(ngModel)]="selectedRejectionCode"
             class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white">
             <option [ngValue]="undefined" disabled>Select a reason</option>
             <option *ngFor="let code of rejectionCodes" [value]="code">
@@ -276,28 +246,21 @@
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">
+          <label for="rejComment" class="block text-sm font-medium text-gray-700 mb-2">
             Additional Details (Optional)
           </label>
-          <textarea 
-            [(ngModel)]="rejectionComment"
-            rows="3"
+          <textarea id="rejComment" [(ngModel)]="rejectionComment" rows="3"
             placeholder="Provide additional context for the rejection..."
             class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"></textarea>
         </div>
 
         <div class="flex gap-3">
-          <button 
-            mat-raised-button 
-            (click)="rejectVerification()"
-            [disabled]="!selectedRejectionCode"
+          <button mat-raised-button (click)="rejectVerification()" [disabled]="!selectedRejectionCode"
             class="bg-red-600 text-white hover:bg-red-700 px-6 py-2 rounded-full font-medium text-sm flex items-center gap-2 shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
             <mat-icon class="text-lg">send</mat-icon>
             Send Rejection
           </button>
-          <button 
-            mat-button 
-            (click)="toggleCommentBox()"
+          <button mat-button (click)="toggleCommentBox()"
             class="text-gray-700 hover:bg-gray-100 px-6 py-2 rounded-full font-medium text-sm transition-colors">
             Cancel
           </button>
@@ -306,9 +269,7 @@
     </div>
 
     <!-- Verified Status -->
-    <div 
-      *ngIf="isCompanyVerified" 
-      class="bg-green-50 rounded-lg shadow-sm border border-green-200 p-6">
+    <div *ngIf="isCompanyVerified" class="bg-green-50 rounded-lg shadow-sm border border-green-200 p-6">
       <div class="flex items-center gap-3 text-green-800">
         <mat-icon class="text-2xl">verified_user</mat-icon>
         <div>
@@ -321,20 +282,14 @@
     <!-- Block/Unblock Actions -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
       <h3 class="text-sm font-semibold text-gray-900 mb-4">Account Management</h3>
-      
-      <button 
-        *ngIf="!company.isBlocked" 
-        mat-stroked-button 
-        (click)="blockCompany()"
+
+      <button *ngIf="!company.isBlocked" mat-stroked-button (click)="blockCompany()"
         class="text-red-600 border-red-600 hover:bg-red-50 px-6 py-2 rounded-full font-medium text-sm flex items-center gap-2 transition-colors">
         <mat-icon class="text-lg">block</mat-icon>
         Block Company
       </button>
 
-      <button 
-        *ngIf="company.isBlocked" 
-        mat-raised-button 
-        (click)="unblockCompany()"
+      <button *ngIf="company.isBlocked" mat-raised-button (click)="unblockCompany()"
         class="bg-green-600 text-white hover:bg-green-700 px-6 py-2 rounded-full font-medium text-sm flex items-center gap-2 shadow-sm transition-colors">
         <mat-icon class="text-lg">check_circle</mat-icon>
         Unblock Company

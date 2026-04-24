@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, OnDestroy, OnInit, inject } from "@angular/core";
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild, inject } from "@angular/core";
 import { Subject, takeUntil } from "rxjs";
 import { IJobApplicationDetails } from "../../../../models/job-application/job-application.model";
 import { ActivatedRoute, Router, RouterModule } from "@angular/router";
@@ -8,7 +8,6 @@ import { UserJobApplicationService } from "../../../../services/user/application
 import { ChatInitiationService } from "../../../../shared/services/chat-inititaion-service/chat-initiation.service";
 import { UserProfileService } from "../../../../services/user/profile/user-profile.service";
 import { MatDialog } from "@angular/material/dialog";
-import { PdfViewerComponent } from "../../../../shared/components/pdf-viewer/pdf-viewer.component";
 
 @Component({
     selector: "app-candidate-application-view",
@@ -96,12 +95,16 @@ export class CandidateApplicationViewComponent implements OnInit, OnDestroy {
         });
     }
 
-    openWithdrawModal() {
+    @ViewChild("withdrawModal") withdrawModal!: ElementRef<HTMLDialogElement>;
+
+    openWithdrawModal(): void {
         this.showWithdrawModal = true;
+        this.withdrawModal.nativeElement.showModal();
     }
 
-    closeWithdrawModal() {
+    closeWithdrawModal(): void {
         this.showWithdrawModal = false;
+        this.withdrawModal.nativeElement.close();
     }
 
     withdrawApplication() {

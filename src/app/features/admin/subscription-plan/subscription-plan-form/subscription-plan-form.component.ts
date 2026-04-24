@@ -62,7 +62,7 @@ export class SubscriptionPlanFormComponent implements OnInit, OnDestroy {
           this.plans = response.data;
           this.loading = false;
         },
-        error: (err) => {
+        error: (_err) => {
           this._snackBar.open('Failed to load plans', 'close', {
             duration: 3000,
           });
@@ -124,7 +124,7 @@ export class SubscriptionPlanFormComponent implements OnInit, OnDestroy {
         this.loadPlans();
         // setTimeout(() => (this.success = ''), 3000);
       },
-      error: (err) => {
+      error: (_err) => {
         this._snackBar.open('Failed to delete plan', 'close', {
           duration: 3000,
         });

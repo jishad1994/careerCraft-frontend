@@ -174,7 +174,7 @@ export class CreateJobComponent implements OnInit, OnDestroy {
     };
 
     this._jobService.createJob(jobData).subscribe({
-      next: (response) => {
+      next: (_response) => {
         this._snackBar.open(
           status === 'draft' ? 'Job saved as draft' : 'Job posted successfully',
           'Close',

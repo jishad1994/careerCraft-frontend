@@ -4,7 +4,6 @@ import {
   IJobApplication,
   JobApplicationStatusTypes,
 } from '../../../../models/job-application/job-application.model';
-import { UserJobService } from '../../../../services/user/job/user-job.service';
 import { Router, RouterModule } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subject, takeUntil } from 'rxjs';
