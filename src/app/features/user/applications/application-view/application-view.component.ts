@@ -100,6 +100,9 @@ export class CandidateApplicationViewComponent implements OnInit, OnDestroy {
     openWithdrawModal(): void {
         this.showWithdrawModal = true;
         this.withdrawModal.nativeElement.showModal();
+        setTimeout(() => {
+            this.withdrawModal.nativeElement.focus();
+        });
     }
 
     closeWithdrawModal(): void {

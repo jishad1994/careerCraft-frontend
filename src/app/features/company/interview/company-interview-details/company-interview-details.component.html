@@ -13,23 +13,22 @@
 
       <!-- Header -->
       <div class="flex items-center justify-between mb-6">
-        <button (click)="goBack()" 
-                class="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors">
+        <button (click)="goBack()" class="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
           </svg>
           <span class="font-medium">Back</span>
         </button>
 
-        <button (click)="viewApplication()" 
-                class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+        <button (click)="viewApplication()"
+          class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
           View Application
         </button>
       </div>
 
       <!-- Main Card -->
       <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-        
+
         <!-- Header Section -->
         <div class="bg-gradient-to-r from-blue-500 to-blue-600 p-6 text-white">
           <div class="flex items-start justify-between">
@@ -40,8 +39,8 @@
               <p class="text-blue-100 text-lg mb-1">{{ interview.jobTitle }}</p>
               <p class="text-blue-200 text-sm">{{ interview.companyName }}</p>
             </div>
-            <span [class]="getStatusClass(interview.interview.status)" 
-                  class="px-4 py-2 text-sm font-medium rounded-full border bg-white">
+            <span [class]="getStatusClass(interview.interview.status)"
+              class="px-4 py-2 text-sm font-medium rounded-full border bg-white">
               {{ interview.interview.status | titlecase }}
             </span>
           </div>
@@ -52,7 +51,7 @@
 
           <!-- Interview & Candidate Info -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            
+
             <!-- Interview Details -->
             <div>
               <h2 class="text-lg font-semibold text-gray-900 mb-4">Interview Details</h2>
@@ -84,10 +83,8 @@
                 <div *ngIf="interview.interview.rating">
                   <p class="text-sm text-gray-600">Rating</p>
                   <div class="flex items-center gap-1">
-                    <span *ngFor="let star of [1,2,3,4,5]" 
-                          [class.text-yellow-400]="star <= interview.interview.rating!"
-                          [class.text-gray-300]="star > interview.interview.rating!"
-                          class="text-2xl">★</span>
+                    <span *ngFor="let star of [1,2,3,4,5]" [class.text-yellow-400]="star <= interview.interview.rating!"
+                      [class.text-gray-300]="star > interview.interview.rating!" class="text-2xl">★</span>
                   </div>
                 </div>
               </div>
@@ -98,14 +95,14 @@
               <h2 class="text-lg font-semibold text-gray-900 mb-4">Candidate Information</h2>
               <div class="space-y-3">
                 <div class="flex items-center gap-3">
-                  <div *ngIf="interview.applicantProfilePicture; else initials" 
-                       class="w-14 h-14 rounded-full overflow-hidden flex-shrink-0">
-                    <img [src]="interview.applicantProfilePicture.location" 
-                         [alt]="interview.applicantName"
-                         class="w-full h-full object-cover">
+                  <div *ngIf="interview.applicantProfilePicture; else initials"
+                    class="w-14 h-14 rounded-full overflow-hidden flex-shrink-0">
+                    <img [src]="interview.applicantProfilePicture.location" [alt]="interview.applicantName"
+                      class="w-full h-full object-cover">
                   </div>
                   <ng-template #initials>
-                    <div class="w-14 h-14 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-lg flex-shrink-0">
+                    <div
+                      class="w-14 h-14 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-lg flex-shrink-0">
                       {{ interview.applicantName.substring(0, 2).toUpperCase() }}
                     </div>
                   </ng-template>
@@ -144,47 +141,43 @@
           <!-- Action Buttons -->
           <div class="border-t pt-6">
             <div class="flex flex-wrap gap-3">
-              
+
               <!-- Join Video Call -->
-              <button *ngIf="interview.interview.type === 'video' && canJoin()" 
-                      (click)="joinVideoCall()"
-                      class="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center gap-2 font-medium">
+              <button *ngIf="interview.interview.type === 'video' && canJoin()" (click)="joinVideoCall()"
+                class="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center gap-2 font-medium">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                        d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z">
+                  </path>
                 </svg>
                 Join Video Call
               </button>
 
               <!-- Reschedule -->
-              <button *ngIf="canEdit()"
-                      (click)="openRescheduleModal()"
-                      class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 flex items-center gap-2 font-medium">
+              <button *ngIf="canEdit()" (click)="openRescheduleModal()"
+                class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 flex items-center gap-2 font-medium">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                 </svg>
                 Reschedule
               </button>
 
               <!-- Cancel -->
-              <button *ngIf="canEdit()"
-                      (click)="openCancelModal()"
-                      class="px-6 py-3 border border-red-300 text-red-700 rounded-lg hover:bg-red-50 flex items-center gap-2 font-medium">
+              <button *ngIf="canEdit()" (click)="openCancelModal()"
+                class="px-6 py-3 border border-red-300 text-red-700 rounded-lg hover:bg-red-50 flex items-center gap-2 font-medium">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                        d="M6 18L18 6M6 6l12 12"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
                 Cancel Interview
               </button>
 
               <!-- Complete -->
-              <button *ngIf="canEdit()"
-                      (click)="openCompleteModal()"
-                      class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2 font-medium">
+              <button *ngIf="canEdit()" (click)="openCompleteModal()"
+                class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2 font-medium">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
                 Complete Interview
               </button>
@@ -198,46 +191,46 @@
   </div>
 </div>
 
-<!-- Reschedule Modal -->
-<div *ngIf="showRescheduleModal" 
-     class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-     (click)="closeRescheduleModal()">
-  <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4" (click)="$event.stopPropagation()">
+<div *ngIf="showRescheduleModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+  tabindex="0" role="button" aria-label="Close reschedule modal" (click)="closeRescheduleModal()"
+  (keydown.enter)="closeRescheduleModal()" (keydown.space)="closeRescheduleModal()">
+
+  <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4" role="dialog" aria-modal="true" tabindex="-1"
+    (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
+
     <div class="p-6 border-b border-gray-200">
       <h3 class="text-xl font-semibold text-gray-900">Reschedule Interview</h3>
     </div>
 
     <div class="p-6 space-y-4">
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">New Date</label>
-        <input type="date" 
-               [(ngModel)]="newScheduledDate"
-               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <label for="reschedule-date" class="block text-sm font-medium text-gray-700 mb-2">New Date</label>
+        <input id="reschedule-date" type="date" [(ngModel)]="newScheduledDate"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
       </div>
 
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">New Time</label>
-        <input type="time" 
-               [(ngModel)]="newScheduledTime"
-               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <label for="reschedule-time" class="block text-sm font-medium text-gray-700 mb-2">New Time</label>
+        <input id="reschedule-time" type="time" [(ngModel)]="newScheduledTime"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
       </div>
 
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">Reason (Optional)</label>
-        <textarea [(ngModel)]="rescheduleReason" 
-                  rows="3"
-                  placeholder="Reason for rescheduling..."
-                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+        <label for="reschedule-reason" class="block text-sm font-medium text-gray-700 mb-2">Reason (Optional)</label>
+        <textarea id="reschedule-reason" [(ngModel)]="rescheduleReason" rows="3"
+          placeholder="Reason for rescheduling..."
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </textarea>
       </div>
     </div>
 
     <div class="p-6 border-t border-gray-200 flex gap-3 justify-end">
       <button (click)="closeRescheduleModal()"
-              class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+        class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
         Cancel
       </button>
-      <button (click)="submitReschedule()"
-              class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+
+      <button (click)="submitReschedule()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
         Reschedule
       </button>
     </div>
@@ -245,29 +238,32 @@
 </div>
 
 <!-- Cancel Modal -->
-<div *ngIf="showCancelModal" 
-     class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-     (click)="closeCancelModal()">
-  <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4" (click)="$event.stopPropagation()">
+<div *ngIf="showCancelModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+  tabindex="0" role="button" aria-label="Close cancel modal" (click)="closeCancelModal()"
+  (keydown.enter)="closeCancelModal()" (keydown.space)="closeCancelModal()">
+
+  <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4" role="dialog" aria-modal="true" tabindex="-1"
+    (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
+
     <div class="p-6 border-b border-gray-200">
       <h3 class="text-xl font-semibold text-gray-900">Cancel Interview</h3>
     </div>
 
     <div class="p-6">
       <p class="text-gray-600 mb-4">Are you sure you want to cancel this interview?</p>
-      <textarea [(ngModel)]="cancelReason" 
-                rows="4"
-                placeholder="Reason for cancellation (optional)..."
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+
+      <textarea [(ngModel)]="cancelReason" rows="4" placeholder="Reason for cancellation (optional)..."
+        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+      </textarea>
     </div>
 
     <div class="p-6 border-t border-gray-200 flex gap-3 justify-end">
       <button (click)="closeCancelModal()"
-              class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+        class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
         No, Keep It
       </button>
-      <button (click)="submitCancel()"
-              class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+
+      <button (click)="submitCancel()" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
         Yes, Cancel Interview
       </button>
     </div>
@@ -275,44 +271,46 @@
 </div>
 
 <!-- Complete Modal -->
-<div *ngIf="showCompleteModal" 
-     class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-     (click)="closeCompleteModal()">
-  <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4" (click)="$event.stopPropagation()">
+<div *ngIf="showCompleteModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+  tabindex="0" role="button" aria-label="Close complete modal" (click)="closeCompleteModal()"
+  (keydown.enter)="closeCompleteModal()" (keydown.space)="closeCompleteModal()">
+
+  <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4" role="dialog" aria-modal="true" tabindex="-1"
+    (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
+
     <div class="p-6 border-b border-gray-200">
       <h3 class="text-xl font-semibold text-gray-900">Complete Interview</h3>
     </div>
 
     <div class="p-6 space-y-4">
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">Rating</label>
+        <p class="block text-sm font-medium text-gray-700 mb-2">Rating</p>
+
         <div class="flex items-center gap-2">
-          <button *ngFor="let star of [1,2,3,4,5]"
-                  (click)="setRating(star)"
-                  [class.text-yellow-400]="star <= completeRating"
-                  [class.text-gray-300]="star > completeRating"
-                  class="text-3xl hover:scale-110 transition-transform">
+          <button *ngFor="let star of [1,2,3,4,5]" type="button" (click)="setRating(star)"
+            [attr.aria-label]="'Set rating to ' + star" [class.text-yellow-400]="star <= completeRating"
+            [class.text-gray-300]="star > completeRating" class="text-3xl hover:scale-110 transition-transform">
             ★
           </button>
         </div>
       </div>
 
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">Feedback</label>
-        <textarea [(ngModel)]="completeFeedback" 
-                  rows="6"
-                  placeholder="Interview feedback..."
-                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+        <label for="complete-feedback" class="block text-sm font-medium text-gray-700 mb-2">Feedback</label>
+
+        <textarea id="complete-feedback" [(ngModel)]="completeFeedback" rows="6" placeholder="Interview feedback..."
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </textarea>
       </div>
     </div>
 
     <div class="p-6 border-t border-gray-200 flex gap-3 justify-end">
       <button (click)="closeCompleteModal()"
-              class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+        class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
         Cancel
       </button>
-      <button (click)="submitComplete()"
-              class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+
+      <button (click)="submitComplete()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
         Complete Interview
       </button>
     </div>

@@ -85,7 +85,12 @@ export class CandidateOfferDetailComponent implements OnInit, OnDestroy {
     openRejectModal(): void {
         this.rejectionReason = "";
         this.showRejectModal = true;
+
         this.rejectModal.nativeElement.showModal();
+
+        setTimeout(() => {
+            this.rejectModal.nativeElement.focus();
+        });
     }
 
     closeRejectModal(): void {

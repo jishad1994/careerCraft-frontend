@@ -7,7 +7,7 @@ import {
   Job,
   JobSearchFilters,
   JobStatistics,
-  UpdateJobDto,
+  
 } from '../../../models/job/job.model';
 import { Skill } from '../../../models/skill.model';
 import { COMPANY_API_ENDPOINTS } from '../../../constants/company-api-endpoints.constants';
@@ -58,7 +58,7 @@ export class CompanyJobService {
   // Update job
   updateJob(
     jobId: string,
-    updates: UpdateJobDto
+    updates: Partial<CreateJobDto>
   ): Observable<ApiResponse<Job>> {
     return this._http.put<ApiResponse<Job>>(
       COMPANY_API_ENDPOINTS.JOBS.UPDATE_JOB_BY_ID(jobId),

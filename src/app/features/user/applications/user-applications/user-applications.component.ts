@@ -70,7 +70,7 @@ export class UserApplicationsComponent implements OnInit, OnDestroy {
           this.loadStatistics();
           this.loading = false;
         },
-        error: (error) => {
+        error: (_error) => {
           this.snackBar.open('Failed to load applications', 'Close', {
             duration: 3000,
           });

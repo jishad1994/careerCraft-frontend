@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy,  Output, inject } from '@angular/core';
 import { CompanyProfile } from '../../../../models/company/company-profile.model';
 import { Subject, takeUntil } from 'rxjs';
 import { CompanyProfileService } from '../../../../services/company/profile/company-profile.service';

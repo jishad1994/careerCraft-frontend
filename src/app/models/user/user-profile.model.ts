@@ -1,96 +1,103 @@
-import { IAddress } from '../company/company-profile.model';
+import { IAddress } from "../company/company-profile.model";
 
 export interface LocationSuggestion {
-  display_name: string;
-  lat: string;
-  lon: string;
+    display_name: string;
+    lat: string;
+    lon: string;
 }
 export interface IPublicFileAsset {
-  key: string;
-  location: string;
+    key: string;
+    location: string;
 }
 
 export interface Education {
-  type: string;
-  institution: string;
-  fieldOfStudy: string;
-  startDate: Date;
-  endDate?: Date;
-  isCurrent: boolean;
-  grade?: string;
+    type: string;
+    institution: string;
+    fieldOfStudy: string;
+    startDate: Date;
+    endDate?: Date;
+    isCurrent: boolean;
+    grade?: string;
 }
 
 export interface Experience {
-  jobTitle: string;
-  company: string;
-  startDate: string;
-  endDate?: string;
-  isCurrent: boolean;
-  description: string;
+    jobTitle: string;
+    company: string;
+    startDate: string;
+    endDate?: string;
+    isCurrent: boolean;
+    description: string;
 }
 
-export interface IResume extends IDocuments {}
+export interface IResume {
+    originalName: string;
+    key: string;
+    signedURL?: string;
+    mimeType: string;
+    size: number;
+    uploadedAt: Date;
+}
 
 interface PopulatedSkill {
-  id: string;
-  name: string;
+    id: string;
+    name: string;
 }
 export interface IDocuments {
-  originalName: string;
-  key: string;
-  signedURL?: string;
-  mimeType: string;
-  size: number;
-  uploadedAt: Date;
+    originalName: string;
+    key: string;
+    signedURL?: string;
+    mimeType: string;
+    size: number;
+    uploadedAt: Date;
 }
 
 export interface UserProfile {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  role: string;
-  profilePicture?: IPublicFileAsset;
-  profileCompletion: number;
-  bannerImage?: IPublicFileAsset;
-  about: string;
-  provider: string;
-  isBlocked: boolean;
-  isVerified: boolean;
-  skills: PopulatedSkill[];
-  portfolioUrl?: string;
-  linkedinUrl?: string;
-  githubUrl?: string;
-  education: Education[];
-  experience: Experience[];
-  totalExperienceYears: number;
-  certificates: IDocuments[];
-  resumeURL: IDocuments[];
-  location: string;
-  address: IAddress;
-  createdAt: string;
-  updatedAt: string;
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+    role: string;
+    profilePicture?: IPublicFileAsset;
+    profileCompletion: number;
+    bannerImage?: IPublicFileAsset;
+    about: string;
+    provider: string;
+    isBlocked: boolean;
+    isVerified: boolean;
+    skills: PopulatedSkill[];
+    portfolioUrl?: string;
+    linkedinUrl?: string;
+    githubUrl?: string;
+    education: Education[];
+    experience: Experience[];
+    totalExperienceYears: number;
+    certificates: IDocuments[];
+    resumeURL: IDocuments[];
+    location: string;
+    address: IAddress;
+    createdAt: string;
+    updatedAt: string;
 }
 
 export interface IUserListItem {
-  _id: string;
+    _id: string;
 
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone?: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone?: string;
 
-  provider: 'local' | 'google';
-  role: 'user' | 'company';
+    provider: "local" | "google";
+    role: "user" | "company";
 
-  isBlocked: boolean;
+    isBlocked: boolean;
 
-  profilePicture?: IPublicFileAsset;
-  bannerImage?: IPublicFileAsset;
+    profilePicture?: IPublicFileAsset;
+    bannerImage?: IPublicFileAsset;
 
-  location?: string;
+    location?: string;
 
-  createdAt: string; // ISO string
-  updatedAt: string;
+    createdAt: string; // ISO string
+    updatedAt: string;
 }
