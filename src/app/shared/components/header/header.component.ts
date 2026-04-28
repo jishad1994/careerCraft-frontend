@@ -111,7 +111,7 @@ export class HeaderComponent implements OnInit, OnDestroy, OnChanges {
         this.router.navigate([`${this.user.role == "company" ? "company/dashboard" : "user"}/notifications`]);
     }
 
-    onSearch(): void {
+    search(): void {
         if (this.searchQuery.trim()) {
             this.searchOutput.emit(this.searchQuery);
             this.searchQuery = "";

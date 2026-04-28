@@ -203,7 +203,7 @@ export class EducationSectionComponent implements OnInit, OnDestroy {
 }
 
   // Format date for display (e.g., "Jan 2020")
-  formatDate(dateString: string): string {
+  formatDate(dateString: string|Date): string {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
       month: 'short',

@@ -1,19 +1,10 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject } from "@angular/core";
 import { UserProfileService } from "../../../../services/user/profile/user-profile.service";
-import { UserProfile } from "../../../../models/user/user-profile.model";
+import { Experience, UserProfile } from "../../../../models/user/user-profile.model";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { CommonModule } from "@angular/common";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { Subject, takeUntil } from "rxjs";
-
-export interface ExperienceData {
-    jobTitle: string;
-    company: string;
-    startDate: Date;
-    endDate?: Date; // optional because of "isCurrent"
-    isCurrent: boolean;
-    description?: string;
-}
 
 @Component({
     selector: "app-experience-section",
@@ -181,7 +172,7 @@ export class ExperienceSectionComponent implements OnInit, OnDestroy {
             });
     }
 
-    private prepareExperienceData(): ExperienceData {
+    private prepareExperienceData(): Experience {
         const formValue = this.experienceForm.value;
 
         return {
@@ -194,7 +185,7 @@ export class ExperienceSectionComponent implements OnInit, OnDestroy {
         };
     }
 
-    formatDate(dateString: string): string {
+    formatDate(dateString: string | Date): string {
         const date = new Date(dateString);
         return date.toLocaleDateString("en-US", {
             month: "short",

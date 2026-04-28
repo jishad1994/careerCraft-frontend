@@ -23,8 +23,8 @@ export interface Education {
 export interface Experience {
     jobTitle: string;
     company: string;
-    startDate: string;
-    endDate?: string;
+    startDate: string|Date;
+    endDate?: string|Date;
     isCurrent: boolean;
     description: string;
 }

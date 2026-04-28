@@ -9,7 +9,17 @@ import { Subject, takeUntil } from "rxjs";
 import { Store } from "@ngrx/store";
 import { AppState } from "../../store/app.state";
 
-declare const google: typeof import("google.accounts");
+declare const google: {
+    accounts: {
+        id: {
+            initialize: (config: google.accounts.id.IdConfiguration) => void;
+            renderButton: (
+                parent: HTMLElement,
+                options: google.accounts.id.GsiButtonConfiguration,
+            ) => void;
+        };
+    };
+};
 @Component({
     selector: "app-login-page",
     imports: [LoginComponent],
@@ -94,11 +104,12 @@ export class LoginPageComponent implements OnDestroy {
         });
         const element = document.getElementById(event.elementId);
         if (!element) return;
-        google.accounts.id.renderButton(element, {
-            theme: "outline",
-            size: "large",
-            width: 500,
-        });
+      google.accounts.id.renderButton(element, {
+    type: "standard",
+    theme: "outline",
+    size: "large",
+    width: 500,
+});
     }
 
     ngOnDestroy(): void {

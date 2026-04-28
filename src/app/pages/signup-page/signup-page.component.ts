@@ -5,7 +5,14 @@ import { environment } from "../../environments/environment";
 import { Subject, takeUntil } from "rxjs";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { Router } from "@angular/router";
-declare const google: typeof import("google.accounts");
+declare const google: {
+    accounts: {
+        id: {
+            initialize: (config: google.accounts.id.IdConfiguration) => void;
+            renderButton: (parent: HTMLElement, options: google.accounts.id.GsiButtonConfiguration) => void;
+        };
+    };
+};
 @Component({
     selector: "app-signup-page",
     standalone: true,
@@ -44,6 +51,7 @@ export class SignupPageComponent implements OnDestroy {
         const element = document.getElementById(event.elementId);
         if (!element) return;
         google.accounts.id.renderButton(element, {
+            type: "standard",
             theme: "outline",
             size: "large",
             width: 500,

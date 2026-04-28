@@ -1,16 +1,32 @@
-export interface TableColumn {
-    key: string;
+// export interface TableColumn {
+//     key: string;
+//     label: string;
+//     type?: "text" | "badge" | "date" | "image" | "custom";
+//     sortable?: boolean;
+//     width?: string;
+//     transform?: (value: any, row?: any) => string;
+// }
+
+// export interface TableAction {
+//     type: "view" | "block" | "unblock" | string;
+//     label: string;
+//     icon?: string;
+//     class?: string;
+//     show?: (row: any) => boolean;
+// }
+export interface TableColumn<T extends object = object> {
+    key: keyof T & string;
     label: string;
     type?: "text" | "badge" | "date" | "image" | "custom";
     sortable?: boolean;
     width?: string;
-    transform?: (value: any, row?: any) => string;
+    transform?: (value: unknown, row?: T) => string;
 }
 
-export interface TableAction {
+export interface TableAction<T extends object = object> {
     type: "view" | "block" | "unblock" | string;
     label: string;
     icon?: string;
     class?: string;
-    show?: (row: any) => boolean;
+    show?: (row: T) => boolean;
 }

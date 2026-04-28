@@ -24,7 +24,7 @@ export class LoginComponent {
   selectedRole: 'user' | 'company' = 'user';
 
   @Output() googleLogin = new EventEmitter<{
-    role: 'company' | 'user';
+    role: "user"|"company";
     elementId: string;
   }>();
 

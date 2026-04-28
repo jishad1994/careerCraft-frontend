@@ -169,7 +169,7 @@ export class CandidateProfileComponent implements OnInit, OnDestroy {
         return `${start.getFullYear()}`;
     }
 
-    formatDate(date: string): string {
+    formatDate(date: string | Date): string {
         return new Date(date).toLocaleDateString("en-US", {
             year: "numeric",
             month: "short",

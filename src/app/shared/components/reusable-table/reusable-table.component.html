@@ -1,140 +1,150 @@
 <div class="bg-white rounded-lg shadow">
 
-  <!-- Header with Search -->
-  <div class="p-4 border-b border-gray-200">
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <!-- Header with Search -->
+    <div class="p-4 border-b border-gray-200">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <h2 class="text-xl font-semibold text-gray-900">{{ title }}</h2>
 
-      <!-- Title -->
-      <h2 class="text-xl font-semibold text-gray-900">{{ title }}</h2>
-
-      <!-- Search Bar -->
-      <div *ngIf="showSearch" class="relative w-full sm:w-64">
-        <input type="text" [(ngModel)]="searchQuery" (ngModelChange)="onSearchChange($event)" placeholder="Search..."
-          class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-        <svg class="absolute left-3 top-2.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor"
-          viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-        </svg>
-      </div>
-    </div>
-  </div>
-
-  <!-- Loading State -->
-  <div *ngIf="loading" class="flex items-center justify-center py-12">
-    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-  </div>
-
-  <!-- Table -->
-  <div *ngIf="!loading" class="overflow-x-auto">
-    <table class="w-full">
-      <thead class="bg-gray-50 border-b border-gray-200">
-        <tr>
-          <th *ngFor="let column of columns"
-            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-            {{ column.label }}
-          </th>
-          <th *ngIf="actions.length > 0"
-            class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-            Actions
-          </th>
-        </tr>
-      </thead>
-      <tbody class="bg-white divide-y divide-gray-200">
-
-        <!-- Data Rows -->
-        <tr *ngFor="let row of data" class="hover:bg-gray-50">
-          <td *ngFor="let column of columns" class="px-6 py-4 whitespace-nowrap">
-
-            <!-- Text Type -->
-            <div *ngIf="!column.type || column.type === 'text'" class="text-sm text-gray-900">
-              {{ column.transform ? column.transform(row[column.key]) : row[column.key] }}
-            </div>
-
-            <!-- Badge Type -->
-            <span *ngIf="column.type === 'badge'" [class]="getBadgeClass(row[column.key])"
-              class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full">
-              {{ row[column.key] }}
-            </span>
-
-            <!-- Date Type -->
-            <div *ngIf="column.type === 'date'" class="text-sm text-gray-900">
-              {{ row[column.key] | date: 'short' }}
-            </div>
-          </td>
-
-          <!-- Actions Column -->
-          <td *ngIf="actions.length > 0" class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-            <div class="flex items-center justify-end gap-2">
-              <ng-container *ngFor="let action of actions">
-                <button *ngIf="!action.show || action.show(row)" (click)="onActionClick(action.type, row)"
-                  [class]="  getDefaultActionClass(action.type)"
-                  class="inline-flex items-center px-3 py-1.5 border rounded-md text-sm font-medium transition-colors">
-                  <svg *ngIf="action.icon" class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div *ngIf="showSearch" class="relative w-full sm:w-64">
+                <input type="text" [(ngModel)]="searchQuery"
+                    (ngModelChange)="onSearchChange($event)"
+                    placeholder="Search..."
+                    class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                <svg class="absolute left-3 top-2.5 w-5 h-5 text-gray-400" fill="none"
+                    stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      [attr.d]="getIconPath(action.icon)"></path>
-                  </svg>
-                  {{ action.label }}
-                </button>
-              </ng-container>
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
             </div>
-          </td>
-        </tr>
-
-        <!-- Empty State -->
-        <tr *ngIf="data.length === 0">
-          <td [attr.colspan]="columns.length + (actions.length > 0 ? 1 : 0)" class="px-6 py-12 text-center">
-            <div class="flex flex-col items-center">
-              <svg class="w-16 h-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4">
-                </path>
-              </svg>
-              <p class="text-gray-500">No data available</p>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- Pagination -->
-  <div *ngIf="!loading && pagination && data.length > 0" class="px-4 py-3 border-t border-gray-200 sm:px-6">
-    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-
-      <!-- Pagination Info -->
-      <div class="text-sm text-gray-700">
-        Showing <span class="font-medium">{{ getStartItem() }}</span> to
-        <span class="font-medium">{{ getEndItem() }}</span> of
-        <span class="font-medium">{{ pagination.totalItems }}</span> results
-      </div>
-
-      <!-- Pagination Buttons -->
-      <div class="flex items-center gap-2">
-        <!-- Previous Button -->
-        <button (click)="onPageChange(pagination.page - 1)" [disabled]="!pagination.hasPrevPage"
-          class="px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
-          Previous
-        </button>
-
-        <!-- Page Numbers -->
-        <div class="hidden sm:flex items-center gap-1">
-          <button *ngFor="let page of getPageNumbers()" (click)="isPageNumber(page) &&  onPageChange(page)"
-            [disabled]="page === '...'" [class.bg-blue-600]="page === pagination.page"
-            [class.text-white]="page === pagination.page" [class.text-gray-700]="page !== pagination.page"
-            [class.hover:bg-gray-50]="page !== pagination.page"
-            class="px-3 py-2 border border-gray-300 rounded-md text-sm font-medium transition-colors disabled:cursor-default">
-            {{ page }}
-          </button>
         </div>
-
-        <!-- Next Button -->
-        <button (click)="onPageChange(pagination.page + 1)" [disabled]="!pagination.hasNextPage"
-          class="px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
-          Next
-        </button>
-      </div>
     </div>
-  </div>
 
+    <!-- Loading State -->
+    <div *ngIf="loading" class="flex items-center justify-center py-12">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+    </div>
+
+    <!-- Table -->
+    <div *ngIf="!loading" class="overflow-x-auto">
+        <table class="w-full">
+            <thead class="bg-gray-50 border-b border-gray-200">
+                <tr>
+                    <th *ngFor="let column of columns"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        {{ column.label }}
+                    </th>
+                    <th *ngIf="actions.length > 0"
+                        class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Actions
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+
+                <tr *ngFor="let row of data" class="hover:bg-gray-50">
+                    <td *ngFor="let column of columns" class="px-6 py-4 whitespace-nowrap">
+
+                        <!-- Text Type -->
+                        <div *ngIf="!column.type || column.type === 'text'" class="text-sm text-gray-900">
+                            {{ column.transform ? column.transform(row[column.key], row) : row[column.key] }}
+                        </div>
+
+                        <!-- Badge Type -->
+                        <span *ngIf="column.type === 'badge'"
+                            [class]="column.transform
+                                ? getBadgeClass(column.transform(row[column.key], row))
+                                : getBadgeClass(row[column.key])"
+                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full">
+                            {{ column.transform ? column.transform(row[column.key], row) : row[column.key] }}
+                        </span>
+
+                        <!-- Date Type -->
+                        <div *ngIf="column.type === 'date'" class="text-sm text-gray-900">
+                            {{ getDateValue(row, column.key) | date: 'short' }}
+                        </div>
+                    </td>
+
+                    <!-- Actions Column -->
+                    <td *ngIf="actions.length > 0"
+                        class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <div class="flex items-center justify-end gap-2">
+                            <ng-container *ngFor="let action of actions">
+                                <button *ngIf="!action.show || action.show(row)"
+                                    (click)="onActionClick(action.type, row)"
+                                    type="button"
+                                    [class]="getDefaultActionClass(action.type)"
+                                    class="inline-flex items-center px-3 py-1.5 border rounded-md text-sm font-medium transition-colors">
+                                    <svg *ngIf="action.icon" class="w-4 h-4 mr-1" fill="none"
+                                        stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            [attr.d]="getIconPath(action.icon)"></path>
+                                    </svg>
+                                    {{ action.label }}
+                                </button>
+                            </ng-container>
+                        </div>
+                    </td>
+                </tr>
+
+                <!-- Empty State -->
+                <tr *ngIf="data.length === 0">
+                    <td [attr.colspan]="columns.length + (actions.length > 0 ? 1 : 0)"
+                        class="px-6 py-12 text-center">
+                        <div class="flex flex-col items-center">
+                            <svg class="w-16 h-16 text-gray-400 mb-4" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4">
+                                </path>
+                            </svg>
+                            <p class="text-gray-500">No data available</p>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    <div *ngIf="!loading && pagination && data.length > 0"
+        class="px-4 py-3 border-t border-gray-200 sm:px-6">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+
+            <div class="text-sm text-gray-700">
+                Showing <span class="font-medium">{{ getStartItem() }}</span> to
+                <span class="font-medium">{{ getEndItem() }}</span> of
+                <span class="font-medium">{{ pagination.totalItems }}</span> results
+            </div>
+
+            <div class="flex items-center gap-2">
+                <button (click)="onPageChange(pagination.page - 1)"
+                    [disabled]="!pagination.hasPrevPage"
+                    type="button"
+                    class="px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                    Previous
+                </button>
+
+                <div class="hidden sm:flex items-center gap-1">
+                    <button *ngFor="let page of getPageNumbers()"
+                        (click)="isPageNumber(page) && onPageChange(+page)"
+                        [disabled]="page === '...'"
+                        type="button"
+                        [class.bg-blue-600]="page === pagination.page"
+                        [class.text-white]="page === pagination.page"
+                        [class.text-gray-700]="page !== pagination.page"
+                        [class.hover:bg-gray-50]="page !== pagination.page"
+                        class="px-3 py-2 border border-gray-300 rounded-md text-sm font-medium transition-colors disabled:cursor-default">
+                        {{ page }}
+                    </button>
+                </div>
+
+                <button (click)="onPageChange(pagination.page + 1)"
+                    [disabled]="!pagination.hasNextPage"
+                    type="button"
+                    class="px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                    Next
+                </button>
+            </div>
+        </div>
+    </div>
 </div>

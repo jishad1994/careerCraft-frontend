@@ -20,7 +20,7 @@ export const loginFailure = createAction(
 
 export const googleLoginRequest = createAction(
   '[Auth] google login request',
-  props<{ credential: string; role: 'user' | 'company' }>()
+  props<{ credential: google.accounts.id.CredentialResponse; role: 'user' | 'company' }>()
 );
 
 export const googleLoginFailure = createAction(

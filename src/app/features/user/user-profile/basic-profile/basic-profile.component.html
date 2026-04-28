@@ -352,7 +352,7 @@
     <div class="mb-6">
       <image-cropper [imageChangedEvent]="bannerImageChangedEvent" [maintainAspectRatio]="true" [aspectRatio]="4"
         [roundCropper]="false" [resizeToWidth]="1200" format="jpeg" outputType="both"
-        (imageCropped)="bannerImageCropped($event)" (imageLoaded)="bannerImageLoaded($event)"
+        (imageCropped)="bannerImageCropped($event)" (imageLoaded)="bannerImageLoaded()"
         (cropperReady)="bannerCropperReady()" (loadImageFailed)="bannerLoadImageFailed()">
       </image-cropper>
     </div>

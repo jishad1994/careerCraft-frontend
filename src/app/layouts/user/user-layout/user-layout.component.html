@@ -2,7 +2,7 @@
     <!-- Header -->
     <app-header [logoUrl]="logoUrl" [logoRoute]="logoRoute" [navItems]="navItems" [userMenuItems]="userMenuItems"
         [user]="currentUser" [userName]="userName" [showSearch]="true"
-        [searchPlaceholder]="'Search jobs, companies, skills...'" (search)="onSearch($event)" (logout)="onLogout()">
+        [searchPlaceholder]="'Search jobs, companies, skills...'" (searchOutput)="search($event)" (logout)="onLogout()">
     </app-header>
 
     <!-- Main Content Area -->

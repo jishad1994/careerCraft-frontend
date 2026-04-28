@@ -131,7 +131,7 @@ export class UserLayoutComponent implements OnInit, OnDestroy {
         this.destroy$.complete();
     }
 
-    onSearch(query: string): void {
+    search(query: string): void {
         this._router.navigate(["user/jobs"], {
             queryParams: { search: query },
         });
