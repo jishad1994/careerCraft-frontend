@@ -1,8 +1,8 @@
 // environment.ts (development)
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:4000',
-  socketUrl: 'http://localhost:4000',
+  apiUrl: 'http://13.48.193.168:4000',
+  socketUrl: 'http://13.48.193.168:4000',
   authBaseUrl: '/api/auth',
   userBaseUrl: '/api/user',
   companyBaseUrl: '/api/company',
