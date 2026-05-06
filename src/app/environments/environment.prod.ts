@@ -1,8 +1,8 @@
 // environment.prod.ts (production)
 export const environment = {
   production: true,
-  apiUrl: 'https://13.48.193.168:4000',
-  socketUrl: 'https://13.48.193.168:4000',
+  apiUrl: 'https://api.jishadkolapurath.online',
+  socketUrl: 'https://api.jishadkolapurath.online',
   authBaseUrl:'/api/auth',
   userBaseUrl:'/api/user',
   companyBaseUrl:'/api/company',
