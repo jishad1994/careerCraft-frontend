@@ -32,19 +32,20 @@ export class SignupPageComponent implements OnDestroy {
     onGoogleSignup(event: { role: "user" | "company"; elementId: string }) {
         google.accounts.id.initialize({
             client_id: this._clientId,
-            callback: (response: google.accounts.id.CredentialResponse) =>
+            callback: (response: google.accounts.id.CredentialResponse) => {
+                const credential = response.credential;
                 this._googleAuth
-                    .handleCredentialResponse(response, event.role)
+                    .handleCredentialResponse(credential, event.role)
                     .pipe(takeUntil(this.destroy$))
                     .subscribe({
                         next: (response) => {
                             this._router.navigate([`${response.data.user.role}/home`]);
                         },
-                        error: (error) => {
-                            console.log(error);
-                            this._snackBar.open("google login failed", "close");
+                        error: () => {
+                            this._snackBar.open("google login failed", "close", { duration: 2000 });
                         },
-                    }),
+                    });
+            },
             auto_select: false,
             ux_mode: "popup",
         });

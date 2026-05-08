@@ -22,7 +22,7 @@ export class GoogleAuthService {
     private _clientId = environment.GOOGLE_CLIENT_ID;
 
     handleCredentialResponse(
-        credential: google.accounts.id.CredentialResponse,
+        credential: google.accounts.id.CredentialResponse | string,
         role: "user" | "company",
     ): Observable<ApiResponse<{ user: AuthResponseUserDTO }>> {
         // credential is google ID token

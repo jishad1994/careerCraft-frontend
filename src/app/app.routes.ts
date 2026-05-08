@@ -1,40 +1,53 @@
-import { Routes } from '@angular/router';
-
+import { Routes } from "@angular/router";
 
 export const routes: Routes = [
-  {
-    path: '',
+    {
+        path: "",
 
-    loadChildren: () =>
-      import('../app/routes/public.routes').then((m) => m.publicRoutes),
-  },
+        loadChildren: () => import("../app/routes/public.routes").then((m) => m.publicRoutes),
+    },
 
-  {
-    path: 'auth',
-    loadChildren: () =>
-      import('./routes/auth.routes').then((m) => m.AUTH_ROUTES),
-  },
-  {
-    path: 'user',
-    loadChildren: () =>
-      import('./routes/user/parent.routes').then((m) => m.USER_ROUTES),
-  },
-  {
-    path: 'company',
-    loadChildren: () =>
-      import('./routes/company/parent.routes').then((m) => m.COMPANY_ROUTES),
-  },
-  {
-    path: 'admin',
-    loadChildren: () =>
-      import('./routes/admin.routes').then((m) => m.ADMIN_ROUTES),
-  },
+    {
+        path: "auth",
+        loadChildren: () => import("./routes/auth.routes").then((m) => m.AUTH_ROUTES),
+    },
+    {
+        path: "user",
+        loadChildren: () => import("./routes/user/parent.routes").then((m) => m.USER_ROUTES),
+    },
+    {
+        path: "company",
+        loadChildren: () => import("./routes/company/parent.routes").then((m) => m.COMPANY_ROUTES),
+    },
+    {
+        path: "admin",
+        loadChildren: () => import("./routes/admin.routes").then((m) => m.ADMIN_ROUTES),
+    },
 
-  {
-    path: 'blocked',
-    loadComponent: () =>
-      import('../app/shared/components/account-restricted/account-restricted.component').then(
-        (m) => m.AccountRestrictedComponent,
-      ),
-  },
+    {
+        path: "blocked",
+        loadComponent: () =>
+            import("../app/shared/components/account-restricted/account-restricted.component").then(
+                (m) => m.AccountRestrictedComponent,
+            ),
+    },
+    {
+        path: "unauthorized",
+        loadComponent: () =>
+            import("./shared/components/route-pages/unauthorized/unauthorized.component").then(
+                (m) => m.UnauthorizedComponent,
+            ),
+    },
+    {
+        path: "server-error",
+        loadComponent: () =>
+            import("./shared/components/route-pages/server-error/server-error.component").then(
+                (m) => m.ServerErrorComponent,
+            ),
+    },
+    {
+        path: "**",
+        loadComponent: () =>
+            import("./shared/components/route-pages/not-found/not-found.component").then((m) => m.NotFoundComponent),
+    },
 ];

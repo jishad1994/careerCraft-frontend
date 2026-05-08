@@ -13,10 +13,7 @@ declare const google: {
     accounts: {
         id: {
             initialize: (config: google.accounts.id.IdConfiguration) => void;
-            renderButton: (
-                parent: HTMLElement,
-                options: google.accounts.id.GsiButtonConfiguration,
-            ) => void;
+            renderButton: (parent: HTMLElement, options: google.accounts.id.GsiButtonConfiguration) => void;
         };
     };
 };
@@ -76,8 +73,8 @@ export class LoginPageComponent implements OnDestroy {
     initGoogleLogin(event: { role: "user" | "company"; elementId: string }) {
         google.accounts.id.initialize({
             client_id: this._clientId,
-            callback: (response:google.accounts.id.CredentialResponse) => {
-                const credential = response;
+            callback: (response: google.accounts.id.CredentialResponse) => {
+                const credential = response.credential;
                 this._googleAuth
                     .handleCredentialResponse(credential, event.role)
                     .pipe(takeUntil(this.destroy$))
@@ -104,12 +101,12 @@ export class LoginPageComponent implements OnDestroy {
         });
         const element = document.getElementById(event.elementId);
         if (!element) return;
-      google.accounts.id.renderButton(element, {
-    type: "standard",
-    theme: "outline",
-    size: "large",
-    width: 500,
-});
+        google.accounts.id.renderButton(element, {
+            type: "standard",
+            theme: "outline",
+            size: "large",
+            width: 500,
+        });
     }
 
     ngOnDestroy(): void {

@@ -20,6 +20,7 @@ import { ApiResponse } from '../../models/api-response.model';
 export class AuthService {
   private _http = inject(HttpClient);
   private _authStateService = inject(AuthStateService);
+  
   private _router = inject(Router);
 
 

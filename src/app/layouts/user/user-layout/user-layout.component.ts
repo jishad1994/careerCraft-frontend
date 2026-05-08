@@ -46,10 +46,7 @@ export class UserLayoutComponent implements OnInit, OnDestroy {
             label: "Messages",
             route: "/user/messages",
         },
-        {
-            label: "Companies",
-            route: "/companies",
-        },
+      
     ];
 
     // User Dropdown Menu Items
