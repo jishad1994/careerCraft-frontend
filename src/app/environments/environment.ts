@@ -13,7 +13,6 @@ export const environment = {
     GOOGLE_CLIENT_ID: "837953702796-lmr8bdkm366etmrbam57ejsog2m5onbq.apps.googleusercontent.com",
 
     PUBLIC_LOCATION_API_URL: "https://nominatim.openstreetmap.org",
-
     STRIPE_PUBLISHABLE_KEY:
         "pk_test_51T4H1SAXVRJhzuMJrhhQrAMF6H0bOMcrvW05YZMTjPiqhTqLy3XHwRJPqVb87alWIrgytd1h3hpGtKV70Gp8YMuU00LM7yWLqg",
 };
