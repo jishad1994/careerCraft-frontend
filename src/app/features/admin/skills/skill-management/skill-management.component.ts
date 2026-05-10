@@ -61,8 +61,8 @@ export class SkillManagementComponent implements OnInit {
                     this.total = res.pagination?.totalItems ?? 0;
                 },
 
-                error: (err) => {
-                    console.log(err.message);
+                error: () => {
+                  
                     this._snackBar.open("Skill loading failed", "close", {
                         duration: 2000,
                     });

@@ -21,14 +21,9 @@ export class LoginComponent {
   private FB = inject(FormBuilder);
 
   loginForm: FormGroup;
-  selectedRole: 'user' | 'company' = 'user';
-
-  @Output() googleLogin = new EventEmitter<{
-    role: "user"|"company";
-    elementId: string;
-  }>();
 
   @Input() loading = false;
+
   @Output() formSubmit = new EventEmitter<{
     role: string;
     email: string;
@@ -52,20 +47,15 @@ export class LoginComponent {
     this.formSubmit.emit(this.loginForm.value);
   }
 
+  get selectedLoginRole(): 'user' | 'company' {
+    return this.loginForm.get('role')?.value as 'user' | 'company';
+  }
+
   get email() {
     return this.loginForm.get('email')!;
   }
 
   get password() {
     return this.loginForm.get('password')!;
-  }
-
-  selectRole(role: 'user' | 'company'): void {
-    this.selectedRole = role;
-  }
-
-  handleGoogleLogin() {
-    const role = this.loginForm.get('role')?.value as 'user' | 'company';
-    this.googleLogin.emit({ role, elementId: 'google-login-btn' });
   }
 }

@@ -39,7 +39,6 @@ export class FloatingChatBarComponent implements OnInit, OnDestroy {
             }
         });
 
-        console.log(this.fullConverstaionLink)
 
         this.loadConversations();
         this.subscribeToSocketEvents();

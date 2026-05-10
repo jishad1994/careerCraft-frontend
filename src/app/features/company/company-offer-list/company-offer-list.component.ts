@@ -50,7 +50,6 @@ export class CompanyOfferListComponent implements OnInit, OnDestroy {
                         this.totalPages = res.pagination.totalPages;
                     }
 
-                    console.log("offer list", this.offers);
                     this.loading = false;
                 },
                 error: () => {

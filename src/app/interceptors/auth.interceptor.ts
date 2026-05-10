@@ -40,12 +40,10 @@ export const authInterceptor: HttpInterceptorFn = function (req, next) {
       if (error.status === 401 && !isRefreshing) {
         isRefreshing = true;
 
-        console.log('Access token expired, refreshing...');
 
         return authService.refresh().pipe(
           switchMap(() => {
             isRefreshing = false;
-            console.log('Token refreshed, retrying request');
 
             // Retry the original request
             const retryReq = req.clone({ withCredentials: true });
@@ -53,7 +51,6 @@ export const authInterceptor: HttpInterceptorFn = function (req, next) {
           }),
           catchError((refreshError) => {
             isRefreshing = false;
-            console.error('Refresh token failed');
 
             // Refresh failed - logout user
             authService.logout();
@@ -72,9 +69,7 @@ export const authInterceptor: HttpInterceptorFn = function (req, next) {
         );
       }
 
-      // Pass other errors to error interceptor
 
-      console.log('error is thrown without touching refresh');
       return throwError(() => error);
     }),
   );

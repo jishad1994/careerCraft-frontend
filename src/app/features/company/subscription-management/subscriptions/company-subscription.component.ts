@@ -74,7 +74,6 @@ export class CompanySubscriptionComponent implements OnInit, OnDestroy {
   viewCurrentSubscription(): void {
     if (this.activeSubscription) {
 
-      console.log('/company/dashboard/subscriptions/details', this.activeSubscription._id)
       this.router.navigate(['/company/dashboard/subscriptions/details', this.activeSubscription._id]);
     }
   }

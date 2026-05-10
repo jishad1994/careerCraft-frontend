@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnDestroy, OnInit, Output, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import {
   COMPANY_NAME_REGEX,
   NAME_REGEX,
@@ -12,12 +12,10 @@ import {
   FormGroup,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { FormValidators } from '../../../validators/form.validators';
 import { SignupFormHelper } from '../../../helpers/signup-form.helper';
-import { AuthService } from '../../../services/auth/auth.service';
 import { SignupServiceHandler } from '../../../services/signup-service.handler';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
@@ -29,10 +27,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class SignupComponent implements OnInit, OnDestroy {
   private FB = inject(FormBuilder);
-  private http = inject(HttpClient);
-  private authService = inject(AuthService);
   private formValidator = inject(FormValidators);
-  private router = inject(Router);
   private signupFormHelper = inject(SignupFormHelper);
   private signupServiceHandler = inject(SignupServiceHandler);
   private _snackBar = inject(MatSnackBar);
@@ -40,11 +35,6 @@ export class SignupComponent implements OnInit, OnDestroy {
   registerForm: FormGroup;
   selectedRole: 'user' | 'company' = 'user';
   private destroy$ = new Subject<void>();
-
-  @Output() GoogleSignupButton = new EventEmitter<{
-    role: 'user' | 'company';
-    elementId: string;
-  }>();
 
   constructor() {
     this.registerForm = this.FB.group(
@@ -103,6 +93,7 @@ export class SignupComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.setupRoleChangeListener();
   }
+
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
@@ -157,20 +148,15 @@ export class SignupComponent implements OnInit, OnDestroy {
       });
   }
 
-  // Getter for easy access in template
+  get selectedSignupRole(): 'user' | 'company' {
+    return this.registerForm.get('role')?.value as 'user' | 'company';
+  }
+
   get isCompanyMode() {
     return this.selectedRole === 'company';
   }
 
   get isUserMode() {
     return this.selectedRole === 'user';
-  }
-
-  handleGoogleSignup() {
-    console.log('google signup button clicked');
-    this.GoogleSignupButton.emit({
-      role: this.selectedRole,
-      elementId: 'google-login',
-    });
   }
 }

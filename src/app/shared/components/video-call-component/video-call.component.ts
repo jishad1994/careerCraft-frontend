@@ -87,7 +87,6 @@ export class VideoCallComponent implements OnInit, OnDestroy, AfterViewInit {
         // Check for return URL from navigation state (highest priority)
         const stateUrl = history.state?.returnUrl;
         if (stateUrl) {
-            console.log("Return URL from navigation state:", stateUrl);
             this.returnPageUrl = stateUrl;
         }
 
@@ -142,7 +141,6 @@ export class VideoCallComponent implements OnInit, OnDestroy, AfterViewInit {
             this.returnPageUrl = `/company/dashboard/interviews/${this.interviewId}`;
         }
 
-        console.log("Return URL set to:", this.returnPageUrl);
     }
 
     private updateVideoElements(state: CallState): void {
@@ -161,13 +159,11 @@ export class VideoCallComponent implements OnInit, OnDestroy, AfterViewInit {
             .onJoinedInterview()
             .pipe(takeUntil(this.destroy$))
             .subscribe((data: JoinedInterview) => {
-                console.log("Successfully joined interview:", data);
                 this.shouldInitiate = data.shouldInitiate;
                 this.existingParticipants = data.existingParticipants;
                 this.loading = false;
 
                 if (data.existingParticipants.length > 0) {
-                    console.log("Existing participants found:", data.existingParticipants);
                     this.waitingForParticipant = false;
 
                     const firstParticipant = data.existingParticipants[0];
@@ -176,7 +172,6 @@ export class VideoCallComponent implements OnInit, OnDestroy, AfterViewInit {
 
                     this.socketService.requestConnection(this.roomId, firstParticipant.socketId);
                 } else {
-                    console.log("First to join - waiting for participant");
                     this.waitingForParticipant = true;
                 }
             });
@@ -185,7 +180,6 @@ export class VideoCallComponent implements OnInit, OnDestroy, AfterViewInit {
             .onConnectionRequested()
             .pipe(takeUntil(this.destroy$))
             .subscribe((data: ConnectionRequested) => {
-                console.log("Connection requested by:", data.from);
                 this.remoteSocketId = data.from;
                 this.webrtcService.setRemoteSocketId(data.from);
 
@@ -197,7 +191,6 @@ export class VideoCallComponent implements OnInit, OnDestroy, AfterViewInit {
             .onUserJoined()
             .pipe(takeUntil(this.destroy$))
             .subscribe((data: UserJoined) => {
-                console.log("User joined:", data);
                 this.remoteSocketId = data.socketId;
                 this.webrtcService.setRemoteSocketId(data.socketId);
                 this.waitingForParticipant = false;
@@ -211,7 +204,6 @@ export class VideoCallComponent implements OnInit, OnDestroy, AfterViewInit {
             .onWebRTCOffer()
             .pipe(takeUntil(this.destroy$))
             .subscribe((data: WebRTCOffer) => {
-                console.log("Received offer from:", data.from);
                 this.remoteSocketId = data.from;
                 this.webrtcService.setRemoteSocketId(data.from);
                 this.webrtcService.handleOffer(data.offer, this.roomId, data.from).catch((err: Error) => {
@@ -223,7 +215,6 @@ export class VideoCallComponent implements OnInit, OnDestroy, AfterViewInit {
             .onWebRTCAnswer()
             .pipe(takeUntil(this.destroy$))
             .subscribe((data: WebRTCAnswer) => {
-                console.log("Received answer from:", data.from);
                 this.webrtcService.handleAnswer(data.answer).catch((err: Error) => {
                     console.error("Error handling answer:", err);
                 });
@@ -241,8 +232,7 @@ export class VideoCallComponent implements OnInit, OnDestroy, AfterViewInit {
         this.socketService
             .onUserLeft()
             .pipe(takeUntil(this.destroy$))
-            .subscribe((data: UserLeft) => {
-                console.log("User left:", data);
+            .subscribe((_data: UserLeft) => {
                 this.snackBar.open("Other participant left the call", "Close", {
                     duration: 3000,
                 });
@@ -267,7 +257,6 @@ export class VideoCallComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.setReturnUrl();
                 }
                 
-                console.log("Navigating to:", this.returnPageUrl);
                 
                 setTimeout(() => {
                     this.router.navigate([this.returnPageUrl]);
@@ -304,7 +293,6 @@ export class VideoCallComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     private createOffer(): void {
-        console.log("Creating offer for:", this.remoteSocketId);
         this.webrtcService.createOffer(this.roomId, this.remoteSocketId).catch((err: Error) => {
             console.error("Error creating offer:", err);
             this.snackBar.open("Failed to establish connection", "Close", {
@@ -342,7 +330,6 @@ export class VideoCallComponent implements OnInit, OnDestroy, AfterViewInit {
             this.setReturnUrl();
         }
 
-        console.log("Ending call, navigating to:", this.returnPageUrl);
 
         // Leave interview via SocketService
         this.socketService.leaveInterview(this.roomId, this.userId);

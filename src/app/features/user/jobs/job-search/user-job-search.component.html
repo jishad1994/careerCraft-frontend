@@ -1,43 +1,121 @@
-<div class="min-h-screen bg-gray-50">
-
+<div class="min-h-screen bg-slate-50">
   <!-- Search Header -->
-  <div class="bg-blue-600 text-white py-12">
-    <div class="container mx-auto px-4">
-      <h1 class="text-4xl font-bold mb-6">Find Your Dream Job</h1>
+  <section class="relative overflow-hidden bg-gradient-to-br from-indigo-700 via-indigo-600 to-blue-600 text-white">
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute -top-24 -right-24 w-72 h-72 bg-white rounded-full"></div>
+      <div class="absolute bottom-0 -left-24 w-72 h-72 bg-white rounded-full"></div>
+    </div>
+
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+      <div class="max-w-3xl">
+        <span class="inline-flex items-center px-4 py-2 rounded-full bg-white/15 text-indigo-50 text-sm font-medium mb-5">
+          {{ isPublicView ? "Open opportunities" : "Personalized job search" }}
+        </span>
+
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 leading-tight">
+          {{ isPublicView ? "Explore Open Jobs" : "Find Your Dream Job" }}
+        </h1>
+
+        <p class="text-indigo-100 text-base sm:text-lg max-w-2xl">
+          Search roles by title, company, keyword, or location and discover opportunities that match your career goals.
+        </p>
+      </div>
 
       <!-- Search Bar -->
-      <div class="bg-white rounded-lg p-4 shadow-lg">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <input [(ngModel)]="filters.keyword" (keyup.enter)="searchJobs()" type="text"
-            placeholder="Job title, keywords..."
-            class="px-4 py-3 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500">
+      <div class="mt-8 bg-white rounded-2xl shadow-2xl p-3 sm:p-4">
+        <div class="grid grid-cols-1 lg:grid-cols-[1fr_1fr_auto] gap-3">
+          <div class="flex items-center gap-3 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-indigo-500 transition">
+            <svg class="w-5 h-5 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              ></path>
+            </svg>
 
-          <input [(ngModel)]="filters.location" (keyup.enter)="searchJobs()" type="text"
-            placeholder="City, state, or country"
-            class="px-4 py-3 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500">
+            <input
+              [(ngModel)]="filters.keyword"
+              (keyup.enter)="searchJobs()"
+              type="text"
+              placeholder="Job title, company, or keyword"
+              class="w-full bg-transparent text-slate-900 placeholder-slate-400 outline-none"
+            />
+          </div>
 
-          <button (click)="searchJobs()"
-            class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
+          <div class="flex items-center gap-3 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-indigo-500 transition">
+            <svg class="w-5 h-5 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+              ></path>
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+              ></path>
+            </svg>
+
+            <input
+              [(ngModel)]="filters.location"
+              (keyup.enter)="searchJobs()"
+              type="text"
+              placeholder="City, state, or country"
+              class="w-full bg-transparent text-slate-900 placeholder-slate-400 outline-none"
+            />
+          </div>
+
+          <button
+            type="button"
+            (click)="searchJobs()"
+            class="px-7 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition font-semibold shadow-lg shadow-indigo-200"
+          >
             Search Jobs
           </button>
         </div>
       </div>
     </div>
-  </div>
+  </section>
 
-  <div class="container mx-auto px-4 py-8">
-    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-10">
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-8">
 
       <!-- Filters Sidebar -->
-      <div class="lg:col-span-1">
-        <div class="bg-white rounded-lg shadow-sm p-6">
-          <h3 class="text-lg font-semibold mb-4">Filters</h3>
+      <aside class="lg:col-span-1">
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-6 lg:sticky lg:top-6">
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <h3 class="text-lg font-bold text-slate-900">Filters</h3>
+              <p class="text-sm text-slate-500">Narrow your search</p>
+            </div>
+
+            <div class="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center">
+              <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L15 12.414V19a1 1 0 01-1.447.894l-4-2A1 1 0 019 17v-4.586L3.293 6.707A1 1 0 013 6V4z"
+                ></path>
+              </svg>
+            </div>
+          </div>
 
           <!-- Employment Type -->
-          <div class="mb-6">
-            <label for="employmentType" class="block text-sm font-medium text-gray-700 mb-2">Employment Type</label>
-            <select id="employmentType" [(ngModel)]="filters.employmentType" (change)="searchJobs()"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+          <div class="mb-5">
+            <label for="employmentType" class="block text-sm font-semibold text-slate-700 mb-2">
+              Employment Type
+            </label>
+
+            <select
+              id="employmentType"
+              [(ngModel)]="filters.employmentType"
+              (change)="searchJobs()"
+              class="w-full px-4 py-3 border border-slate-200 rounded-xl bg-slate-50 text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+            >
               <option value="">All Types</option>
               <option value="full-time">Full Time</option>
               <option value="part-time">Part Time</option>
@@ -48,10 +126,17 @@
           </div>
 
           <!-- Work Mode -->
-          <div class="mb-6">
-            <label for="" class="block text-sm font-medium text-gray-700 mb-2">Work Mode</label>
-            <select [(ngModel)]="filters.workMode" (change)="searchJobs()"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+          <div class="mb-5">
+            <label for="workMode" class="block text-sm font-semibold text-slate-700 mb-2">
+              Work Mode
+            </label>
+
+            <select
+              id="workMode"
+              [(ngModel)]="filters.workMode"
+              (change)="searchJobs()"
+              class="w-full px-4 py-3 border border-slate-200 rounded-xl bg-slate-50 text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+            >
               <option value="">All Modes</option>
               <option value="onsite">Onsite</option>
               <option value="remote">Remote</option>
@@ -60,105 +145,317 @@
           </div>
 
           <!-- Experience -->
-          <div class="mb-6">
-            <label for="experienceMin" class="block text-sm font-medium text-gray-700 mb-2">Min Experience
-              (years)</label>
-            <input id="experienceMin" type="number" [(ngModel)]="filters.experienceMin" (change)="searchJobs()"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" min="0"
-              placeholder="0">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
+            <div>
+              <label for="experienceMin" class="block text-sm font-semibold text-slate-700 mb-2">
+                Min Experience
+              </label>
+
+              <input
+                id="experienceMin"
+                type="number"
+                [(ngModel)]="filters.experienceMin"
+                (change)="searchJobs()"
+                class="w-full px-4 py-3 border border-slate-200 rounded-xl bg-slate-50 text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+                min="0"
+                placeholder="0 years"
+              />
+            </div>
+
+            <div>
+              <label for="experienceMax" class="block text-sm font-semibold text-slate-700 mb-2">
+                Max Experience
+              </label>
+
+              <input
+                id="experienceMax"
+                type="number"
+                [(ngModel)]="filters.experienceMax"
+                (change)="searchJobs()"
+                class="w-full px-4 py-3 border border-slate-200 rounded-xl bg-slate-50 text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+                min="0"
+                placeholder="5 years"
+              />
+            </div>
           </div>
 
-          <button (click)="clearFilters()"
-            class="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+          <!-- Salary -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 mt-5">
+            <div>
+              <label for="minSalary" class="block text-sm font-semibold text-slate-700 mb-2">
+                Min Salary
+              </label>
+
+              <input
+                id="minSalary"
+                type="number"
+                [(ngModel)]="filters.minSalary"
+                (change)="searchJobs()"
+                class="w-full px-4 py-3 border border-slate-200 rounded-xl bg-slate-50 text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+                min="0"
+                placeholder="Minimum"
+              />
+            </div>
+
+            <div>
+              <label for="maxSalary" class="block text-sm font-semibold text-slate-700 mb-2">
+                Max Salary
+              </label>
+
+              <input
+                id="maxSalary"
+                type="number"
+                [(ngModel)]="filters.maxSalary"
+                (change)="searchJobs()"
+                class="w-full px-4 py-3 border border-slate-200 rounded-xl bg-slate-50 text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+                min="0"
+                placeholder="Maximum"
+              />
+            </div>
+          </div>
+
+          <button
+            type="button"
+            (click)="clearFilters()"
+            class="w-full mt-6 px-4 py-3 border border-slate-300 text-slate-700 rounded-xl hover:bg-slate-50 transition font-semibold"
+          >
             Clear Filters
           </button>
         </div>
-      </div>
+      </aside>
 
       <!-- Jobs List -->
-      <div class="lg:col-span-3">
+      <section class="lg:col-span-3">
+        <!-- Top Bar -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-5 mb-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div>
+            <h2 class="text-xl font-bold text-slate-900">
+              Available Jobs
+            </h2>
 
-        <!-- Loading -->
-        <div *ngIf="loading" class="flex justify-center py-12">
-          <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            <p *ngIf="!loading && pagination" class="text-sm text-slate-500 mt-1">
+              Found {{ pagination.totalItems }} jobs matching your search
+            </p>
+
+            <p *ngIf="loading" class="text-sm text-slate-500 mt-1">
+              Searching for the best opportunities...
+            </p>
+          </div>
+
+          <span
+            class="inline-flex items-center justify-center px-4 py-2 rounded-full bg-indigo-50 text-indigo-700 text-sm font-semibold"
+          >
+            Page {{ pagination?.page || currentPage }}
+          </span>
         </div>
 
-        <!-- Results Count -->
-        <div *ngIf="!loading && pagination" class="mb-4 text-gray-600">
-          Found {{ pagination.totalItems }} jobs
+        <!-- Loading -->
+        <div *ngIf="loading" class="space-y-4">
+          <div
+            *ngFor="let item of [1, 2, 3]"
+            class="bg-white rounded-2xl border border-slate-200 p-6 animate-pulse"
+          >
+            <div class="flex gap-4">
+              <div class="w-14 h-14 rounded-xl bg-slate-200 flex-shrink-0"></div>
+              <div class="flex-1">
+                <div class="h-5 bg-slate-200 rounded w-2/3 mb-3"></div>
+                <div class="h-4 bg-slate-200 rounded w-1/3 mb-5"></div>
+                <div class="flex gap-2 mb-4">
+                  <div class="h-7 bg-slate-200 rounded-full w-20"></div>
+                  <div class="h-7 bg-slate-200 rounded-full w-20"></div>
+                  <div class="h-7 bg-slate-200 rounded-full w-24"></div>
+                </div>
+                <div class="h-4 bg-slate-200 rounded w-full mb-2"></div>
+                <div class="h-4 bg-slate-200 rounded w-4/5"></div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Job Cards -->
         <div *ngIf="!loading" class="space-y-4">
-          <button *ngFor="let job of jobs" (click)="viewJob(job.slug)" type="button"
-            class="w-full text-left bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow cursor-pointer">
+          <button
+            *ngFor="let job of jobs"
+            (click)="viewJob(job.slug)"
+            type="button"
+            class="group w-full text-left bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-6 hover:shadow-xl hover:border-indigo-300 transition-all duration-200"
+          >
+            <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
+              <div class="flex items-start gap-4">
+                <div
+                  class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center flex-shrink-0 shadow-md"
+                >
+                  <span class="text-white font-bold text-xl">
+                    {{ job.company.name.charAt(0).toUpperCase() }}
+                  </span>
+                </div>
 
-            <div class="flex justify-between items-start mb-3">
-              <div>
-                <h3 class="text-xl font-semibold text-gray-900 mb-1">{{ job.title }}</h3>
-                <p class="text-gray-600">{{ job.company.name }}</p>
+                <div>
+                  <h3 class="text-xl font-bold text-slate-900 mb-1 group-hover:text-indigo-700 transition">
+                    {{ job.title }}
+                  </h3>
+
+                  <p class="text-slate-600 font-medium">
+                    {{ job.company.name }}
+                  </p>
+                </div>
               </div>
-              <span *ngIf="job.isFeatured"
-                class="px-3 py-1 bg-yellow-100 text-yellow-800 text-sm font-medium rounded-full">
-                Featured
-              </span>
-            </div>
 
-            <div class="flex flex-wrap gap-3 text-sm text-gray-600 mb-4">
-              <span class="flex items-center gap-1">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                </svg>
-                {{ job.location.city }}, {{ job.location.country }}
-              </span>
-              <span class="px-2 py-1 bg-gray-100 rounded">{{ job.employmentType }}</span>
-              <span class="px-2 py-1 bg-gray-100 rounded">{{ job.workMode }}</span>
-              <span *ngIf="job.experience.min">{{ job.experience.min }}+ years</span>
-            </div>
+              <div class="flex items-center gap-2 flex-wrap">
+                <span
+                  *ngIf="job.isFeatured"
+                  class="px-3 py-1 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded-full"
+                >
+                  Featured
+                </span>
 
-            <p class="text-gray-700 mb-4 line-clamp-2">{{ job.description }}</p>
+                <span
+                  *ngIf="job.isVerified"
+                  class="px-3 py-1 bg-emerald-100 text-emerald-700 text-xs font-semibold rounded-full"
+                >
+                  Verified
+                </span>
+              </div>
+            </div>
 
             <div class="flex flex-wrap gap-2 mb-4">
-              <span *ngFor="let skill of job.skills.slice(0, 5)"
-                class="px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded-full">
+              <span class="px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-sm font-semibold capitalize">
+                {{ job.employmentType }}
+              </span>
+
+              <span class="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm font-semibold capitalize">
+                {{ job.workMode }}
+              </span>
+
+              <span class="px-3 py-1 bg-purple-50 text-purple-700 rounded-full text-sm font-semibold">
+                {{ job.experience.min }}{{ job.experience.max ? " - " + job.experience.max : "+" }} years
+              </span>
+            </div>
+
+            <p class="text-slate-600 mb-4 line-clamp-2 leading-relaxed">
+              {{ job.description }}
+            </p>
+
+            <div class="flex flex-wrap gap-2 mb-5" *ngIf="job.skills && job.skills.length > 0">
+              <span
+                *ngFor="let skill of job.skills.slice(0, 5)"
+                class="px-3 py-1 bg-slate-100 text-slate-700 text-xs font-medium rounded-full"
+              >
                 {{ skill.name }}
               </span>
-              <span *ngIf="job.skills.length > 5" class="px-2 py-1 text-gray-500 text-xs">
+
+              <span
+                *ngIf="job.skills.length > 5"
+                class="px-3 py-1 bg-slate-100 text-slate-500 text-xs font-medium rounded-full"
+              >
                 +{{ job.skills.length - 5 }} more
               </span>
             </div>
 
-            <div class="flex justify-between items-center text-sm text-gray-500">
-              <span>{{ job.applicationsCount }} applicants</span>
-              <span>Posted {{ getTimeAgo(job.createdAt) }}</span>
+            <div class="pt-4 border-t border-slate-100 flex flex-col md:flex-row md:items-center md:justify-between gap-3 text-sm text-slate-500">
+              <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
+                <span class="flex items-center gap-2">
+                  <svg class="w-4 h-4 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                    ></path>
+                  </svg>
+                  {{ job.location.city }}, {{ job.location.country }}
+                </span>
+
+                <span class="flex items-center gap-2">
+                  <svg class="w-4 h-4 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                    ></path>
+                  </svg>
+                  Posted {{ getTimeAgo(job.createdAt) }}
+                </span>
+
+                <span class="flex items-center gap-2">
+                  <svg class="w-4 h-4 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M17 20h5v-2a4 4 0 00-4-4h-1M9 20H4v-2a4 4 0 014-4h1m0-4a4 4 0 100-8 4 4 0 000 8zm8 0a4 4 0 100-8 4 4 0 000 8z"
+                    ></path>
+                  </svg>
+                  {{ job.applicationsCount }} applicants
+                </span>
+              </div>
+
+              <span class="inline-flex items-center text-indigo-600 font-bold group-hover:translate-x-1 transition">
+                View Details
+                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+              </span>
             </div>
           </button>
 
           <!-- Empty State -->
-          <div *ngIf="jobs.length === 0" class="text-center py-12">
-            <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-            </svg>
-            <p class="text-gray-500">No jobs found. Try adjusting your filters.</p>
+          <div *ngIf="jobs.length === 0" class="bg-white rounded-2xl border border-slate-200 text-center py-16 px-6">
+            <div class="w-20 h-20 mx-auto rounded-full bg-indigo-50 flex items-center justify-center mb-5">
+              <svg class="w-10 h-10 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                ></path>
+              </svg>
+            </div>
+
+            <h3 class="text-xl font-bold text-slate-900 mb-2">No jobs found</h3>
+            <p class="text-slate-500 mb-6">
+              Try changing your keyword, location, or filter options.
+            </p>
+
+            <button
+              type="button"
+              (click)="clearFilters()"
+              class="px-6 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition font-semibold"
+            >
+              Reset Search
+            </button>
           </div>
         </div>
 
         <!-- Pagination -->
-        <div *ngIf="pagination && jobs.length > 0" class="mt-6 flex justify-center gap-2">
-          <button (click)="changePage(pagination.page - 1)" [disabled]="!pagination.hasPrevPage"
-            class="px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50">
+        <div
+          *ngIf="pagination && jobs.length > 0"
+          class="mt-8 bg-white border border-slate-200 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+        >
+          <button
+            type="button"
+            (click)="changePage(pagination.page - 1)"
+            [disabled]="!pagination.hasPrevPage"
+            class="px-5 py-2.5 border border-slate-300 rounded-xl text-slate-700 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed font-semibold transition"
+          >
             Previous
           </button>
-          <span class="px-4 py-2">Page {{ pagination.page }} of {{ pagination.totalPages }}</span>
-          <button (click)="changePage(pagination.page + 1)" [disabled]="!pagination.hasNextPage"
-            class="px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50">
+
+          <span class="text-center text-sm text-slate-600 font-medium">
+            Page {{ pagination.page }} of {{ pagination.totalPages }}
+          </span>
+
+          <button
+            type="button"
+            (click)="changePage(pagination.page + 1)"
+            [disabled]="!pagination.hasNextPage"
+            class="px-5 py-2.5 border border-slate-300 rounded-xl text-slate-700 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed font-semibold transition"
+          >
             Next
           </button>
         </div>
-      </div>
-
+      </section>
     </div>
-  </div>
+  </main>
 </div>

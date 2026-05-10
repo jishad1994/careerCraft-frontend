@@ -17,7 +17,6 @@ import { AuthStateService } from '../../../services/authState/auth-state.service
 import { AuthService } from '../../../services/auth/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
-import { FloatingChatBarComponent } from "../../../shared/components/chat/floating-chat-bar/floating-chat-bar.component";
 
 @Component({
   selector: 'app-company-layout',
@@ -27,7 +26,6 @@ import { FloatingChatBarComponent } from "../../../shared/components/chat/floati
     FooterComponent,
     RouterOutlet,
     CommonModule,
-    FloatingChatBarComponent
 ],
   templateUrl: './company-layout.component.html',
   styleUrl: './company-layout.component.css',

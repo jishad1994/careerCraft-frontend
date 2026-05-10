@@ -110,12 +110,17 @@ export class SocketService implements OnDestroy {
     private readonly chatJoined$ = new Subject<{ conversationId: string; success: boolean }>();
 
     private readonly error$ = new Subject<string>();
+    private joinedConversationIds = new Set<string>();
     private listenersInitialized = false;
     // constructor() {}
 
     connect(): void {
         if (this.socket?.connected) {
-            console.log("Socket already connected");
+            return;
+        }
+
+        if (this.socket && !this.socket.connected) {
+            this.socket.connect();
             return;
         }
 
@@ -128,7 +133,7 @@ export class SocketService implements OnDestroy {
             reconnectionDelayMax: 5000,
             timeout: 20000,
         });
-
+        this.listenersInitialized = false;
         this.setupEventListeners();
     }
 
@@ -136,13 +141,13 @@ export class SocketService implements OnDestroy {
         if (!this.socket || this.listenersInitialized) return;
         this.listenersInitialized = true;
         this.socket.on("connect", () => {
-            console.log("Socket connected:", this.socket?.id);
             this.connected$.next(true);
             this.requestUnreadCount();
+            this.requestChatUnreadCount();
+            this.rejoinChatRooms();
         });
 
         this.socket.on("disconnect", () => {
-            console.log("Socket disconnected");
             this.connected$.next(false);
         });
 
@@ -153,13 +158,11 @@ export class SocketService implements OnDestroy {
 
         //notification events
         this.socket.on("notification:new", (notification: INotification) => {
-            console.log("New notification received:", notification);
             this.notification$.next(notification);
             this.incrementUnreadCount();
         });
 
         this.socket.on("notification:count", (data: { count: number }) => {
-            console.log("Unread count updated:", data.count);
             this.unreadCount$.next(data.count);
         });
 
@@ -167,43 +170,36 @@ export class SocketService implements OnDestroy {
 
         // New message received
         this.socket.on("chat:newMessage", (message: Message) => {
-            console.log("New chat message:", message);
             this.chatNewMessage$.next(message);
         });
 
         // Message notification (when not in conversation)
         this.socket.on("chat:messageNotification", (data: { conversationId: string; message: Message }) => {
-            console.log("Chat message notification:", data);
             this.chatMessageNotification$.next(data);
         });
 
         // Typing indicator
         this.socket.on("chat:typing", (data: TypingIndicator) => {
-            console.log("Typing indicator:", data);
             this.chatTyping$.next(data);
         });
 
         // Messages delivered
         this.socket.on("chat:messagesDelivered", (data: { conversationId: string; messageIds: string[] }) => {
-            console.log("Messages delivered:", data);
             this.chatMessagesDelivered$.next(data);
         });
 
         // Messages read
         this.socket.on("chat:messagesRead", (data: { conversationId: string; messageIds: string[]; readBy: string }) => {
-            console.log("Messages read:", data);
             this.chatMessagesRead$.next(data);
         });
 
         // Unread count update
         this.socket.on("chat:unreadCount", (data: { count: number }) => {
-            console.log("Chat unread count:", data.count);
             this.chatUnreadCount$.next(data.count);
         });
 
         // Joined conversation
         this.socket.on("chat:joined", (data: { conversationId: string; success: boolean }) => {
-            console.log("Joined conversation:", data);
             this.chatJoined$.next(data);
         });
 
@@ -211,61 +207,54 @@ export class SocketService implements OnDestroy {
 
         // Joined interview confirmation
         this.socket.on("joined-interview", (data: JoinedInterview) => {
-            console.log("Joined interview:", data);
             this.joinedInterview$.next(data);
         });
 
         // User joined room
         this.socket.on("user-joined", (data: UserJoined) => {
-            console.log("User joined:", data);
             this.userJoined$.next(data);
         });
 
         // User left room
         this.socket.on("user-left", (data: UserLeft) => {
-            console.log("User left:", data);
             this.userLeft$.next(data);
         });
 
         // Connection requested by late joiner
         this.socket.on("connection-requested", (data: ConnectionRequested) => {
-            console.log("Connection requested:", data);
             this.connectionRequested$.next(data);
         });
 
         // WebRTC offer received
         this.socket.on("webrtc-offer", (data: WebRTCOffer) => {
-            console.log("WebRTC offer received:", data);
             this.webrtcOffer$.next(data);
         });
 
         // WebRTC answer received
         this.socket.on("webrtc-answer", (data: WebRTCAnswer) => {
-            console.log("WebRTC answer received:", data);
             this.webrtcAnswer$.next(data);
         });
 
         // ICE candidate received
         this.socket.on("ice-candidate", (data: ICECandidate) => {
-            console.log("ICE candidate received");
             this.iceCandidate$.next(data);
         });
 
         // Interview ended
         this.socket.on("interview-ended", () => {
-            console.log("Interview ended");
             this.interviewEnded$.next();
         });
 
         //error handling for socket events
         this.socket.on("error", (error: { message: string }) => {
-            console.error("Socket error:", error.message);
             this.error$.next(error.message);
         });
 
-        this.socket.on("reconnect", (attemptNumber: number) => {
-            console.log("Socket reconnected after", attemptNumber, "attempts");
+        this.socket.on("reconnect", (_attemptNumber: number) => {
+            this.connected$.next(true);
             this.requestUnreadCount();
+            this.requestChatUnreadCount();
+            this.rejoinChatRooms();
         });
 
         this.socket.on("reconnect_error", (error: Error) => {
@@ -283,8 +272,11 @@ export class SocketService implements OnDestroy {
      */
     disconnect(): void {
         if (this.socket) {
+            this.socket.removeAllListeners();
             this.socket.disconnect();
             this.socket = null;
+            this.listenersInitialized = false;
+            this.joinedConversationIds.clear();
             this.connected$.next(false);
         }
     }
@@ -348,19 +340,40 @@ export class SocketService implements OnDestroy {
 
     // ============ CHAT METHODS ============
 
+    private rejoinChatRooms(): void {
+        if (!this.socket?.connected) return;
+
+        this.joinedConversationIds.forEach((conversationId) => {
+            this.socket?.emit("chat:join", { conversationId });
+        });
+    }
+
+    requestChatUnreadCount(): void {
+        if (this.socket?.connected) {
+            this.socket.emit("chat:getUnreadCount");
+        }
+    }
+
     /**
      * Join conversation room
      */
     joinConversation(conversationId: string): void {
-        if (this.socket?.connected) {
-            this.socket.emit("chat:join", { conversationId });
+        this.joinedConversationIds.add(conversationId);
+
+        if (!this.socket?.connected) {
+            this.connect();
+            return;
         }
+
+        this.socket.emit("chat:join", { conversationId });
     }
 
     /**
      * Leave conversation room
      */
     leaveConversation(conversationId: string): void {
+        this.joinedConversationIds.delete(conversationId);
+
         if (this.socket?.connected) {
             this.socket.emit("chat:leave", { conversationId });
         }
@@ -375,12 +388,13 @@ export class SocketService implements OnDestroy {
         messageType?: "text" | "file" | "system";
         attachments?: unknown[];
     }): void {
-         
-        if (this.socket?.connected) {
-
-           
-            this.socket.emit("chat:sendMessage", data);
+        if (!this.socket?.connected) {
+            this.connect();
+            this.error$.next("Chat connection was lost. Reconnecting, please try again.");
+            return;
         }
+
+        this.socket.emit("chat:sendMessage", data);
     }
 
     /**

@@ -1,4 +1,15 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, HostListener, OnChanges, SimpleChanges, inject } from "@angular/core";
+import {
+    Component,
+    Input,
+    Output,
+    EventEmitter,
+    OnInit,
+    OnDestroy,
+    HostListener,
+    OnChanges,
+    SimpleChanges,
+    inject,
+} from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { Router, RouterLink } from "@angular/router";
@@ -53,14 +64,17 @@ export class HeaderComponent implements OnInit, OnDestroy, OnChanges {
     private notificationsInitialized = false;
 
     ngOnInit(): void {
-        this.userAuthState.authState$.pipe(takeUntil(this.destroy$)).subscribe((state) => (this.user = state.user));
-        if (this.user) {
+        this.userAuthState.authState$.pipe(takeUntil(this.destroy$)).subscribe((state) => {
+            this.user = state.user;
 
-          console.log('user',this.user)
-            this.socketService.connect();
-            console.log("notifications intialized");
-            this.initializeNotifications();
-        }
+            if (state.isLoggedIn && state.user) {
+                this.socketService.connect();
+                this.initializeNotifications();
+                return;
+            }
+
+            this.resetNotifications();
+        });
     }
 
     ngOnDestroy(): void {
@@ -68,12 +82,9 @@ export class HeaderComponent implements OnInit, OnDestroy, OnChanges {
         this.destroy$.complete();
     }
     ngOnChanges(changes: SimpleChanges): void {
-        if (changes["user"]) {
-            this.resetNotifications();
-
-            if (this.user) {
-                this.initializeNotifications();
-            }
+        if (changes["user"] && this.user) {
+            this.socketService.connect();
+            this.initializeNotifications();
         }
     }
 
@@ -87,7 +98,6 @@ export class HeaderComponent implements OnInit, OnDestroy, OnChanges {
             .getUnreadCount()
             .pipe(takeUntil(this.destroy$))
             .subscribe((count) => {
-                console.log("notifications undread count reci ", count);
                 this.unreadCount = count;
             });
 

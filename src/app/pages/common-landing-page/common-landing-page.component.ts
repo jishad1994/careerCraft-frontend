@@ -1,33 +1,121 @@
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { CommonModule } from "@angular/common";
+import { Component, inject, OnDestroy, OnInit } from "@angular/core";
+import { FormsModule } from "@angular/forms";
+import { PublicJobsService } from "../../shared/services/public-jobs/public-jobs.service";
+import { Router } from "@angular/router";
+import { Subject, takeUntil } from "rxjs";
+import { Job } from "../../models/job/job.model";
 
 @Component({
-  selector: 'app-common-landing-page',
-  imports: [CommonModule,FormsModule,],
-  templateUrl: './common-landing-page.component.html',
-  styleUrl: './common-landing-page.component.css'
+    selector: "app-common-landing-page",
+    imports: [CommonModule, FormsModule],
+    templateUrl: "./common-landing-page.component.html",
+    styleUrl: "./common-landing-page.component.css",
 })
-export class CommonLandingPageComponent {
+export class CommonLandingPageComponent implements OnInit, OnDestroy {
+    private readonly _publicJobService = inject(PublicJobsService);
+    private readonly _router = inject(Router);
+    private readonly _destroy$ = new Subject<void>();
 
- featuredJobs = [
-    { id: 1, title: 'Senior Frontend Developer', company: 'TechCorp Inc.', location: 'San Francisco, CA', type: 'Full-time', salary: '$120k - $150k', posted: '2 days ago', logo: '🚀' },
-    { id: 2, title: 'Product Manager', company: 'Innovation Labs', location: 'New York, NY', type: 'Full-time', salary: '$130k - $160k', posted: '1 day ago', logo: '💡' },
-    { id: 3, title: 'UX/UI Designer', company: 'Creative Studio', location: 'Remote', type: 'Contract', salary: '$90k - $110k', posted: '3 days ago', logo: '🎨' },
-    { id: 4, title: 'Data Scientist', company: 'DataFlow Analytics', location: 'Boston, MA', type: 'Full-time', salary: '$140k - $170k', posted: '1 week ago', logo: '📊' },
-    { id: 5, title: 'DevOps Engineer', company: 'CloudScale Systems', location: 'Austin, TX', type: 'Full-time', salary: '$115k - $145k', posted: '4 days ago', logo: '⚙️' },
-    { id: 6, title: 'Marketing Director', company: 'Growth Dynamics', location: 'Los Angeles, CA', type: 'Full-time', salary: '$125k - $155k', posted: '5 days ago', logo: '📈' },
-  ];
+    featuredJobs: Job[] = [];
+    loadingFeaturedJobs = false;
 
-  categories = [
-    { name: 'Technology', count: 1234, icon: '💻' },
-    { name: 'Marketing', count: 856, icon: '📱' },
-    { name: 'Design', count: 645, icon: '🎨' },
-    { name: 'Finance', count: 432, icon: '💰' },
-    { name: 'Healthcare', count: 789, icon: '🏥' },
-    { name: 'Education', count: 567, icon: '📚' },
-  ];
+    keyword = "";
+    location = "";
 
- 
+    ngOnInit(): void {
+        this.loadFeaturedJobs();
+    }
 
+    loadFeaturedJobs(): void {
+        this.loadingFeaturedJobs = true;
+
+        this._publicJobService
+            .getFeaturedJobs()
+            .pipe(takeUntil(this._destroy$))
+            .subscribe({
+                next: (res) => {
+                    this.featuredJobs = res.data ?? [];
+                    this.loadingFeaturedJobs = false;
+                },
+                error: () => {
+                    this.featuredJobs = [];
+                    this.loadingFeaturedJobs = false;
+                },
+            });
+    }
+
+    searchJobs(): void {
+        const queryParams = {
+            ...(this.keyword.trim() && { keyword: this.keyword.trim() }),
+            ...(this.location.trim() && { location: this.location.trim() }),
+        };
+
+        this._router.navigate(["/jobs"], { queryParams });
+    }
+
+    viewJob(job: Job): void {
+        this._router.navigate(["/jobs", job.slug || job._id]);
+    }
+
+    getCompanyInitial(job: Job): string {
+        return job.company?.name?.charAt(0)?.toUpperCase() || "C";
+    }
+
+    getLocation(job: Job): string {
+        const city = job.location?.city;
+        const state = job.location?.state;
+        const country = job.location?.country;
+
+        return [city, state, country].filter(Boolean).join(", ");
+    }
+
+    getSalary(job: Job): string {
+        if (job.salary?.isHidden) {
+            return "Salary hidden";
+        }
+
+        const currency = job.salary?.currency || "";
+        const min = job.salary?.min;
+        const max = job.salary?.max;
+        const period = job.salary?.period ? `/${job.salary.period}` : "";
+
+        if (min && max) {
+            return `${currency} ${min} - ${max}${period}`;
+        }
+
+        if (min) {
+            return `${currency} ${min}+${period}`;
+        }
+
+        return "Not disclosed";
+    }
+
+    getExperienceLabel(job: Job): string {
+        const min = job.experience?.min;
+        const max = job.experience?.max;
+
+        if (min === 0 && !max) {
+            return "Fresher";
+        }
+
+        if (max) {
+            return `${min}-${max} years`;
+        }
+
+        return `${min}+ years`;
+    }
+
+    getShortDescription(description: string): string {
+        if (!description) {
+            return "View this opportunity and learn more about the role.";
+        }
+
+        return description.length > 140 ? `${description.slice(0, 140)}...` : description;
+    }
+
+    ngOnDestroy(): void {
+        this._destroy$.next();
+        this._destroy$.complete();
+    }
 }

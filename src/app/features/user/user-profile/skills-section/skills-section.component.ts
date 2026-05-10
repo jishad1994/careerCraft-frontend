@@ -85,7 +85,6 @@ export class SkillsSectionComponent implements OnDestroy {
   }
 
   addSkill(skillId: string): void {
-    console.log('Adding skill id:', skillId);
     
     this._userProfileService
       .addUserSkill(skillId)
@@ -108,7 +107,6 @@ export class SkillsSectionComponent implements OnDestroy {
   }
 
   removeSkill(skillId: string): void {
-    console.log('Removing skill id:', skillId);
 
     this._userProfileService
       .removeUserSkill(skillId)

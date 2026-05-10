@@ -45,7 +45,7 @@ export class PublicLayoutComponent implements  OnDestroy {
   navItems: NavItem[] = [
     {
       label: 'Featured Jobs',
-      route: '/faetured-jobs',
+      route: '/jobs',
     },
     {
       label: 'Companies',

@@ -163,7 +163,6 @@ export class CompanyAddressSectionComponent implements OnInit, OnDestroy {
 
     this.isSaving = true;
     const addressData: IAddress[] = this.addresses.value;
-console.log(addressData);
     this.companyProfileService
       .updateAddress(addressData)
       .pipe(takeUntil(this.destroy$))

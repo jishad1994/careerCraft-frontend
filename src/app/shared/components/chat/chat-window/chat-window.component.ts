@@ -33,6 +33,9 @@ export class ChatWindowComponent implements OnChanges, OnInit, AfterViewChecked,
     @ViewChild("messagesContainer") private messagesContainer!: ElementRef;
     @ViewChild("fileInput") private fileInput!: ElementRef;
 
+    private socketEventsInitialized = false;
+    private typingDebounceInitialized = false;
+
     messages: Message[] = [];
     messageContent = "";
     loading = true;
@@ -66,12 +69,11 @@ export class ChatWindowComponent implements OnChanges, OnInit, AfterViewChecked,
             }
         });
 
+        this.subscribeToSocketEvents();
+        this.setupTypingDebounce();
+
         if (this.conversation) {
-            this.otherParticipant = this.conversation.participants.find((p) => p.userId !== this.currentUserId) ?? null;
-            this.loadMessages();
-            this.joinConversation();
-            this.subscribeToSocketEvents();
-            this.setupTypingDebounce();
+            this.initializeConversation();
         }
     }
 
@@ -98,17 +100,25 @@ export class ChatWindowComponent implements OnChanges, OnInit, AfterViewChecked,
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes["conversation"] && this.conversation) {
-            this.currentPage = 1;
-            this.messages = [];
-            this.loading = true;
-
-            this.otherParticipant = this.conversation.participants.find((p) => p.userId !== this.currentUserId) ?? null;
-
-            this.loadMessages();
-            this.joinConversation();
-            this.subscribeToSocketEvents();
-            this.setupTypingDebounce();
+            this.initializeConversation();
         }
+    }
+
+    private initializeConversation(): void {
+        if (!this.conversation) {
+            return;
+        }
+
+        this.currentPage = 1;
+        this.messages = [];
+        this.loading = true;
+        this.hasMoreMessages = true;
+        this.otherUserTyping = false;
+
+        this.otherParticipant = this.conversation.participants.find((p) => p.userId !== this.currentUserId) ?? null;
+
+        this.loadMessages();
+        this.joinConversation();
     }
 
     loadMessages(): void {
@@ -158,23 +168,32 @@ export class ChatWindowComponent implements OnChanges, OnInit, AfterViewChecked,
     }
 
     subscribeToSocketEvents(): void {
-        // New message received
+        if (this.socketEventsInitialized) {
+            return;
+        }
+
+        this.socketEventsInitialized = true;
+
         this.socketService
             .onChatNewMessage()
             .pipe(takeUntil(this.destroy$))
             .subscribe((message) => {
                 if (message.conversationId === this.conversation?._id) {
+                    const alreadyExists = this.messages.some((msg) => msg._id === message._id);
+
+                    if (alreadyExists) {
+                        return;
+                    }
+
                     this.messages.push(message);
                     this.shouldScrollToBottom = true;
 
-                    // Mark as read if it's from other user
                     if (message.senderId !== this.currentUserId) {
                         this.markMessagesAsRead();
                     }
                 }
             });
 
-        // Typing indicator
         this.socketService
             .onChatTyping()
             .pipe(takeUntil(this.destroy$))
@@ -188,13 +207,11 @@ export class ChatWindowComponent implements OnChanges, OnInit, AfterViewChecked,
                 }
             });
 
-        // Messages read
         this.socketService
             .onChatMessagesRead()
             .pipe(takeUntil(this.destroy$))
             .subscribe((data) => {
                 if (data.conversationId === this.conversation?._id) {
-                    // Update message statuses to read
                     this.messages
                         .filter((msg) => data.messageIds.includes(msg._id))
                         .forEach((msg) => {
@@ -204,7 +221,6 @@ export class ChatWindowComponent implements OnChanges, OnInit, AfterViewChecked,
                 }
             });
 
-        // Messages delivered
         this.socketService
             .onChatMessagesDelivered()
             .pipe(takeUntil(this.destroy$))
@@ -221,6 +237,12 @@ export class ChatWindowComponent implements OnChanges, OnInit, AfterViewChecked,
     }
 
     setupTypingDebounce(): void {
+        if (this.typingDebounceInitialized) {
+            return;
+        }
+
+        this.typingDebounceInitialized = true;
+
         this.typingSubject.pipe(debounceTime(300), takeUntil(this.destroy$)).subscribe(() => {
             this.handleTyping();
         });

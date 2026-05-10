@@ -1,10 +1,11 @@
-import { Component, OnDestroy, inject } from "@angular/core";
+import { AfterViewInit, Component, OnDestroy, ViewChild, inject } from "@angular/core";
 import { SignupComponent } from "../../shared/components/signup/signup.component";
 import { GoogleAuthService } from "../../services/google-auth-service/google-auth.service";
 import { environment } from "../../environments/environment";
 import { Subject, takeUntil } from "rxjs";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { Router } from "@angular/router";
+
 declare const google: {
     accounts: {
         id: {
@@ -13,6 +14,7 @@ declare const google: {
         };
     };
 };
+
 @Component({
     selector: "app-signup-page",
     standalone: true,
@@ -20,7 +22,9 @@ declare const google: {
     templateUrl: "./signup-page.component.html",
     styleUrls: ["./signup-page.component.css"],
 })
-export class SignupPageComponent implements OnDestroy {
+export class SignupPageComponent implements AfterViewInit, OnDestroy {
+    @ViewChild(SignupComponent) signupComponent!: SignupComponent;
+
     private _googleAuth = inject(GoogleAuthService);
     private _snackBar = inject(MatSnackBar);
     private _router = inject(Router);
@@ -29,33 +33,55 @@ export class SignupPageComponent implements OnDestroy {
 
     destroy$ = new Subject<void>();
 
-    onGoogleSignup(event: { role: "user" | "company"; elementId: string }) {
+    ngAfterViewInit(): void {
+        this.renderGoogleSignupButton();
+    }
+
+    private renderGoogleSignupButton(): void {
+        const element = document.getElementById("google-signup-btn");
+
+        if (!element) {
+            return;
+        }
+
         google.accounts.id.initialize({
             client_id: this._clientId,
             callback: (response: google.accounts.id.CredentialResponse) => {
                 const credential = response.credential;
+                const role = this.signupComponent.selectedSignupRole;
+
                 this._googleAuth
-                    .handleCredentialResponse(credential, event.role)
+                    .handleCredentialResponse(credential, role)
                     .pipe(takeUntil(this.destroy$))
                     .subscribe({
                         next: (response) => {
-                            this._router.navigate([`${response.data.user.role}/home`]);
+                            const userRole = response.data.user.role;
+
+                            if (userRole === "company") {
+                                this._router.navigate(["/company/dashboard"]);
+                                return;
+                            }
+
+                            this._router.navigate(["/user/home"]);
                         },
                         error: () => {
-                            this._snackBar.open("google login failed", "close", { duration: 2000 });
+                            this._snackBar.open("Google signup failed", "close", {
+                                duration: 2000,
+                            });
                         },
                     });
             },
             auto_select: false,
             ux_mode: "popup",
         });
-        const element = document.getElementById(event.elementId);
-        if (!element) return;
+
         google.accounts.id.renderButton(element, {
             type: "standard",
             theme: "outline",
             size: "large",
-            width: 500,
+            width: 360,
+            text: "continue_with",
+            locale: "en",
         });
     }
 

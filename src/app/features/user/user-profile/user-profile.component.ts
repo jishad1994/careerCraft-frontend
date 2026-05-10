@@ -212,7 +212,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
           });
         },
         error: (err) => {
-          console.log(err.message);
           this.loading = false;
           this._snackBar.open(err.message, 'close', { duration: 3000 });
         },
@@ -270,7 +269,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           this.uploadingImage = false;
-          console.log(err.message);
           this._snackBar.open(err.error?.message, 'close', { duration: 2000 });
         },
       });
@@ -297,8 +295,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
             duration: 200,
           });
         },
-        error: (err) => {
-          console.log(err.message);
+        error: (_err) => {
           this.uploadingImage = false;
           this._snackBar.open('Failed to delete profile picture', 'close', {
             duration: 2000,

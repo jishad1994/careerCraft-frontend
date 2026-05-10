@@ -66,7 +66,6 @@ export class AuthEffects {
                 this._actions$.pipe(
                     ofType(loginSuccess),
                     tap(({ user }) => {
-                        console.log("login success effect worked");
                         this._snackBar.open("Login successful!", "close", {
                             duration: 3000,
                             panelClass: ["bg-green-600", "text-white"],
@@ -100,7 +99,6 @@ export class AuthEffects {
                 this._actions$.pipe(
                     ofType(logoutSuccess),
                     tap(() => {
-                        console.log("logout success worked");
                         this._snackBar.open("Logout successful!", "close", {
                             duration: 3000,
                             panelClass: ["bg-green-600", "text-white"],

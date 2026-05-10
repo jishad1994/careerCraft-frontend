@@ -4,7 +4,7 @@
         <div class="glass-effect rounded-2xl p-8 shadow-xl hover-lift">
 
 
-           
+
             <div class="w-full max-w-md bg-white p-8 rounded-2xl shadow-lg space-y-6">
                 <div class="px-6 py-6 border-b border-gray-100 bg-gray-50">
                     <h2 class="text-2xl font-semibold text-gray-900 text-center">Hello</h2>
@@ -40,7 +40,7 @@
                                 [class.focus:border-red-500]="password.touched && password.invalid" />
                             <div *ngIf="password.touched && password.invalid" class="text-red-600 text-xs mt-1">
                                 <div *ngIf="password.errors?.['required']">Password is required.</div>
-                                <div *ngIf="password.errors?.['noSpace']">Password should not have any spaces   .</div>
+                                <div *ngIf="password.errors?.['noSpace']">Password should not have any spaces .</div>
                                 <div *ngIf="password.errors?.['pattern']">
                                     Password must contain at least one uppercase letter, one lowercase letter, and one
                                     number.
@@ -86,13 +86,18 @@
             </div>
 
             <!-- Social Signup Buttons -->
-            <div class="space-y-3 mb-6">
+            <!-- <div class="space-y-3 mb-6">
                 <button (click)="handleGoogleLogin()" id="google-login-btn"
                     class="social-btn w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg bg-white hover:bg-gray-50 text-gray-700 font-medium">
                     <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google"
                         class="w-5 h-5 mr-3">
                     Continue with Google
                 </button>
+            </div> -->
+            <div class="space-y-3 mb-6">
+                <div class="w-full flex justify-center">
+                    <div id="google-login-btn"></div>
+                </div>
             </div>
 
             <div class="text-center mt-6">

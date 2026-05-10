@@ -11,11 +11,10 @@ import { FooterComponent, FooterSection, SocialLink } from "../../../shared/comp
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { HeaderComponent, NavItem } from "../../../shared/components/header/header.component";
-import { FloatingChatBarComponent } from "../../../shared/components/chat/floating-chat-bar/floating-chat-bar.component";
 
 @Component({
     selector: "app-user-layout",
-    imports: [FooterComponent, CommonModule, RouterModule, FormsModule, RouterOutlet, HeaderComponent, FloatingChatBarComponent],
+    imports: [FooterComponent, CommonModule, RouterModule, FormsModule, RouterOutlet, HeaderComponent, ],
     templateUrl: "./user-layout.component.html",
     styleUrl: "./user-layout.component.css",
 })

@@ -1,23 +1,30 @@
-import { Injectable, inject } from '@angular/core';
-import {
-  Router,
-  CanActivate,
+import { inject } from "@angular/core";
+import { CanActivateFn, Router } from "@angular/router";
+import { catchError, map, of } from "rxjs";
+import { AuthService } from "../services/auth/auth.service";
+import { AuthStateService } from "../services/authState/auth-state.service";
 
-} from '@angular/router';
+export const authGuard: CanActivateFn = (_route, state) => {
+    const authStateService = inject(AuthStateService);
+    const authService = inject(AuthService);
+    const router = inject(Router);
 
-@Injectable({
-  providedIn: 'root',
-})
-export class AuthGuard implements CanActivate {
-  private _router = inject(Router);
+    const currentAuthState = authStateService.authState;
 
-  canActivate(): boolean {
-    const token = localStorage.getItem('accessToken');
-
-    if (token) {
-      return true;
+    if (currentAuthState.isLoggedIn && currentAuthState.user) {
+        return true;
     }
-    this._router.navigate(['auth/login']);
-    return false;
-  }
-}
+
+    return authService.refresh().pipe(
+        map(() => true),
+        catchError(() =>
+            of(
+                router.createUrlTree(["/auth/login"], {
+                    queryParams: {
+                        returnUrl: state.url,
+                    },
+                }),
+            ),
+        ),
+    );
+};

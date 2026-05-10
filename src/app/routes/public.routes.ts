@@ -19,6 +19,28 @@ export const publicRoutes: Routes = [
                         (m) => m.CommonLandingPageComponent,
                     ),
             },
+
+            {
+                path: "jobs",
+                loadComponent: () =>
+                    import("../features/user/jobs/job-search/user-job-search.component").then(
+                        (m) => m.UserJobSearchComponent,
+                    ),
+                data: {
+                    public: true,
+                },
+            },
+            {
+                path: "jobs/:slug",
+                loadComponent: () =>
+                    import("../pages/public-job-view/public-job-view.component").then((m) => m.PublicJobViewComponent),
+            },
+
+            // {
+            //     path: "jobs/:id",
+            //     loadComponent: () =>
+            //         import("../pages/public-job-view/public-job-view.component").then((m) => m.PublicJobViewComponent),
+            // },
         ],
     },
 ];

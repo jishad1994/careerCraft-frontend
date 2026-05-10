@@ -93,7 +93,7 @@ export class CompanyApplicationViewComponent implements OnInit, OnDestroy {
 
         this.previousPageUrl = history.state?.returnUrl;
 
-        console.log("return url", history.state.returnUrl);
+       
     }
 
     ngOnDestroy(): void {
@@ -103,7 +103,7 @@ export class CompanyApplicationViewComponent implements OnInit, OnDestroy {
 
     loadApplication(): void {
         this.loading = true;
-        console.log("application id from:", this.applicationId);
+       
         this.applicationService
             .getApplicationById(this.applicationId)
             .pipe(takeUntil(this.destroy$))

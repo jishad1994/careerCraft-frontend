@@ -8,7 +8,7 @@ export const environment = {
     companyBaseUrl: "/api/company",
     adminBaseUrl: "/api/admin",
     skillManagementBaseUrl: "/api/skills",
-    logUrl: "assets/images/naukriLogo.svg",
+    logUrl: "assets/images/careerCraftLog.PNG",
 
     GOOGLE_CLIENT_ID: "837953702796-lmr8bdkm366etmrbam57ejsog2m5onbq.apps.googleusercontent.com",
 

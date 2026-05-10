@@ -107,7 +107,6 @@ export class AuthService {
           }
         }),
         catchError((error) => {
-          console.log(error.message);
           return throwError(error);
         }),
       );

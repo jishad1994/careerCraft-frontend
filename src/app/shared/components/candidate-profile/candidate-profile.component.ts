@@ -39,7 +39,6 @@ export class CandidateProfileComponent implements OnInit, OnDestroy {
 
         const state = history.state as { returnUrl?: string };
 
-        console.log("return url", state?.returnUrl);
         if (state?.returnUrl) {
             this.previousPageUrl = state.returnUrl;
         }

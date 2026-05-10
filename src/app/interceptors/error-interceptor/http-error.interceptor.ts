@@ -1,68 +1,57 @@
-import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
-import { inject } from '@angular/core';
-import { Router } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { ApiResponse } from '../../models/api-response.model';
-import { catchError, throwError } from 'rxjs';
-import { AuthService } from '../../services/auth/auth.service';
+import { HttpErrorResponse, HttpInterceptorFn } from "@angular/common/http";
+import { inject } from "@angular/core";
+import { Router } from "@angular/router";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { ApiResponse } from "../../models/api-response.model";
+import { catchError, throwError } from "rxjs";
+import { AuthService } from "../../services/auth/auth.service";
 
 export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
-  const router = inject(Router);
-  const snackBar = inject(MatSnackBar);
-  const authService = inject(AuthService);
+    const router = inject(Router);
+    const snackBar = inject(MatSnackBar);
+    const authService = inject(AuthService);
 
-  return next(req).pipe(
-    catchError((err: HttpErrorResponse) => {
-      const normalizedError: ApiResponse<null> = {
-        success: false,
-        message: err.error?.message || 'Something went wrong',
-        data: null,
-        pagination: undefined,
-        errors: err.error?.errors || null,
-        statusCode: err.status,
-      };
+    return next(req).pipe(
+        catchError((err: HttpErrorResponse) => {
+            const normalizedError: ApiResponse<null> = {
+                success: false,
+                message: err.error?.message || "Something went wrong",
+                data: null,
+                pagination: undefined,
+                errors: err.error?.errors || null,
+                statusCode: err.status,
+            };
 
-      switch (err.status) {
-        case 0:
-          snackBar.open(
-            'Cannot connect to server. Check your internet.',
-            'Close',
-            { duration: 3000 },
-          );
-          break;
+            switch (err.status) {
+                case 0:
+                    snackBar.open("Cannot connect to server. Check your internet.", "Close", { duration: 3000 });
+                    break;
 
-        case 401:
-          // If refresh token request fails → logout
-          if (!req.url.includes('/refresh')) {
-            // snackBar.open('Session expired. Please login again.', 'Close', {
-            //   duration: 3000,
-            // });
-            console.log('in error interceptor and logged out:');
+                case 401:
+                    // If refresh token request fails → logout
+                    if (!req.url.includes("/refresh")) {
+                        return throwError(() => err);
+                    }
 
-            // authService.logout();
-            // router.navigate(['/auth/login']);
-            return throwError(() => err);
-          }
+                    break;
 
-          break;
+                case 403:
+                    snackBar.open(normalizedError.message || "Access denied", "Close", {
+                        duration: 3000,
+                    });
 
-        case 403:
-          snackBar.open(normalizedError.message || 'Access denied', 'Close', {
-            duration: 3000,
-          });
+                    authService.logout();
+                    router.navigate(["/blocked"]);
 
-          authService.logout();
-          router.navigate(['/blocked']);
+                    break;
 
-          break;
+                case 500:
+                    // snackBar.open('Internal server error', 'Close', { duration: 3000 });
 
-        case 500:
-          snackBar.open('Internal server error', 'Close', { duration: 3000 });
+                    break;
+            }
 
-          break;
-      }
-
-      return throwError(() => normalizedError);
-    }),
-  );
+            return throwError(() => normalizedError);
+        }),
+    );
 };
