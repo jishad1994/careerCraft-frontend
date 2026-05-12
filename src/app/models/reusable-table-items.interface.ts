@@ -1,19 +1,4 @@
-// export interface TableColumn {
-//     key: string;
-//     label: string;
-//     type?: "text" | "badge" | "date" | "image" | "custom";
-//     sortable?: boolean;
-//     width?: string;
-//     transform?: (value: any, row?: any) => string;
-// }
 
-// export interface TableAction {
-//     type: "view" | "block" | "unblock" | string;
-//     label: string;
-//     icon?: string;
-//     class?: string;
-//     show?: (row: any) => boolean;
-// }
 export interface TableColumn<T extends object = object> {
     key: keyof T & string;
     label: string;
