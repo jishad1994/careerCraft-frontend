@@ -25,7 +25,7 @@
     </div>
 
     <!-- Table -->
-    <div *ngIf="!loading" class="overflow-x-auto">
+    <div *ngIf="!loading" class="overflow-x-hidden">
         <table class="w-full">
             <thead class="bg-gray-50 border-b border-gray-200">
                 <tr>
@@ -42,7 +42,7 @@
             <tbody class="bg-white divide-y divide-gray-200">
 
                 <tr *ngFor="let row of data" class="hover:bg-gray-50">
-                    <td *ngFor="let column of columns" class="px-6 py-4 whitespace-nowrap">
+                    <td *ngFor="let column of columns" class="px-4 py-4 whitespace-normal break-words">
 
                         <!-- Text Type -->
                         <div *ngIf="!column.type || column.type === 'text'" class="text-sm text-gray-900">
@@ -66,8 +66,8 @@
 
                     <!-- Actions Column -->
                     <td *ngIf="actions.length > 0"
-                        class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <div class="flex items-center justify-end gap-2">
+                        class="px-4 py-4 whitespace-normal text-right text-sm font-medium">
+                        <div class="flex flex-wrap items-center justify-end gap-2">
                             <ng-container *ngFor="let action of actions">
                                 <button *ngIf="!action.show || action.show(row)"
                                     (click)="onActionClick(action.type, row)"
