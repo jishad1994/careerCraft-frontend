@@ -1,0 +1,92 @@
+<div class="flex flex-col h-screen bg-gray-50">
+    <!-- Header -->
+    <header class="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
+        <div class="flex items-center justify-between px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+            <!-- Logo & Title -->
+            <div class="flex items-center gap-4">
+                <img src="assets/images/careerCraftLog.PNG" alt="CareerCraft" class="h-8 sm:h-10">
+
+                <!-- Mobile menu button -->
+                <button (click)="toggleMobileSidebar()" class="lg:hidden p-2 rounded-lg hover:bg-gray-100">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+
+                <div class="hidden sm:block border-l border-gray-300 pl-4">
+                    <h1 class="text-lg font-bold text-gray-900">Admin Dashboard</h1>
+                    <p class="text-xs text-gray-500">Manage your platform</p>
+                </div>
+            </div>
+
+            <!-- Right Side - User Info & Logout -->
+            <div class="flex items-center gap-4">
+                <!-- Admin Info -->
+                <!-- Admin Info -->
+                <div class="hidden md:flex items-center gap-3">
+                    <div class="text-right">
+                        <p class="text-sm font-semibold text-gray-900">
+                            {{ user?.firstName ?? 'Admin' }}
+                        </p>
+                        <p class="text-xs text-gray-500">{{ user?.email ?? '' }}</p>
+                    </div>
+                    <div
+                        class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
+                        <span class="text-white text-sm font-bold">{{ userInitials }}</span>
+                    </div>
+                </div>
+
+                <!-- Logout Button -->
+                <button (click)="logout()"
+                    class="flex items-center gap-2 px-3 sm:px-4 py-2 text-sm font-semibold text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
+                        </path>
+                    </svg>
+                    <span class="hidden sm:inline">Logout</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <div class="flex flex-1 overflow-hidden">
+        <!-- Sidebar -->
+        <app-sidebar #sidebarComponent></app-sidebar>
+
+        <!-- Main Content - Scrollable -->
+        <main class="flex-1 overflow-y-auto bg-gray-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+                <router-outlet></router-outlet>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-3">
+                <!-- Copyright -->
+                <p class="text-sm text-gray-600 font-medium">
+                    &copy; 2025 CareerCraft Admin Dashboard. All rights reserved.
+                </p>
+
+                <!-- Footer Links -->
+                <div class="flex items-center gap-4 text-sm">
+                    <a href="#" class="text-gray-500 hover:text-blue-600 transition-colors">Help Center</a>
+                    <span class="text-gray-300">|</span>
+                    <a href="#" class="text-gray-500 hover:text-blue-600 transition-colors">Privacy Policy</a>
+                    <span class="text-gray-300">|</span>
+                    <a href="#" class="text-gray-500 hover:text-blue-600 transition-colors">Terms</a>
+                </div>
+
+                <!-- Version Info -->
+                <div class="text-xs text-gray-400">
+                    Version 1.0.0
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>

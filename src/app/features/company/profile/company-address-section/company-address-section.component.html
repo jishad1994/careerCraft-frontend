@@ -1,0 +1,139 @@
+<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-6">
+    <div class="flex items-center gap-3">
+      <mat-icon class="text-blue-600 text-2xl">location_on</mat-icon>
+      <div>
+        <h2 class="text-lg font-semibold text-gray-900">Company Addresses</h2>
+        <p class="text-sm text-gray-500">Manage your company locations (Max: {{ maxAddresses }})</p>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex gap-2">
+      <button *ngIf="!isEditing && hasAddresses" mat-stroked-button (click)="startEditing()"
+        class="text-blue-600 border-blue-600 hover:bg-blue-50 rounded-full px-4 py-2 text-sm font-medium transition-colors">
+        <mat-icon class="text-lg mr-1">edit</mat-icon>
+        Edit
+      </button>
+
+      <button *ngIf="canAddMore" mat-raised-button (click)="addAddress()" [disabled]="isSaving"
+        class="bg-blue-600 text-white hover:bg-blue-700 rounded-full px-4 py-2 text-sm font-medium shadow-sm transition-colors disabled:opacity-50">
+        <mat-icon class="text-lg mr-1">add</mat-icon>
+        Add Address
+      </button>
+    </div>
+  </div>
+
+  <!-- No Addresses State -->
+  <div *ngIf="!hasAddresses" class="text-center py-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+    <mat-icon class="text-gray-400 text-5xl mb-3">location_off</mat-icon>
+    <p class="text-gray-600 mb-4">No addresses added yet</p>
+    <button mat-raised-button (click)="addAddress()"
+      class="bg-blue-600 text-white hover:bg-blue-700 rounded-full px-6 py-2 text-sm font-medium shadow-sm transition-colors">
+      <mat-icon class="text-lg mr-1">add</mat-icon>
+      Add First Address
+    </button>
+  </div>
+
+  <!-- Address Form -->
+  <form [formGroup]="addressForm" *ngIf="hasAddresses">
+    <div formArrayName="addresses" class="space-y-4">
+      <div *ngFor="let addressGroup of addresses.controls; let i = index" [formGroupName]="i"
+        class="p-5 border border-gray-200 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
+
+        <!-- Address Header -->
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-sm font-semibold text-gray-900 flex items-center gap-2">
+            <mat-icon class="text-blue-600 text-lg">place</mat-icon>
+            Address {{ i + 1 }}
+          </h3>
+          <button mat-icon-button (click)="removeAddress(i)" [disabled]="isSaving" matTooltip="Remove address"
+            class="text-red-600 hover:bg-red-50 rounded-full transition-colors disabled:opacity-50">
+            <mat-icon class="text-lg">delete</mat-icon>
+          </button>
+        </div>
+
+        <!-- Address Fields -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- City -->
+          <div class="flex flex-col">
+            <label for="city" class="text-sm font-medium text-gray-700 mb-1">
+              City <span class="text-red-500">*</span>
+            </label>
+            <input type="text" formControlName="city" placeholder="Enter city name" [readonly]="!isEditing"
+              class="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:bg-gray-100 disabled:cursor-not-allowed"
+              [class.border-red-500]="hasFieldError(i, 'city')" [class.bg-gray-100]="!isEditing" />
+            <span *ngIf="hasFieldError(i, 'city')" class="text-xs text-red-600 mt-1">
+              {{ getFieldError(i, 'city') }}
+            </span>
+          </div>
+
+          <!-- State -->
+          <div class="flex flex-col">
+            <label for="state" class="text-sm font-medium text-gray-700 mb-1">
+              State <span class="text-red-500">*</span>
+            </label>
+            <input type="text" formControlName="state" placeholder="Enter state name" [readonly]="!isEditing"
+              class="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:bg-gray-100 disabled:cursor-not-allowed"
+              [class.border-red-500]="hasFieldError(i, 'state')" [class.bg-gray-100]="!isEditing" />
+            <span *ngIf="hasFieldError(i, 'state')" class="text-xs text-red-600 mt-1">
+              {{ getFieldError(i, 'state') }}
+            </span>
+          </div>
+
+          <!-- Country -->
+          <div class="flex flex-col">
+            <label for="country" class="text-sm font-medium text-gray-700 mb-1">
+              Country <span class="text-red-500">*</span>
+            </label>
+            <input type="text" formControlName="country" placeholder="Enter country name" [readonly]="!isEditing"
+              class="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:bg-gray-100 disabled:cursor-not-allowed"
+              [class.border-red-500]="hasFieldError(i, 'country')" [class.bg-gray-100]="!isEditing" />
+            <span *ngIf="hasFieldError(i, 'country')" class="text-xs text-red-600 mt-1">
+              {{ getFieldError(i, 'country') }}
+            </span>
+          </div>
+
+          <!-- Postal Code -->
+          <div class="flex flex-col">
+            <label for="postalCode" class="text-sm font-medium text-gray-700 mb-1">
+              Postal Code <span class="text-red-500">*</span>
+            </label>
+            <input type="text" formControlName="postalCode" placeholder="Enter postal code" [readonly]="!isEditing"
+              class="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:bg-gray-100 disabled:cursor-not-allowed"
+              [class.border-red-500]="hasFieldError(i, 'postalCode')" [class.bg-gray-100]="!isEditing" />
+            <span *ngIf="hasFieldError(i, 'postalCode')" class="text-xs text-red-600 mt-1">
+              {{ getFieldError(i, 'postalCode') }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons (Edit Mode) -->
+    <div *ngIf="isEditing && hasAddresses" class="flex gap-3 mt-6 pt-6 border-t border-gray-200">
+      <button mat-raised-button (click)="saveAddresses()" [disabled]="isSaving || addressForm.invalid"
+        class="bg-green-600 text-white hover:bg-green-700 rounded-full px-6 py-2 text-sm font-medium shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+        <mat-icon class="text-lg mr-1" *ngIf="!isSaving">save</mat-icon>
+        <span class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"
+          *ngIf="isSaving"></span>
+        {{ isSaving ? 'Saving...' : 'Save Changes' }}
+      </button>
+
+      <button mat-button (click)="cancelEditing()" [disabled]="isSaving"
+        class="text-gray-700 hover:bg-gray-100 rounded-full px-6 py-2 text-sm font-medium transition-colors disabled:opacity-50">
+        Cancel
+      </button>
+    </div>
+  </form>
+
+  <!-- Address Counter -->
+  <div *ngIf="hasAddresses" class="mt-4 pt-4 border-t border-gray-200">
+    <p class="text-xs text-gray-500 flex items-center gap-2">
+      <mat-icon class="text-sm">info</mat-icon>
+      {{ addresses.length }} of {{ maxAddresses }} addresses added
+      <span *ngIf="!canAddMore" class="text-orange-600 font-medium">(Maximum reached)</span>
+    </p>
+  </div>
+</div>

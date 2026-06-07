@@ -1,0 +1,145 @@
+import { baseUrl, companyBaseUrl } from "./api-endpoints.constants";
+
+export const COMPANY_API_ENDPOINTS = {
+    PROFILE: {
+        GET_PROFILE: `${baseUrl}${companyBaseUrl}/me`,
+
+        UPDATE_PROFILE: `${baseUrl}${companyBaseUrl}/me`,
+
+        UPDATE_COMPANY_ADDRESS: `${baseUrl}${companyBaseUrl}/me/addresses`,
+
+        UPDATE_PROFILE_PICTURE: `${baseUrl}${companyBaseUrl}/me/profile-picture`,
+
+        DELETE_PROFILE_PICTURE: `${baseUrl}${companyBaseUrl}/me/profile-picture`,
+
+        UPDATE_BANNER_IMAGE: `${baseUrl}${companyBaseUrl}/me/banner-image`,
+
+        DELETE_BANNER_IMAGE: `${baseUrl}${companyBaseUrl}/me/banner-image`,
+
+        UPLOAD_DOCUMENTS: `${baseUrl}${companyBaseUrl}/me/documents`,
+
+        REAPPLY_FOR_VERIFICATION: `${baseUrl}${companyBaseUrl}/me/reapply-verification`,
+
+        DELETE_DOCUMENT: (key: string) => `${baseUrl}${companyBaseUrl}/me/documents?key=${key}`,
+        VIEW_DOCUMENT: (key: string, mode: string) => `${baseUrl}${companyBaseUrl}/me/documents?key=${key}&mode=${mode}`,
+    },
+
+    JOBS: {
+        CREATE_JOB: `${baseUrl}${companyBaseUrl}/jobs`,
+
+        GET_COMPANY_JOBS: `${baseUrl}${companyBaseUrl}/jobs`,
+
+        GET_JOB_BY_ID: (jobId: string) => `${baseUrl}${companyBaseUrl}/jobs/${jobId}`,
+
+        GET_APPLICATIONS_BY_JOB: (jobId: string) => `${baseUrl}${companyBaseUrl}/jobs/${jobId}/applications`,
+
+        UPDATE_JOB_BY_ID: (jobId: string) => `${baseUrl}${companyBaseUrl}/jobs/${jobId}`,
+
+        UPDATE_JOB_STATUS: (jobId: string) => `${baseUrl}${companyBaseUrl}/jobs/${jobId}/status`,
+
+        // GET_INTERVIEWS_BY_JOB: (jobId: string) =>
+        //   `${baseUrl}${companyBaseUrl}/jobs/${jobId}/interviews`,
+
+        GET_JOB_STATISTICS: `${baseUrl}${companyBaseUrl}/jobs/statistics`,
+
+        DELETE_JOB: (jobId: string) => `${baseUrl}${companyBaseUrl}/jobs/${jobId}`,
+        SEARCH_SKILLS: (query: string, page?: number, limit?: number) =>
+            `${baseUrl}${companyBaseUrl}/jobs/search-skills?query=${query}&page=${page}&limit=${limit}`,
+    },
+
+    APPLICATIONS: {
+        GET_BY_ID: (id: string) => `${baseUrl}${companyBaseUrl}/applications/${id}`,
+
+        GET_APPLICANTS: `${baseUrl}${companyBaseUrl}/applications`,
+
+        UPDATE_STATUS: (id: string) => `${baseUrl}${companyBaseUrl}/applications/${id}/update-status`,
+
+        MARK_AS_VIEWED: (id: string) => `${baseUrl}${companyBaseUrl}/applications/${id}/mark-viewed`,
+
+        TOGGLE_FLAG: (id: string) => `${baseUrl}${companyBaseUrl}/applications/${id}/toggle-flag`,
+
+        ADD_NOTES: (id: string) => `${baseUrl}${companyBaseUrl}/applications/${id}/add-notes`,
+
+        GET_RESUME: (applicationId: string, mode = "view") =>
+            `${baseUrl}${companyBaseUrl}/applications/${applicationId}/resume?mode=${mode}`,
+
+        SCHEDULE_INTERVIEW: (applicationId: string) =>
+            `${baseUrl}${companyBaseUrl}/applications/${applicationId}/interviews`,
+
+        RESCHEDULE_INTERVIEW: (applicationId: string, interviewId: string) =>
+            `${baseUrl}${companyBaseUrl}/applications/${applicationId}/interviews/${interviewId}/reschedule`,
+
+        CANCEL_INTERVIEW: (applicationId: string, interviewId: string) =>
+            `${baseUrl}${companyBaseUrl}/applications/${applicationId}/interviews/${interviewId}/cancel`,
+
+        COMPLETE_INTERVIEW: (applicationId: string, interviewId: string) =>
+            `${baseUrl}${companyBaseUrl}/applications/${applicationId}/interviews/${interviewId}/complete`,
+
+        UPDATE_INTERVIEW: (applicationId: string, interviewId: string) =>
+            `${baseUrl}${companyBaseUrl}/applications/${applicationId}/interviews/${interviewId}/update`,
+
+        GET_INTERVIEWS: `${baseUrl}${companyBaseUrl}/applications/interviews`,
+
+        GET_INTERVIEW_BY_ID: (interviewId: string) => `${baseUrl}${companyBaseUrl}/applications/interviews/${interviewId}`,
+
+        GET_INTERVIEW_STATISTICS: `${baseUrl}${companyBaseUrl}/applications/interviews/statistics`,
+
+        GET_UPCOMING_INTERVIEWS: `${baseUrl}${companyBaseUrl}/applications/interviews/upcoming`,
+    },
+
+    SUBSCRIPTION: {
+        GET_ACTIVE_SUBSCRIPTION: `${baseUrl}${companyBaseUrl}/subscriptions/active`,
+
+        GET_SUBSCRIPTION_INVOICE: (subscriptionId: string) =>
+            `${baseUrl}${companyBaseUrl}/subscriptions/${subscriptionId}/invoice`,
+
+        GET_PLAN_BY_ID: (planId: string) => `${baseUrl}${companyBaseUrl}/subscriptions/plans/${planId}`,
+
+        GET_ALL_ACTIVE_PLANS: `${baseUrl}${companyBaseUrl}/subscriptions/plans`,
+
+        GET_REMAINING_SUBSCRIPTION_LIMITS: `${baseUrl}${companyBaseUrl}/subscriptions/remaining-limits`,
+
+        CANCEL_SUSBCRIPTION: `${baseUrl}${companyBaseUrl}/subscriptions/cancel`,
+
+        CREATE_PAYMENT_INTEND_AND_SUBSCRIBE: `${baseUrl}${companyBaseUrl}/subscriptions`,
+
+        CONFIRM_PAYMENT_AND_ACTIVATE_SUBSCRIPTION: `${baseUrl}${companyBaseUrl}/subscriptions/payments/confirm`,
+
+        RETRY_PAYMENT: `${baseUrl}${companyBaseUrl}/subscriptions/payments`,
+
+        GET_PAYMENT: (paymentId: string) => `${baseUrl}${companyBaseUrl}/subscriptions/payments/${paymentId}`,
+
+        UPGRADE: `${baseUrl}${companyBaseUrl}/subscriptions/upgrade`,
+
+        GET_QUEUE: `${baseUrl}${companyBaseUrl}/subscriptions/queue`,
+    },
+
+    ADDONS: {
+        GET_ALL_AVAILABLE_ADDONS: `${baseUrl}${companyBaseUrl}/addons/available`,
+
+        PURCHASE_ADDON: (addonId: string) => `${baseUrl}${companyBaseUrl}/addons/${addonId}/purchase`,
+
+        CONFIRM_ADDON: `${baseUrl}${companyBaseUrl}/addons/confirm`,
+    },
+    CANDIDATES: {
+        getCandidateProfile: (candidateId: string) => `${baseUrl}${companyBaseUrl}/candidates/${candidateId}/profile`,
+
+        GET_RESUME_BY_CANDIDATE_ID: (candidateId: string, resumeKey: string, mode = "view") =>
+            `${baseUrl}${companyBaseUrl}/candidates/${candidateId}/resumes?resumeKey=${resumeKey}&mode=${mode}`,
+    },
+
+    INVOICE: {
+        GET_ALL_INVOICES: `${baseUrl}${companyBaseUrl}/invoices`,
+
+        DOWNLOAD_INVOICE: (invoiceId: string) => `${baseUrl}${companyBaseUrl}/invoices/${invoiceId}/download`,
+        VIEW_INVOICE: (invoiceId: string) => `${baseUrl}${companyBaseUrl}/invoices/${invoiceId}/view`,
+    },
+    OFFERS: {
+        LIST_OFFERS: `${baseUrl}${companyBaseUrl}/offers`,
+        CREATE_OFFER: `${baseUrl}${companyBaseUrl}/offers`,
+        GET_OFFER: (id: string) => `${baseUrl}${companyBaseUrl}/offers/${id}`,
+        DOWNLOAD_OFFERLETTER: (id: string) => `${baseUrl}${companyBaseUrl}/offers/${id}/pdf`,
+        VERIFY_OFFERLETTER: (id: string) => `${baseUrl}${companyBaseUrl}/offers/${id}/verify`,
+        GET_SIGNED_OFFERLETTER: (id: string) => `${baseUrl}${companyBaseUrl}/offers/${id}/signed-document`,
+    },
+} as const;

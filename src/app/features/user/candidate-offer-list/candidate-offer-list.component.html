@@ -1,0 +1,110 @@
+<div class="min-h-screen bg-gray-50 py-6">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <!-- Header -->
+        <div class="mb-6">
+            <h1 class="text-2xl font-bold text-gray-900">My Offer Letters</h1>
+            <p class="text-sm text-gray-500 mt-1">View and respond to offer letters from employers</p>
+        </div>
+
+        <!-- Filter -->
+        <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-4 mb-6">
+            <div class="flex items-center gap-3">
+                <p class="text-sm font-medium text-gray-700">Filter:</p>
+                <select [(ngModel)]="statusFilter" (ngModelChange)="onFilterChange()"
+                    class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <option value="">All</option>
+                    <option value="pending">Pending</option>
+                    <option value="accepted">Accepted</option>
+                    <option value="rejected">Rejected</option>
+                    <option value="verified">Verified</option>
+                </select>
+                <span class="text-sm text-gray-500 ml-auto">{{ total }} offer{{ total !== 1 ? 's' : '' }}</span>
+            </div>
+        </div>
+
+        <!-- Loading -->
+        <div *ngIf="loading" class="flex justify-center py-16">
+            <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+        </div>
+
+        <!-- Empty -->
+        <div *ngIf="!loading && offers.length === 0"
+            class="bg-white rounded-lg border border-gray-200 shadow-sm p-12 text-center">
+            <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                    d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+            </svg>
+            <p class="text-gray-500 text-sm">No offer letters yet</p>
+        </div>
+
+        <!-- List -->
+        <div *ngIf="!loading && offers.length > 0" class="space-y-3">
+            <button *ngFor="let offer of offers" (click)="viewOffer(offer._id)" type="button"
+                class="w-full text-left bg-white rounded-lg border border-gray-200 shadow-sm p-5 hover:border-blue-300 hover:shadow-md transition-all cursor-pointer">
+
+                <div class="flex items-start justify-between gap-4">
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-3 mb-2">
+                            <h3 class="font-semibold text-gray-900">{{ offer.company.name }}</h3>
+                            <span [class]="getStatusClass(offer.status)"
+                                class="px-2.5 py-0.5 text-xs font-medium rounded-full border">
+                                {{ offer.status | titlecase }}
+                            </span>
+                            <span *ngIf="isExpired(offer)"
+                                class="px-2 py-0.5 text-xs font-medium rounded-full bg-red-100 text-red-700 border border-red-300">
+                                Expired
+                            </span>
+                        </div>
+                        <p class="text-sm text-gray-700 font-medium">{{ offer.designation }} · {{ offer.department }}
+                        </p>
+                        <p class="text-sm text-gray-500">{{ offer.job.title }}</p>
+                    </div>
+                    <div class="text-right flex-shrink-0">
+                        <p class="text-sm font-semibold text-gray-900">
+                            {{ offer.compensation.currency }} {{ offer.compensation.baseSalary.toLocaleString() }}
+                            <span class="text-xs font-normal text-gray-500">/ {{ offer.compensation.period }}</span>
+                        </p>
+                        <p class="text-xs text-gray-500 mt-1">Join by {{ formatDate(offer.joiningDate) }}</p>
+                        <p class="text-xs text-gray-400">Received {{ formatDate(offer.offerDate) }}</p>
+                    </div>
+                </div>
+
+                <!-- Action needed indicator -->
+                <div *ngIf="offer.status === 'pending' && !isExpired(offer)" class="mt-3 pt-3 border-t border-gray-100">
+                    <span class="inline-flex items-center gap-1.5 text-xs font-medium text-amber-700">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Action required — respond before {{ formatDate(offer.expiresAt) }}
+                    </span>
+                </div>
+
+                <div *ngIf="offer.status === 'accepted' && !offer.signedDocument"
+                    class="mt-3 pt-3 border-t border-gray-100">
+                    <span class="inline-flex items-center gap-1.5 text-xs font-medium text-blue-700">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                        </svg>
+                        Upload signed document to complete
+                    </span>
+                </div>
+            </button>
+        </div>
+
+        <!-- Pagination -->
+        <div *ngIf="totalPages > 1" class="flex items-center justify-between mt-6">
+            <button (click)="prevPage()" [disabled]="page <= 1"
+                class="px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-50">
+                Previous
+            </button>
+            <span class="text-sm text-gray-600">Page {{ page }} of {{ totalPages }}</span>
+            <button (click)="nextPage()" [disabled]="page >= totalPages"
+                class="px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-50">
+                Next
+            </button>
+        </div>
+    </div>
+</div>

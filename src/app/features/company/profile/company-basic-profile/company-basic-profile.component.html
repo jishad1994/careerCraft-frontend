@@ -1,0 +1,423 @@
+<!-- Loading State -->
+<div *ngIf="loading && !profile" class="flex items-center justify-center min-h-[400px]">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+</div>
+
+<div *ngIf="profile" class="space-y-4">
+
+
+    <!-- profile  completion details -->
+    <!-- <div *ngIf="profile.profileCompletion< 100"
+        class="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-600 rounded-lg p-6 shadow-sm">
+        <div class="flex items-start justify-between">
+            <div class="flex-1">
+                <div class="flex items-center gap-3 mb-3">
+                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <h3 class="text-lg font-semibold text-gray-900">Complete Your Company Profile</h3>
+                </div>
+                <p class="text-sm text-gray-600 mb-4">
+                    A complete profile helps to get verified by Admin and job seekers learn more about your company and
+                    increases application rates
+                    by up to 3x.
+                </p>
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="font-medium" [ngClass]="getCompletionTextColor()">
+                            {{ profile.profileCompletion}}% Complete
+
+                        </span> -->
+    <!-- <button (click)="toggleCompletionDetails()"
+                            class="text-blue-600 hover:text-blue-700 font-medium">
+                            {{ showCompletionDetails ? 'Hide' : 'Show' }} Details
+                        </button> -->
+    <!-- </div>
+                    <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                        <div [ngClass]="getCompletionColor()"
+                            class="h-full transition-all duration-500 ease-out rounded-full"
+                            [style.width.%]="profile.profileCompletion"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> -->
+
+    <div *ngIf="isCompanyRejected" class="bg-red-50 border-l-4 border-red-500 rounded-lg p-6 shadow-sm">
+        <div class="flex items-start justify-between gap-4">
+            <div class="flex items-start gap-3 flex-1">
+                <svg class="w-6 h-6 text-red-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+                    </path>
+                </svg>
+                <div class="flex-1">
+                    <h3 class="text-lg font-semibold text-red-900 mb-2">Verification Rejected</h3>
+                    <p class="text-sm text-red-700 mb-3">
+                        Your company verification request has been rejected. Please review the rejection reasons, update
+                        your profile accordingly, and reapply for verification.
+                    </p>
+
+                    <p class="text-sm text-red-700 mb-3" *ngIf="latestRejectionReason as reason">
+                        <span class="font-medium">Reason:</span>
+                        {{ getRejectionMessage(reason) }}
+                    </p>
+
+                    <p *ngIf="latestRejectionReason" class="text-xs text-red-600">
+                        Rejected on: {{ latestRejectionReason.rejectedAt | date:'medium' }}
+                    </p>
+
+                    <p class="text-sm text-red-700 mb-3" *ngIf="!latestRejectionReason">
+                        Your company verification request has been rejected. Please update your profile and reapply for
+                        verification.
+                    </p>
+
+
+                    <!-- Requirements Check -->
+                    <div class="space-y-2 mb-4">
+                        <p class="text-sm font-medium text-red-800">Reapplication Requirements:</p>
+                        <div class="flex items-center gap-2 text-sm">
+                            <svg class="w-4 h-4" [class.text-green-600]="profile.profileCompletion >= 80"
+                                [class.text-red-600]="profile.profileCompletion < 80" fill="currentColor"
+                                viewBox="0 0 20 20">
+                                <path *ngIf="profile.profileCompletion >= 80" fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                    clip-rule="evenodd"></path>
+                                <path *ngIf="profile.profileCompletion < 80" fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                            <span [class.text-green-700]="profile.profileCompletion >= 80"
+                                [class.text-red-700]="profile.profileCompletion < 80">
+                                Profile completion: {{ profile.profileCompletion }}% (minimum 80% required)
+                            </span>
+                        </div>
+                        <div class="flex items-center gap-2 text-sm">
+                            <svg class="w-4 h-4"
+                                [class.text-green-600]="profile.documents && profile.documents.length > 0"
+                                [class.text-red-600]="!profile.documents || profile.documents.length === 0"
+                                fill="currentColor" viewBox="0 0 20 20">
+                                <path *ngIf="profile.documents && profile.documents.length > 0" fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                    clip-rule="evenodd"></path>
+                                <path *ngIf="!profile.documents || profile.documents.length === 0" fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                            <span [class.text-green-700]="profile.documents && profile.documents.length > 0"
+                                [class.text-red-700]="!profile.documents || profile.documents.length === 0">
+                                Documents: {{ profile.documents.length || 0 }} uploaded (at least 1 required)
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reapply Button -->
+            <button (click)="reapplyForVerification()" [disabled]="!canReapplyVerification || reapplyingVerification"
+                class="flex-shrink-0 px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2 font-medium shadow-sm">
+                <svg *ngIf="!reapplyingVerification" class="w-5 h-5" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <div *ngIf="reapplyingVerification" class="animate-spin rounded-full h-5 w-5 border-b-2 border-white">
+                </div>
+                {{ reapplyingVerification ? 'Submitting...' : 'Reapply for Verification' }}
+            </button>
+        </div>
+    </div>
+
+    <!-- Profile Completion Alert (if not rejected and not complete) -->
+    <div *ngIf="!isCompanyRejected && profile.profileCompletion < 100"
+        class="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-600 rounded-lg p-6 shadow-sm">
+        <div class="flex items-start justify-between">
+            <div class="flex-1">
+                <div class="flex items-center gap-3 mb-3">
+                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <h3 class="text-lg font-semibold text-gray-900">Complete Your Company Profile</h3>
+                </div>
+                <p class="text-sm text-gray-600 mb-4">
+                    A complete profile helps to get verified by Admin and job seekers learn more about your company and
+                    increases application rates by up to 3x.
+                </p>
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="font-medium" [ngClass]="getCompletionTextColor()">
+                            {{ profile.profileCompletion }}% Complete
+                        </span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                        <div [ngClass]="getCompletionColor()"
+                            class="h-full transition-all duration-500 ease-out rounded-full"
+                            [style.width.%]="profile.profileCompletion"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <!-- Header with Banner and Profile Picture -->
+    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+
+        <!-- Banner Image Section -->
+        <div class="relative h-48 bg-gradient-to-r from-blue-500 to-blue-600">
+            <img *ngIf="profile.bannerImage" [src]="profile.bannerImage.location" alt="Company Banner"
+                class="w-full h-full object-cover">
+
+            <!-- Banner Edit Button -->
+            <button (click)="toggleBannerMenu()" [disabled]="uploadingBanner"
+                class="absolute top-4 right-4 bg-white rounded-lg px-4 py-2 shadow-lg hover:bg-gray-50 transition-colors disabled:opacity-50 flex items-center gap-2">
+                <svg *ngIf="!uploadingBanner" class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z">
+                    </path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                </svg>
+                <div *ngIf="uploadingBanner" class="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
+                <span class="text-sm">Edit Banner</span>
+            </button>
+
+            <!-- Banner Menu -->
+            <div *ngIf="showBannerMenu"
+                class="absolute top-16 right-4 bg-white rounded-lg shadow-xl py-2 min-w-[180px] z-10">
+                <button (click)="onSelectBannerImage()"
+                    class="w-full px-4 py-2 text-left hover:bg-gray-100 flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                        </path>
+                    </svg>
+                    {{ profile.bannerImage ? 'Change Banner' : 'Upload Banner' }}
+                </button>
+                <button *ngIf="profile.bannerImage" (click)="deleteBannerImage()"
+                    class="w-full px-4 py-2 text-left hover:bg-red-50 text-red-600 flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                        </path>
+                    </svg>
+                    Delete Banner
+                </button>
+                <button (click)="toggleBannerMenu()"
+                    class="w-full px-4 py-2 text-left hover:bg-gray-100 text-gray-600 border-t">
+                    Cancel
+                </button>
+            </div>
+            <input type="file" id="bannerImageInput" accept="image/*" (change)="onBannerImageSelected($event)"
+                class="hidden">
+        </div>
+
+        <div class="px-6 pb-6">
+            <!-- Profile Picture -->
+            <div class="relative -mt-16 mb-4">
+                <div class="relative inline-block">
+                    <div class="w-32 h-32 rounded-full border-4 border-white overflow-hidden bg-white shadow-lg">
+                        <img *ngIf="profile.profilePicture" [src]="profile.profilePicture.location" [alt]="profile.name"
+                            class="w-full h-full object-cover">
+                        <div *ngIf="!profile.profilePicture"
+                            class="w-full h-full bg-blue-600 flex items-center justify-center text-white text-3xl font-semibold">
+                            {{ getInitials() }}
+                        </div>
+                    </div>
+
+                    <button (click)="toggleImageMenu()" [disabled]="uploadingImage"
+                        class="absolute bottom-0 right-0 bg-white rounded-full p-2 shadow-lg hover:bg-gray-50 transition-colors disabled:opacity-50">
+                        <svg *ngIf="!uploadingImage" class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z">
+                            </path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                        <div *ngIf="uploadingImage"
+                            class="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600">
+                        </div>
+                    </button>
+
+                    <!-- Profile Picture Menu -->
+                    <div *ngIf="showImageMenu"
+                        class="absolute top-full left-0 mt-2 bg-white rounded-lg shadow-xl py-2 min-w-[180px] z-10">
+                        <button (click)="onSelectProfileImage()"
+                            class="w-full px-4 py-2 text-left hover:bg-gray-100 flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                </path>
+                            </svg>
+                            {{ profile.profilePicture ? 'Change Photo' : 'Upload Photo' }}
+                        </button>
+                        <button *ngIf="profile.profilePicture" (click)="deleteProfilePicture()"
+                            class="w-full px-4 py-2 text-left hover:bg-red-50 text-red-600 flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                </path>
+                            </svg>
+                            Delete Photo
+                        </button>
+                        <button (click)="toggleImageMenu()"
+                            class="w-full px-4 py-2 text-left hover:bg-gray-100 text-gray-600 border-t">
+                            Cancel
+                        </button>
+                    </div>
+                    <input type="file" id="profilePictureInput" accept="image/*"
+                        (change)="onProfilePictureSelected($event)" class="hidden">
+                </div>
+
+                <!-- Verified Badge -->
+                <span *ngIf="profile.verificationStatus"
+                    class="ml-4 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {{getVerificationStatusBadgeClass}}">
+                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                            d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                            clip-rule="evenodd"></path>
+                    </svg>
+                    {{isCompanyVerified?'Verified':`Verification ${profile.verificationStatus}`}}   
+                </span>
+            </div>
+
+            <!-- Basic Info Section -->
+            <div *ngIf="!editBasicInfo">
+                <div class="flex items-start justify-between mb-4">
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900">{{ profile.name }}</h1>
+                        <p *ngIf="profile.industry" class="text-lg text-gray-600 mt-1">{{ profile.industry }}
+                        </p>
+                        <p *ngIf="profile.location" class="text-sm text-gray-500 mt-2">
+                            <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
+                                </path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                            {{ profile.location }}
+                        </p>
+                    </div>
+                    <button (click)="toggleEditBasicInfo()"
+                        class="px-4 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                            </path>
+                        </svg>
+                        Edit Profile
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 text-sm text-gray-600">
+                    <div class="flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+                            </path>
+                        </svg>
+                        {{ profile.email }}
+                    </div>
+                    <div *ngIf="profile.phone" class="flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z">
+                            </path>
+                        </svg>
+                        {{ profile.phone }}
+                    </div>
+                    <div *ngIf="profile.website" class="flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9">
+                            </path>
+                        </svg>
+                        <a [href]="profile.website" target="_blank" class="text-blue-600 hover:underline">{{
+                            profile.website }}</a>
+                    </div>
+                    <!-- <div *ngIf="profile.numberOfEmployees" class="flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                            </path>
+                        </svg>
+                        {{ profile.numberOfEmployees }} employees
+                    </div> -->
+                </div>
+            </div>
+
+            <!-- Basic Info Edit Form -->
+            <form *ngIf="editBasicInfo" [formGroup]="basicInfoForm" class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="col-span-2">
+                        <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Company Name *</label>
+                        <input type="text" formControlName="name"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                        <input type="tel" formControlName="phone"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label for="website" class="block text-sm font-medium text-gray-700 mb-1">Website</label>
+                        <input type="url" formControlName="website" placeholder="https://example.com"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label for="location" class="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                        <input type="text" formControlName="location"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label for="industry" class="block text-sm font-medium text-gray-700 mb-1">Industry</label>
+                        <input type="text" formControlName="industry" placeholder="e.g. Technology, Healthcare"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label for="GSTIN" class="block text-sm font-medium text-gray-700 mb-1">GSTIN</label>
+                        <input type="text" formControlName="GSTIN"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label for="numberOfEmployees" class="block text-sm font-medium text-gray-700 mb-1">Number of Employees</label>
+                        <input type="number" formControlName="numberOfEmployees"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div class="col-span-2">
+                        <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                        <textarea formControlName="description" rows="4" placeholder="Tell us about your company..."
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"></textarea>
+                    </div>
+                </div>
+                <div class="flex gap-2 pt-2">
+                    <button type="button" (click)="saveBasicInfo()" [disabled]="loading"
+                        class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors">
+                        {{ loading ? 'Saving...' : 'Save' }}
+                    </button>
+                    <button type="button" (click)="toggleEditBasicInfo()"
+                        class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- About Section -->
+    <div class="bg-white rounded-lg shadow-sm p-6" *ngIf="profile.description && !editBasicInfo">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">About</h2>
+        <p class="text-gray-700 whitespace-pre-line">{{ profile.description }}</p>
+    </div>
+
+
+</div>

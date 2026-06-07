@@ -1,0 +1,204 @@
+<div class="min-h-screen bg-gray-100">
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="flex items-center justify-center py-12">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+    </div>
+
+    <div *ngIf="!loading && profile" class="max-w-5xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
+
+        <!-- Back Button -->
+        <button (click)="goBack()" class="flex items-center text-gray-600 hover:text-gray-900 mb-4">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18">
+                </path>
+            </svg>
+            Go back
+        </button>
+
+        <!-- Profile Card -->
+        <div class="bg-white rounded-lg shadow-sm mb-4">
+            <!-- Banner Image -->
+            <div class="h-48 bg-gradient-to-r from-blue-500 to-blue-600 rounded-t-lg relative">
+                <img *ngIf="profile.bannerImage" [src]="profile.bannerImage.location" alt="Banner"
+                    class="w-full h-full object-cover rounded-t-lg">
+            </div>
+
+            <!-- Profile Info -->
+            <div class="px-6 pb-6">
+                <!-- Profile Picture -->
+                <div class="flex items-start -mt-16 mb-4">
+                    <div class="relative">
+                        <div class="w-32 h-32 rounded-full border-4 border-white bg-gray-200 overflow-hidden">
+                            <img *ngIf="profile.profilePicture" [src]="profile.profilePicture.location" alt="Profile"
+                                class="w-full h-full object-cover">
+                            <div *ngIf="!profile.profilePicture"
+                                class="w-full h-full flex items-center justify-center bg-blue-600 text-white text-4xl font-bold">
+                                {{ profile.firstName[0] }}{{ profile.lastName[0] }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Name and Info -->
+                <div class="mb-6">
+                    <h1 class="text-3xl font-bold text-gray-900">{{ profile.firstName }} {{ profile.lastName }}</h1>
+                    <p *ngIf="profile.location" class="text-gray-600 mt-1 flex items-center">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
+                            </path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                        {{ profile.location }}
+                    </p>
+                    <p class="text-gray-600 flex items-center mt-1">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+                            </path>
+                        </svg>
+                        {{ profile.totalExperienceYears }} years experience
+                    </p>
+                    <p class="text-sm text-gray-500 mt-1">{{ profile.email }}</p>
+                    <p *ngIf="profile.phone" class="text-sm text-gray-500">{{ profile.phone }}</p>
+                </div>
+
+                <!-- Profile Completion -->
+                <!-- <div class="mb-6">
+                    <div class="flex items-center justify-between text-sm mb-1">
+                        <span class="text-gray-600">Profile Completion</span>
+                        <span class="text-gray-900 font-medium">{{ profile.profileCompletion }}%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="bg-blue-600 h-2 rounded-full transition-all"
+                            [style.width.%]="profile.profileCompletion"></div>
+                    </div>
+                </div> -->
+            </div>
+        </div>
+
+        <!-- About -->
+        <div *ngIf="profile.about" class="bg-white rounded-lg shadow-sm p-6 mb-4">
+            <h2 class="text-xl font-bold text-gray-900 mb-4">About</h2>
+            <p class="text-gray-700 whitespace-pre-line">{{ profile.about }}</p>
+        </div>
+
+        <!-- Resumes -->
+        <!-- Resume -->
+        @if (latestResume) {
+        <div class="bg-white rounded-lg shadow-sm p-6 mb-4">
+            <h2 class="text-xl font-bold text-gray-900 mb-4">Resume</h2>
+            <div
+                class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                <div class="flex items-center flex-1">
+                    <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center mr-3 shrink-0">
+                        <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                        </svg>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="font-medium text-gray-900 truncate">{{ latestResume.originalName }}</p>
+                        <p class="text-sm text-gray-500">
+                            {{ (latestResume.size / 1024).toFixed(1) }} KB •
+                            Uploaded {{ formatDate(latestResume.uploadedAt.toString()) }}
+                        </p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 shrink-0 ml-4">
+                    <button (click)="viewResume(latestResume)"
+                        class="px-4 py-2 text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50 transition-colors font-medium text-sm">
+                        View
+                    </button>
+                    <button (click)="downloadResume(latestResume)"
+                        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm">
+                        Download
+                    </button>
+                </div>
+            </div>
+        </div>
+        }
+
+        <!-- Experience -->
+        <div *ngIf="profile.experience && profile.experience.length > 0" class="bg-white rounded-lg shadow-sm p-6 mb-4">
+            <h2 class="text-xl font-bold text-gray-900 mb-4">Experience</h2>
+            <div class="space-y-6">
+                <div *ngFor="let exp of profile.experience; let last = last" class="relative">
+                    <!-- Timeline dot -->
+                    <div class="absolute left-0 top-0 w-3 h-3 bg-blue-600 rounded-full"></div>
+                    <div *ngIf="!last" class="absolute left-[5px] top-3 bottom-0 w-0.5 bg-gray-200"></div>
+
+                    <div class="ml-6">
+                        <h3 class="text-lg font-semibold text-gray-900">{{ exp.jobTitle }}</h3>
+                        <p class="text-gray-700 font-medium">{{ exp.company }}</p>
+                        <p class="text-sm text-gray-500 mt-1">
+                            {{ formatDate(exp.startDate) }} - {{ exp.isCurrent ? 'Present' : formatDate(exp.endDate!) }}
+                            • {{ getExperienceDuration(exp) }}
+                        </p>
+                        <p *ngIf="exp.description" class="text-gray-600 mt-2">{{ exp.description }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Education -->
+        <div *ngIf="profile.education && profile.education.length > 0" class="bg-white rounded-lg shadow-sm p-6 mb-4">
+            <h2 class="text-xl font-bold text-gray-900 mb-4">Education</h2>
+            <div class="space-y-4">
+                <div *ngFor="let edu of profile.education" class="flex items-start">
+                    <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                        <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 14l9-5-9-5-9 5 9 5z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z">
+                            </path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-gray-900">{{ edu.institution }}</h3>
+                        <p class="text-gray-700">{{ edu.type }} in {{ edu.fieldOfStudy }}</p>
+                        <p class="text-sm text-gray-500 mt-1">{{ getEducationDuration(edu) }}</p>
+                        <p *ngIf="edu.grade" class="text-sm text-gray-600 mt-1">Grade: {{ edu.grade }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Skills -->
+        <div *ngIf="profile.skills && profile.skills.length > 0" class="bg-white rounded-lg shadow-sm p-6 mb-4">
+            <h2 class="text-xl font-bold text-gray-900 mb-4">Skills</h2>
+            <div class="flex flex-wrap gap-2">
+                <span *ngFor="let skill of profile.skills"
+                    class="px-4 py-2 bg-gray-100 text-gray-800 rounded-full text-sm font-medium hover:bg-gray-200 transition-colors">
+                    {{ skill.name }}
+                </span>
+            </div>
+        </div>
+
+        <!-- Certificates -->
+        <div *ngIf="profile.certificates && profile.certificates.length > 0"
+            class="bg-white rounded-lg shadow-sm p-6 mb-4">
+            <h2 class="text-xl font-bold text-gray-900 mb-4">Certificates</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div *ngFor="let cert of profile.certificates"
+                    class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z">
+                            </path>
+                        </svg>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="font-medium text-gray-900 truncate">{{ cert.originalName }}</p>
+                        <p class="text-xs text-gray-500">{{ formatDate(cert.uploadedAt.toString()) }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

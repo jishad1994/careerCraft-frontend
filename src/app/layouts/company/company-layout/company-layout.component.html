@@ -1,0 +1,43 @@
+<div class="flex flex-col h-screen bg-gray-50">
+
+  <!-- Header - Fixed at top -->
+  <app-header
+    [logoUrl]="logoUrl"
+    [logoRoute]="logoRoute"
+    [navItems]="navItems"
+    [userMenuItems]="userMenuItems"
+    [user]="currentUser"
+    [showSearch]="true"
+    [searchPlaceholder]="'Search candidates, skills...'"
+    (searchOutput)="onSearch($event)"
+    (logout)="onLogout()">
+  </app-header>
+
+  <!-- Body - Sidebar fixed, content + footer scrollable -->
+  <div class="flex flex-1 overflow-hidden">
+
+    <!-- Sidebar - Fixed, doesn't scroll -->
+    <app-company-side-bar></app-company-side-bar>
+
+    <!-- Main Content Area - Scrollable (includes footer) -->
+    <main class="flex-1 overflow-y-auto">
+      <div class="min-h-full flex flex-col">
+        <!-- Content -->
+        <div class="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6">
+          <router-outlet></router-outlet>
+        </div>
+
+        <!-- Footer - Scrolls with content -->
+        <app-footer
+          *ngIf="showFooter"
+          [logoUrl]="logoUrl"
+          [description]="'Find your suitable candidates or discover top talent. Connecting opportunities with excellence.'"
+          [sections]="footerSections"
+          [socialLinks]="socialLinks">
+        </app-footer>
+      </div>
+    </main>
+
+  </div>
+
+</div>

@@ -1,0 +1,29 @@
+/* Smooth transitions */
+button,
+input,
+textarea {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Custom scrollbar */
+.overflow-y-auto::-webkit-scrollbar {
+  width: 6px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 3px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb:hover {
+  background: #a0aec0;
+}
+
+/* Image cropper container styling */
+::ng-deep image-cropper {
+  max-height: 500px;
+}

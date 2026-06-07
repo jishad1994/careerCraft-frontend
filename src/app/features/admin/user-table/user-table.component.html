@@ -1,0 +1,11 @@
+<app-reusable-table
+    [title]="title"
+    [columns]="columns"
+    [data]="users"
+    [actions]="actions"
+    [pagination]="pagination"
+    [loading]="loading"
+    (pageChange)="onPageChange($event)"
+    (searchChange)="onSearch($event)"
+    (actionClick)="onActionClick($event.row, $event.type)">
+</app-reusable-table>

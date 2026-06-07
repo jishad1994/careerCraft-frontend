@@ -1,0 +1,50 @@
+import { Component, OnInit, inject } from "@angular/core";
+import { AuthService } from "../../../services/auth/auth.service";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { Router } from "@angular/router";
+import { AuthStateService } from "../../../services/authState/auth-state.service";
+import { Subject, takeUntil } from "rxjs";
+
+@Component({
+    selector: "app-company-landing-page",
+    imports: [],
+    templateUrl: "./company-landing-page.component.html",
+    styleUrl: "./company-landing-page.component.css",
+})
+export class CompanyLandingPageComponent implements OnInit {
+    private _authService = inject(AuthService);
+    private _snackbar = inject(MatSnackBar);
+    private _router = inject(Router);
+    private readonly _authState = inject(AuthStateService);
+
+    employerName = "employer";
+
+    destroy$ = new Subject<void>();
+
+    handleLogout() {
+        this._authService.logout().subscribe({
+            next: (res) => {
+                if (res.success) {
+                    this._snackbar.open("logout successfull", "close", {
+                        duration: 2000,
+                    });
+
+                    this._router.navigate(["/auth/login"]);
+                }
+            },
+            error: () => {
+                this._snackbar.open("some error occured", "close", {
+                    duration: 2000,
+                });
+            },
+        });
+    }
+
+    ngOnInit(): void {
+        this._authState.authState$.pipe(takeUntil(this.destroy$)).subscribe((state) => {
+            if (state.user?.name) {
+                this.employerName = state.user?.name;
+            }
+        });
+    }
+}

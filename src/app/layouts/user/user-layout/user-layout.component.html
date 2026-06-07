@@ -1,0 +1,19 @@
+<div class="flex flex-col min-h-screen">
+    <!-- Header -->
+    <app-header [logoUrl]="logoUrl" [logoRoute]="logoRoute" [navItems]="navItems" [userMenuItems]="userMenuItems"
+        [user]="currentUser" [userName]="userName" [showSearch]="true"
+        [searchPlaceholder]="'Search jobs, companies, skills...'" (searchOutput)="search($event)" (logout)="onLogout()">
+    </app-header>
+
+    <!-- Main Content Area -->
+    <main class="flex-1">
+        <router-outlet></router-outlet>
+        <!-- <app-floating-chat-bar></app-floating-chat-bar> -->
+    </main>
+
+    <!-- Footer -->
+    <app-footer *ngIf="showFooter" [logoUrl]="logoUrl"
+        [description]="'Find your dream job or discover top talent. Connecting opportunities with excellence.'"
+        [sections]="footerSections" [socialLinks]="socialLinks">
+    </app-footer>
+</div>

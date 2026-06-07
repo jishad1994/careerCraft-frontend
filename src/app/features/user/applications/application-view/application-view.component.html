@@ -1,0 +1,242 @@
+<div class="min-h-screen bg-gray-100 py-6">
+  <div class="max-w-5xl mx-auto px-4">
+
+    <!-- Loading -->
+    <div *ngIf="loading" class="flex justify-center items-center py-20">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+    </div>
+
+    <!-- Content -->
+    <div *ngIf="!loading && application" class="space-y-4">
+
+      <!-- Back Button -->
+      <button (click)="goBack()" class="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        <span class="font-medium">Back to Applications</span>
+      </button>
+
+      <!-- Header Card -->
+      <div class="bg-white rounded-lg shadow-sm border border-gray-300">
+        <div class="p-6">
+          <div class="flex justify-between items-start gap-4 mb-4">
+            <div class="flex-1">
+              <h1 class="text-2xl font-bold text-gray-900 mb-1">{{ application.jobDetails.title }}</h1>
+              <p class="text-gray-700 mb-1">{{ application.companyName }}</p>
+              <p class="text-gray-600 text-sm">
+                {{ application.jobDetails.location.city|titlecase }} • {{
+                application.jobDetails.location.state|titlecase }} • {{
+                application.jobDetails.location.country |titlecase}} •
+                {{ application.jobDetails.employmentType | titlecase }} •
+                {{ application.jobDetails.workMode | titlecase }}
+              </p>
+            </div>
+            <span [class]="getStatusClass(application.status)" class="px-4 py-2 text-sm font-semibold rounded-full">
+              {{ application.status | titlecase }}
+            </span>
+          </div>
+
+          <!-- Meta -->
+          <div class="flex flex-wrap gap-4 text-sm text-gray-600 pt-4 border-t border-gray-200 mb-4">
+            <span>Applied {{ getTimeAgo(application.appliedAt) }}</span>
+            <span>•</span>
+            <span *ngIf="application.viewedAt; else notViewed" class="text-green-600 font-medium">
+              ✓ Viewed by employer
+            </span>
+            <ng-template #notViewed>
+              <span class="text-gray-500">Not yet viewed</span>
+            </ng-template>
+          </div>
+
+          <!-- Actions -->
+          <div class="flex flex-wrap gap-3">
+            <button (click)="viewJob()"
+              class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 font-medium text-sm">
+              View Job
+            </button>
+            <button *ngIf="hasInterviews()" (click)="viewInterviews()"
+              class="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 font-medium text-sm flex items-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+              </svg>
+              Interviews ({{ getUpcomingInterviewsCount() }} upcoming)
+            </button>
+            <button *ngIf="canWithdraw()" (click)="openWithdrawModal()"
+              class="px-4 py-2 border border-red-300 text-red-700 rounded-md hover:bg-red-50 font-medium text-sm">
+              Withdraw
+            </button>
+            <button *ngIf="application.status==='shortlisted'" (click)="messageCompany()"
+              class="px-4 py-2 border bg-blue-600 text-white rounded-md hover:bg-blue-700 font-medium text-sm">
+              message recruiter
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Status Timeline (Last 5) -->
+      <div class="bg-white rounded-lg shadow-sm border border-gray-300 p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h2>
+        <div class="flex items-center gap-3 overflow-x-auto pb-2">
+          <div *ngFor="let status of getRecentStatusHistory(); let i = index" class="flex items-center flex-shrink-0">
+            <div class="flex flex-col items-center">
+              <div [class]="getStatusClass(status.status)"
+                class="w-10 h-10 rounded-full flex items-center justify-center font-semibold text-xs">
+                {{ i + 1 }}
+              </div>
+              <p class="text-xs font-medium text-gray-900 mt-2 whitespace-nowrap">{{ status.status | titlecase }}</p>
+              <p class="text-xs text-gray-500 whitespace-nowrap">{{ formatDate(status.changedAt) }}</p>
+            </div>
+            <div *ngIf="i < getRecentStatusHistory().length - 1" class="w-12 h-0.5 bg-gray-300 mx-2"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Application Details Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+
+        <!-- Resume -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-300 p-6">
+          <h3 class="font-semibold text-gray-900 mb-3">Resume</h3>
+          <div class="flex items-center justify-between p-3 bg-gray-50 rounded border border-gray-200">
+            <div class="flex items-center gap-3">
+              <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z">
+                </path>
+              </svg>
+              <div>
+                <p class="font-medium text-gray-900 text-sm">{{ application.resume.fileName }}</p>
+                <p class="text-xs text-gray-500">{{ formatDate(application.resume.uploadedAt) }}</p>
+              </div>
+            </div>
+            <button (click)="viewResume()" class="px-3 py-1.5 bg-blue-600 text-white rounded text-xs hover:bg-blue-700">
+              Download
+            </button>
+          </div>
+        </div>
+
+        <!-- Cover Letter -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-300 p-6">
+          <h3 class="font-semibold text-gray-900 mb-3">Cover Letter</h3>
+          <div *ngIf="application.coverLetter; else noCoverLetter">
+            <div *ngIf="application.coverLetter.type === 'text'"
+              class="p-3 bg-gray-50 rounded border border-gray-200 max-h-32 overflow-y-auto">
+              <p class="text-sm text-gray-700 line-clamp-4">{{ application.coverLetter.content }}</p>
+            </div>
+            <div *ngIf="application.coverLetter.type === 'document'"
+              class="flex items-center justify-between p-3 bg-gray-50 rounded border border-gray-200">
+              <div class="flex items-center gap-3">
+                <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                  </path>
+                </svg>
+                <p class="font-medium text-gray-900 text-sm">{{ application.coverLetter.fileName }}</p>
+              </div>
+              <button (click)="downloadCoverLetter()"
+                class="px-3 py-1.5 bg-blue-600 text-white rounded text-xs hover:bg-blue-700">
+                Download
+              </button>
+            </div>
+          </div>
+          <ng-template #noCoverLetter>
+            <p class="text-sm text-gray-500 italic">No cover letter submitted</p>
+          </ng-template>
+        </div>
+
+      </div>
+
+      <!-- Additional Info -->
+      <div class="bg-white rounded-lg shadow-sm border border-gray-300 p-6">
+        <h3 class="font-semibold text-gray-900 mb-4">Additional Information</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+          <div *ngIf="application.expectedSalary">
+            <p class="text-xs font-medium text-gray-600 mb-1">Expected Salary</p>
+            <p class="text-sm text-gray-900">
+              {{ application.expectedSalary.currency }} {{ application.expectedSalary.amount.toLocaleString() }} / {{
+              application.expectedSalary.period }}
+            </p>
+          </div>
+
+          <div *ngIf="application.availableFrom">
+            <p class="text-xs font-medium text-gray-600 mb-1">Available From</p>
+            <p class="text-sm text-gray-900">{{ formatDate(application.availableFrom) }}</p>
+          </div>
+
+          <div *ngIf="application.noticePeriod">
+            <p class="text-xs font-medium text-gray-600 mb-1">Notice Period</p>
+            <p class="text-sm text-gray-900">{{ application.noticePeriod }} days</p>
+          </div>
+
+          <div *ngIf="application.portfolioUrl">
+            <p class="text-xs font-medium text-gray-600 mb-1">Portfolio</p>
+            <a [href]="application.portfolioUrl" target="_blank"
+              class="text-sm text-blue-600 hover:underline truncate block">
+              {{ application.portfolioUrl }}
+            </a>
+          </div>
+
+          <div *ngIf="application.linkedinUrl">
+            <p class="text-xs font-medium text-gray-600 mb-1">LinkedIn</p>
+            <a [href]="application.linkedinUrl" target="_blank"
+              class="text-sm text-blue-600 hover:underline truncate block">
+              {{ application.linkedinUrl }}
+            </a>
+          </div>
+
+          <div *ngIf="application.githubUrl">
+            <p class="text-xs font-medium text-gray-600 mb-1">GitHub</p>
+            <a [href]="application.githubUrl" target="_blank"
+              class="text-sm text-blue-600 hover:underline truncate block">
+              {{ application.githubUrl }}
+            </a>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Withdraw Modal -->
+    <dialog #withdrawModal tabindex="0" role="dialog" aria-modal="true" aria-labelledby="withdraw-title"
+      (keydown.escape)="closeWithdrawModal()"
+      class="w-full max-w-md rounded-lg shadow-xl border-0 p-6 backdrop:bg-black backdrop:bg-opacity-50">
+
+      <h3 id="withdraw-title" class="text-lg font-bold text-gray-900 mb-4">
+        Withdraw Application?
+      </h3>
+
+      <p class="text-gray-700 mb-6">
+        Are you sure you want to withdraw your application for
+        <strong>{{ application?.jobDetails?.title }}</strong>?
+        This cannot be undone.
+      </p>
+
+      <div class="flex gap-3">
+        <button (click)="withdrawApplication()" [disabled]="withdrawing" type="button"
+          class="flex-1 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 font-medium disabled:opacity-50">
+          {{ withdrawing ? 'Withdrawing...' : 'Yes, Withdraw' }}
+        </button>
+
+        <button (click)="closeWithdrawModal()" [disabled]="withdrawing" type="button"
+          class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 font-medium">
+          Cancel
+        </button>
+      </div>
+    </dialog>
+    <!-- message company -->
+    <!-- <button *ngIf="application?.status=='shortlisted'" (click)="messageCompany()"
+      class="px-6 py-3 bg-white border-2 border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 flex items-center gap-2">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z">
+        </path>
+      </svg>
+      <span>Message Recruiter</span>
+    </button> -->
+
+  </div>
+</div>

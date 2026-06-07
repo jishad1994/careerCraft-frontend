@@ -1,0 +1,186 @@
+<div class="min-h-screen bg-gray-50 py-6 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto">
+
+        <!-- Header -->
+        <div class="mb-6">
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Notifications</h1>
+            <p class="mt-1 text-sm text-gray-600">Stay updated with your latest activities</p>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="mb-6 flex flex-wrap gap-3">
+            <button (click)="markAllAsRead()"
+                class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors">
+                Mark All as Read
+            </button>
+
+            <!-- <button (click)="deleteAllRead()"
+                class="px-4 py-2 bg-gray-600 text-white text-sm font-medium rounded-lg hover:bg-gray-700 transition-colors">
+                Delete Read
+            </button> -->
+
+            <button (click)="clearAll()"
+                class="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition-colors">
+                Clear All
+            </button>
+        </div>
+
+        <!-- Loading State -->
+        <div *ngIf="loading" class="bg-white rounded-lg shadow-sm border border-gray-200 p-12">
+            <div class="flex flex-col items-center justify-center">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
+                <p class="text-gray-600">Loading notifications...</p>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="!loading && notifications.length === 0"
+            class="bg-white rounded-lg shadow-sm border border-gray-200 p-12">
+            <div class="flex flex-col items-center justify-center">
+                <svg class="w-16 h-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9">
+                    </path>
+                </svg>
+                <h3 class="text-lg font-medium text-gray-900 mb-1">No notifications</h3>
+                <p class="text-sm text-gray-500">You're all caught up!</p>
+            </div>
+        </div>
+
+        <!-- Notifications List -->
+        <!-- Notifications List -->
+        <div *ngIf="!loading && notifications.length > 0" class="space-y-3">
+            <button *ngFor="let notification of notifications" (click)="onNotificationClick(notification)" type="button"
+                class="w-full text-left bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow cursor-pointer"
+                [class.bg-blue-50]="!notification.isRead" [class.border-blue-200]="!notification.isRead">
+
+                <div class="flex items-start gap-3">
+                    <!-- Icon -->
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center"
+                            [ngClass]="getNotificationColorClass(notification.type)">
+                            <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    [attr.d]="getNotificationIcon(notification.type)">
+                                </path>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Content -->
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-start justify-between gap-2 mb-1">
+                            <h3 class="text-sm sm:text-base font-semibold text-gray-900"
+                                [class.font-bold]="!notification.isRead">
+                                {{ notification.title }}
+                            </h3>
+
+                            <!-- Priority Badge -->
+                            <span
+                                class="flex-shrink-0 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border"
+                                [ngClass]="getPriorityBadgeClass(notification.priority)">
+                                {{ notification.priority }}
+                            </span>
+                        </div>
+
+                        <p class="text-sm text-gray-600 mb-2">
+                            {{ notification.message }}
+                        </p>
+
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs text-gray-500">
+                                {{ getTimeAgo(notification.createdAt.toString()) }}
+                            </span>
+
+                            <!-- Actions -->
+                            <div class="flex items-center gap-2">
+                                <button *ngIf="!notification.isRead"
+                                    (click)="markAsRead(notification); $event.stopPropagation()" type="button"
+                                    class="text-xs text-blue-600 hover:text-blue-700 font-medium">
+                                    Mark as read
+                                </button>
+
+                                <button (click)="deleteNotification(notification, $event)" type="button"
+                                    class="p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                        </path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Unread Indicator -->
+                        <div *ngIf="!notification.isRead" class="absolute top-4 right-4">
+                            <span class="inline-block w-2 h-2 bg-blue-600 rounded-full"></span>
+                        </div>
+                    </div>
+                </div>
+            </button>
+        </div>
+
+        <!-- Pagination -->
+        <div *ngIf="!loading && notifications.length > 0"
+            class="mt-6 bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+
+            <!-- Mobile Pagination -->
+            <div class="flex sm:hidden items-center justify-between">
+                <button (click)="prevPage()" [disabled]="!hasPrevPage"
+                    class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                    Previous
+                </button>
+
+                <span class="text-sm text-gray-700">
+                    Page {{ currentPage }} of {{ totalPages }}
+                </span>
+
+                <button (click)="nextPage()" [disabled]="!hasNextPage"
+                    class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                    Next
+                </button>
+            </div>
+
+            <!-- Desktop Pagination -->
+            <div class="hidden sm:flex items-center justify-between">
+                <div class="text-sm text-gray-700">
+                    Showing {{ (currentPage - 1) * pageSize + 1 }} to
+                    {{ toCurrentPageLimit(currentPage, pageSize, totalItems) }} of
+                    {{ totalItems }} results
+                </div>
+
+                <nav class="flex items-center gap-1">
+                    <button (click)="prevPage()" [disabled]="!hasPrevPage"
+                        class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </button>
+
+                    <button *ngFor="let page of getPageNumbers()" (click)="page !== -1 && goToPage(page)"
+                        [disabled]="page === -1"
+                        class="px-4 py-2 text-sm font-medium border border-gray-300 rounded-lg transition-colors"
+                        [ngClass]="{
+                    'bg-blue-600 text-white border-blue-600': page === currentPage,
+                    'bg-white text-gray-700 hover:bg-gray-50': page !== currentPage && page !== -1,
+                    'bg-white text-gray-400 cursor-default': page === -1
+                  }">
+                        {{ page === -1 ? '...' : page }}
+                    </button>
+
+                    <button (click)="nextPage()" [disabled]="!hasNextPage"
+                        class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                </nav>
+            </div>
+        </div>
+
+    </div>
+</div>

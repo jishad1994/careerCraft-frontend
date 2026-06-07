@@ -1,0 +1,39 @@
+<div class="flex flex-col md:flex-row gap-4 mb-4">
+
+  <!-- Verification Filter -->
+  <div class="w-full md:w-64">
+    <label
+      for="verificationStatus"
+      class="block text-sm font-medium text-gray-700 mb-1">
+      Verification Status
+    </label>
+
+    <select
+      id="verificationStatus"
+      name="verificationStatus"
+      [(ngModel)]="selectedStatus"
+      (change)="onStatusFilterChange()"
+      class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+      <option
+        *ngFor="let opt of verificationStatusOptions"
+        [value]="opt.value">
+        {{ opt.label }}
+      </option>
+    </select>
+  </div>
+
+</div>
+
+<div class="container mx-auto px-4 py-8 overflow-hidden">
+  <app-reusable-table
+    [title]="title"
+    [columns]="columns"
+    [data]="companies"
+    [actions]="actions"
+    [pagination]="pagination"
+    [loading]="loading"
+    (pageChange)="onPageChange($event)"
+    (searchChange)="onSearch($event)"
+    (actionClick)="onActionClick($event)">
+  </app-reusable-table>
+</div>

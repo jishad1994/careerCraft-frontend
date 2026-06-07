@@ -1,0 +1,251 @@
+<div class="min-h-screen bg-gray-50 py-8">
+  <div class="max-w-4xl mx-auto px-4">
+
+    <!-- Header -->
+    <div class="mb-6">
+      <button (click)="goBack()" class="text-blue-600 hover:text-blue-700 flex items-center gap-2 mb-4">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        Back to Jobs
+      </button>
+      <h1 class="text-3xl font-bold text-gray-900">Post a New Job</h1>
+    </div>
+
+    <!-- Form -->
+    <form [formGroup]="jobForm" (ngSubmit)="onSubmit()" class="bg-white rounded-lg shadow-sm p-6 space-y-6">
+
+      <!-- Basic Information -->
+      <div>
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">Basic Information</h2>
+
+        <div class="space-y-4">
+          <div>
+            <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Job Title *</label>
+            <input type="text" formControlName="title"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              placeholder="e.g. Senior Software Engineer">
+            <div *ngIf="jobForm.get('title')?.touched && jobForm.get('title')?.errors"
+              class="text-red-600 text-sm mt-1">
+              Job title is required
+            </div>
+          </div>
+
+          <div>
+            <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Job Description *</label>
+            <textarea formControlName="description" rows="6"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              placeholder="Describe the role, team, and what makes this opportunity great..."></textarea>
+            <div *ngIf="jobForm.get('description')?.touched && jobForm.get('description')?.errors"
+              class="text-red-600 text-sm mt-1">
+              Description is required
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label for="employmentType" class="block text-sm font-medium text-gray-700 mb-1">Employment Type *</label>
+              <select formControlName="employmentType"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                <option value="">Select type</option>
+                <option value="full-time">Full Time</option>
+                <option value="part-time">Part Time</option>
+                <option value="contract">Contract</option>
+                <option value="internship">Internship</option>
+                <option value="freelance">Freelance</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="workMode" class="block text-sm font-medium text-gray-700 mb-1">Work Mode *</label>
+              <select formControlName="workMode"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                <option value="">Select mode</option>
+                <option value="onsite">Onsite</option>
+                <option value="remote">Remote</option>
+                <option value="hybrid">Hybrid</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="openings" class="block text-sm font-medium text-gray-700 mb-1">Number of Openings *</label>
+              <input type="number" formControlName="openings" min="1"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Location -->
+      <div formGroupName="location">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">Location</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label for="country" class="block text-sm font-medium text-gray-700 mb-1">Country *</label>
+            <input type="text" formControlName="country"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+          </div>
+          <div>
+            <label for="state" class="block text-sm font-medium text-gray-700 mb-1">State</label>
+            <input type="text" formControlName="state"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+          </div>
+          <div>
+            <label for="city" class="block text-sm font-medium text-gray-700 mb-1">City *</label>
+            <input type="text" formControlName="city"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+          </div>
+        </div>
+      </div>
+
+      <!-- Experience -->
+      <div formGroupName="experience">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">Experience Required</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label for="min" class="block text-sm font-medium text-gray-700 mb-1">Minimum (years) *</label>
+            <input type="number" formControlName="min" min="0"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+          </div>
+          <div>
+            <label for="max" class="block text-sm font-medium text-gray-700 mb-1">Maximum (years)</label>
+            <input type="number" formControlName="max" min="0"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+          </div>
+        </div>
+      </div>
+
+      <!-- Salary -->
+      <div formGroupName="salary">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">Salary Range (Optional)</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label for="min" class="block text-sm font-medium text-gray-700 mb-1">Minimum</label>
+            <input type="number" formControlName="min"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+          </div>
+          <div>
+            <label for="max" class="block text-sm font-medium text-gray-700 mb-1">Maximum</label>
+            <input type="number" formControlName="max"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+          </div>
+          <div>
+            <label for="period" class="block text-sm font-medium text-gray-700 mb-1">Period</label>
+            <select formControlName="period"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+              <option value="monthly">Monthly</option>
+              <option value="yearly">Yearly</option>
+            </select>
+          </div>
+        </div>
+        <label class="flex items-center gap-2 mt-3">
+          <input type="checkbox" formControlName="isHidden" class="rounded text-blue-600">
+          <span class="text-sm text-gray-700">Hide salary from public</span>
+        </label>
+      </div>
+
+      <!-- Responsibilities -->
+      <div>
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">Responsibilities</h2>
+        <div formArrayName="responsibilities" class="space-y-2">
+          <div *ngFor="let resp of responsibilities.controls; let i = index" class="flex gap-2">
+            <input type="text" [formControlName]="i"
+              class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              placeholder="e.g. Design and implement scalable solutions">
+            <button type="button" (click)="removeResponsibility(i)"
+              class="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <button type="button" (click)="addResponsibility()"
+          class="mt-2 text-blue-600 hover:text-blue-700 text-sm flex items-center gap-1">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+          </svg>
+          Add Responsibility
+        </button>
+      </div>
+
+      <!-- Requirements -->
+      <div>
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">Requirements</h2>
+        <div formArrayName="requirements" class="space-y-2">
+          <div *ngFor="let req of requirements.controls; let i = index" class="flex gap-2">
+            <input type="text" [formControlName]="i"
+              class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              placeholder="e.g. 5+ years of experience in Node.js">
+            <button type="button" (click)="removeRequirement(i)"
+              class="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <button type="button" (click)="addRequirement()"
+          class="mt-2 text-blue-600 hover:text-blue-700 text-sm flex items-center gap-1">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+          </svg>
+          Add Requirement
+        </button>
+      </div>
+
+      <!-- Skills -->
+      <div>
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">Required Skills</h2>
+        <div class="relative">
+          <input type="text" [(ngModel)]="skillSearch" [ngModelOptions]="{standalone: true}"
+            (input)="searchSkills()"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            placeholder="Search and add skills...">
+
+          <!-- Search Results -->
+          <div *ngIf="skillSearchResults.length > 0"
+            class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+            <button *ngFor="let skill of skillSearchResults" type="button" (click)="addSkill(skill)"
+              class="w-full px-4 py-2 text-left hover:bg-gray-100 flex items-center justify-between">
+              <span>{{ skill.name }}</span>
+              <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Selected Skills -->
+        <div class="flex flex-wrap gap-2 mt-3">
+          <span *ngFor="let skill of selectedSkills"
+            class="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm flex items-center gap-2">
+            {{ skill.name }}
+            <button type="button" (click)="removeSkill(skill)" class="hover:text-red-600">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </span>
+        </div>
+      </div>
+
+      <!-- Submit Buttons -->
+      <div class="flex gap-3 pt-4 border-t">
+        <button type="submit" [disabled]="submitting || jobForm.invalid"
+          class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+          {{ submitting ? 'Creating...' : 'Post Job' }}
+        </button>
+        <button type="button" (click)="saveDraft()" [disabled]="submitting"
+          class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors">
+          Save as Draft
+        </button>
+        <button type="button" (click)="goBack()"
+          class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+          Cancel
+        </button>
+      </div>
+    </form>
+
+  </div>
+</div>
