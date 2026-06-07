@@ -1,70 +1,56 @@
-import { adminBaseUrl, baseUrl } from './api-endpoints.constants';
-
-
+import { adminBaseUrl, baseUrl } from "./api-endpoints.constants";
 
 export const ADMIN_API_END_POINTS = {
-  SUBSCRIPTION_PLANS: {
-    GET_PLANS: `${baseUrl}${adminBaseUrl}/subscription-plans`,
+    STATISTICS: {
+        GET_STATS: `${baseUrl}${adminBaseUrl}/stats`,
+    },
 
-    CREATE: `${baseUrl}${adminBaseUrl}/subscription-plans`,
+    SUBSCRIPTION_PLANS: {
+        GET_PLANS: `${baseUrl}${adminBaseUrl}/subscription-plans`,
 
-    UPDATE: (planId: string) =>
-      `${baseUrl}${adminBaseUrl}/subscription-plans/${planId}`,
+        CREATE: `${baseUrl}${adminBaseUrl}/subscription-plans`,
 
-    DELETE: (planId: string) =>
-      `${baseUrl}${adminBaseUrl}/subscription-plans/${planId}`,
-  },
+        UPDATE: (planId: string) => `${baseUrl}${adminBaseUrl}/subscription-plans/${planId}`,
 
-  USER_MANAGEMENT: {
-    GET_USERS: (page: number, limit: number, search?: string) =>
-      `${baseUrl}${adminBaseUrl}/getUsers?page=${page}&limit=${limit}&search=${search}`,
+        DELETE: (planId: string) => `${baseUrl}${adminBaseUrl}/subscription-plans/${planId}`,
+    },
 
-    GET_USER_BY_ID: (id: string) => `${baseUrl}${adminBaseUrl}/users/${id}`,
+    USER_MANAGEMENT: {
+        GET_USERS: (page: number, limit: number, search?: string) =>
+            `${baseUrl}${adminBaseUrl}/getUsers?page=${page}&limit=${limit}&search=${search}`,
 
-    BLOCK_USER_WITH_COMMENT: (id: string) =>
-      `${baseUrl}${adminBaseUrl}/users/${id}/block-with-comment`,
+        GET_USER_BY_ID: (id: string) => `${baseUrl}${adminBaseUrl}/users/${id}`,
 
-    GET_COMPANIES: (
-      page: number,
-      limit: number,
-      search?: string,
-      verificationStatus?: string,
-    ) =>
-      `${baseUrl}${adminBaseUrl}/getCompanies?page=${page}&limit=${limit}&search=${search}&verificationStatus=${verificationStatus}`,
-    GET_COMPANY_BY_ID: (id: string) =>
-      `${baseUrl}${adminBaseUrl}/companies/${id}`,
+        BLOCK_USER_WITH_COMMENT: (id: string) => `${baseUrl}${adminBaseUrl}/users/${id}/block-with-comment`,
 
-    VERIFY_COMPANY: (id: string) =>
-      `${baseUrl}${adminBaseUrl}/companies/${id}/verify`,
+        GET_COMPANIES: (page: number, limit: number, search?: string, verificationStatus?: string) =>
+            `${baseUrl}${adminBaseUrl}/getCompanies?page=${page}&limit=${limit}&search=${search}&verificationStatus=${verificationStatus}`,
+        GET_COMPANY_BY_ID: (id: string) => `${baseUrl}${adminBaseUrl}/companies/${id}`,
 
-    REJECT_COMPANY_VERIFICATION: (id: string) =>
-      `${baseUrl}${adminBaseUrl}/companies/${id}/reject-verification`,
+        VERIFY_COMPANY: (id: string) => `${baseUrl}${adminBaseUrl}/companies/${id}/verify`,
 
-    GET_COMPANY_DOCUMENT_URL: `${baseUrl}${adminBaseUrl}/documents/signed-url`,
+        REJECT_COMPANY_VERIFICATION: (id: string) => `${baseUrl}${adminBaseUrl}/companies/${id}/reject-verification`,
 
-    BLOCK_OR_UNBLOCK_COMPANY: (id: string, action: string) =>
-      `${baseUrl}${adminBaseUrl}/companies/${id}/${action}`,
+        GET_COMPANY_DOCUMENT_URL: `${baseUrl}${adminBaseUrl}/documents/signed-url`,
 
-    BLOCK_OR_UNBLOCK_USER: (id: string, action: string) =>
-      `${baseUrl}${adminBaseUrl}/users/${id}/${action}`,
-  },
+        BLOCK_OR_UNBLOCK_COMPANY: (id: string, action: string) => `${baseUrl}${adminBaseUrl}/companies/${id}/${action}`,
 
-  JOB: {
-    GET_ALL_JOBS: `${baseUrl}${adminBaseUrl}/jobs`,
+        BLOCK_OR_UNBLOCK_USER: (id: string, action: string) => `${baseUrl}${adminBaseUrl}/users/${id}/${action}`,
+    },
 
-    GET_JOB_BY_ID: (id: string) => `${baseUrl}${adminBaseUrl}/jobs/${id}`,
+    JOB: {
+        GET_ALL_JOBS: `${baseUrl}${adminBaseUrl}/jobs`,
 
-    VERIFY_JOB: (jobId: string) =>
-      `${baseUrl}${adminBaseUrl}/jobs/${jobId}/verify`,
+        GET_JOB_BY_ID: (id: string) => `${baseUrl}${adminBaseUrl}/jobs/${id}`,
 
-    BLOCK_JOB: (jobId: string) =>
-      `${baseUrl}${adminBaseUrl}/jobs/${jobId}/block`,
+        VERIFY_JOB: (jobId: string) => `${baseUrl}${adminBaseUrl}/jobs/${jobId}/verify`,
 
-    UNBLOCK_JOB: (jobId: string) =>
-      `${baseUrl}${adminBaseUrl}/jobs/${jobId}/unblock`,
-    DELETE_JOB: (jobId: string) => `${baseUrl}${adminBaseUrl}/jobs/${jobId}`,
+        BLOCK_JOB: (jobId: string) => `${baseUrl}${adminBaseUrl}/jobs/${jobId}/block`,
 
-    GET_APPLICATIONS_BY_JOB: (jobId: string, page: number, limit: number) =>
-      `${baseUrl}${adminBaseUrl}/jobs/${jobId}/applications?page=${page}&limit=${limit}`,
-  },
+        UNBLOCK_JOB: (jobId: string) => `${baseUrl}${adminBaseUrl}/jobs/${jobId}/unblock`,
+        DELETE_JOB: (jobId: string) => `${baseUrl}${adminBaseUrl}/jobs/${jobId}`,
+
+        GET_APPLICATIONS_BY_JOB: (jobId: string, page: number, limit: number) =>
+            `${baseUrl}${adminBaseUrl}/jobs/${jobId}/applications?page=${page}&limit=${limit}`,
+    },
 } as const;

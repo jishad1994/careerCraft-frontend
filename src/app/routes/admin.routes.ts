@@ -1,93 +1,88 @@
-import { Routes } from '@angular/router';
+import { Routes } from "@angular/router";
 
 export const ADMIN_ROUTES: Routes = [
-  {
-    path: '',
-    redirectTo: 'dashboard',
-    pathMatch: 'full',
-  },
-  {
-    path: 'dashboard',
-    loadComponent: () =>
-      import('../pages/admin/admin-dahboard/admin-dashboard.component').then(
-        (m) => m.AdminDashboardComponent,
-      ),
+    {
+        path: "",
+        redirectTo: "dashboard",
+        pathMatch: "full",
+    },
+    {
+        path: "dashboard",
+        loadComponent: () =>
+            import("../pages/admin/admin-dahboard/admin-dashboard.component").then((m) => m.AdminDashboardComponent),
 
-    data: { role: 'admin' },
-    children: [
-      { path: '', redirectTo: 'users', pathMatch: 'full' },
+        data: { role: "admin" },
+        children: [
+            { path: "", redirectTo: "stats", pathMatch: "full" },
 
-      {
-        path: 'jobs',
-        loadComponent: () =>
-          import('../features/admin/jobs/job-list/admin-job-list.component').then(
-            (m) => m.AdminJobListComponent,
-          ),
-      },
-      {
-        path: 'jobs/:id',
-        loadComponent: () =>
-          import('../features/admin/jobs/admin-job-view/admin-job-view.component').then(
-            (m) => m.AdminJobViewComponent,
-          ),
-      },
-      {
-        path: 'jobs/:id/applications',
-        loadComponent: () =>
-          import('../features/admin/applications/admin-applications/admin-applications.component').then(
-            (m) => m.AdminApplicationsComponent,
-          ),
-      },
-      {
-        path: 'users',
-        loadComponent: () =>
-          import('../features/admin/user-table/user-table.component').then(
-            (m) => m.UserTableComponent,
-          ),
-      },
-      {
-        path: 'users/:id',
-        loadComponent: () =>
-          import('../features/admin/user-details/user-details.component').then(
-            (m) => m.UserDetailsComponent,
-          ),
-      },
-      {
-        path: 'companies',
-        loadComponent: () =>
-          import('../features/admin/companies-table/companies-table.component').then(
-            (m) => m.CompaniesTableComponent,
-          ),
-      },
-      {
-        path: 'companies/:id',
-        loadComponent: () =>
-          import('../features/admin/company-details/company-details.component').then(
-            (m) => m.CompanyDetailsComponent,
-          ),
-      },
-      {
-        path: 'skills-management',
-        loadComponent: () =>
-          import('../features/admin/skills/skill-management/skill-management.component').then(
-            (m) => m.SkillManagementComponent,
-          ),
-      },
-      {
-        path: 'skills-management/:id',
-        loadComponent: () =>
-          import('../features/admin/skills/skill-details/skill-details.component').then(
-            (m) => m.SkillDetailsComponent,
-          ),
-      },
+            {
+                path: "jobs",
+                loadComponent: () =>
+                    import("../features/admin/jobs/job-list/admin-job-list.component").then((m) => m.AdminJobListComponent),
+            },
+            {
+                path: "stats",
+                loadComponent: () =>
+                    import("../features/admin/admin-stats/admin-stats.component").then((m) => m.AdminStatsComponent),
+            },
+            {
+                path: "jobs/:id",
+                loadComponent: () =>
+                    import("../features/admin/jobs/admin-job-view/admin-job-view.component").then(
+                        (m) => m.AdminJobViewComponent,
+                    ),
+            },
+            {
+                path: "jobs/:id/applications",
+                loadComponent: () =>
+                    import("../features/admin/applications/admin-applications/admin-applications.component").then(
+                        (m) => m.AdminApplicationsComponent,
+                    ),
+            },
+            {
+                path: "users",
+                loadComponent: () =>
+                    import("../features/admin/user-table/user-table.component").then((m) => m.UserTableComponent),
+            },
+            {
+                path: "users/:id",
+                loadComponent: () =>
+                    import("../features/admin/user-details/user-details.component").then((m) => m.UserDetailsComponent),
+            },
+            {
+                path: "companies",
+                loadComponent: () =>
+                    import("../features/admin/companies-table/companies-table.component").then(
+                        (m) => m.CompaniesTableComponent,
+                    ),
+            },
+            {
+                path: "companies/:id",
+                loadComponent: () =>
+                    import("../features/admin/company-details/company-details.component").then(
+                        (m) => m.CompanyDetailsComponent,
+                    ),
+            },
+            {
+                path: "skills-management",
+                loadComponent: () =>
+                    import("../features/admin/skills/skill-management/skill-management.component").then(
+                        (m) => m.SkillManagementComponent,
+                    ),
+            },
+            {
+                path: "skills-management/:id",
+                loadComponent: () =>
+                    import("../features/admin/skills/skill-details/skill-details.component").then(
+                        (m) => m.SkillDetailsComponent,
+                    ),
+            },
 
-      {
-        path: 'manage-plans',
-        loadChildren: () =>
-          import('../routes/admin/subscription-plans.routes').then(
-            (m) => m.adminSubscriptionRoutes,
-          ),
-      },
-    ],
-  },
+            {
+                path: "manage-plans",
+                loadChildren: () =>
+                    import("../routes/admin/subscription-plans.routes").then((m) => m.adminSubscriptionRoutes),
+            },
+        ],
+    },
 ];

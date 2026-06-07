@@ -86,38 +86,40 @@
         </div>
 
         <!-- Resumes -->
-        <div *ngIf="profile.resumeURL && profile.resumeURL.length > 0" class="bg-white rounded-lg shadow-sm p-6 mb-4">
-            <h2 class="text-xl font-bold text-gray-900 mb-4">Resumes</h2>
-            <div class="space-y-3">
-                <div *ngFor="let resume of profile.resumeURL"
-                    class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                    <div class="flex items-center flex-1">
-                        <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center mr-3">
-                            <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z">
-                                </path>
-                            </svg>
-                        </div>
-                        <div class="flex-1">
-                            <p class="font-medium text-gray-900">{{ resume.originalName }}</p>
-                            <p class="text-sm text-gray-500">{{ (resume.size / 1024).toFixed(1) }} KB • Uploaded {{
-                                formatDate(resume.uploadedAt.toString()) }}</p>
-                        </div>
+        <!-- Resume -->
+        @if (latestResume) {
+        <div class="bg-white rounded-lg shadow-sm p-6 mb-4">
+            <h2 class="text-xl font-bold text-gray-900 mb-4">Resume</h2>
+            <div
+                class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                <div class="flex items-center flex-1">
+                    <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center mr-3 shrink-0">
+                        <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                        </svg>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <button (click)="viewResume(resume)"
-                            class="px-4 py-2 text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50 transition-colors font-medium">
-                            View
-                        </button>
-                        <button (click)="downloadResume(resume)"
-                            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
-                            Download
-                        </button>
+                    <div class="flex-1 min-w-0">
+                        <p class="font-medium text-gray-900 truncate">{{ latestResume.originalName }}</p>
+                        <p class="text-sm text-gray-500">
+                            {{ (latestResume.size / 1024).toFixed(1) }} KB •
+                            Uploaded {{ formatDate(latestResume.uploadedAt.toString()) }}
+                        </p>
                     </div>
+                </div>
+                <div class="flex items-center gap-2 shrink-0 ml-4">
+                    <button (click)="viewResume(latestResume)"
+                        class="px-4 py-2 text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50 transition-colors font-medium text-sm">
+                        View
+                    </button>
+                    <button (click)="downloadResume(latestResume)"
+                        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm">
+                        Download
+                    </button>
                 </div>
             </div>
         </div>
+        }
 
         <!-- Experience -->
         <div *ngIf="profile.experience && profile.experience.length > 0" class="bg-white rounded-lg shadow-sm p-6 mb-4">

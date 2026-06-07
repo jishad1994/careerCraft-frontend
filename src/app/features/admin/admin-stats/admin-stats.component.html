@@ -1,0 +1,96 @@
+@if (isLoading) {
+  <div class="flex items-center justify-center min-h-96">
+    <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+  </div>
+}
+
+@if (!isLoading && stats) {
+  <div class="space-y-6">
+
+    <!-- Summary Cards -->
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+      <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-4">
+        <p class="text-xs text-gray-500 font-medium uppercase tracking-wide">Users</p>
+        <p class="text-2xl font-bold text-gray-900 mt-1">{{ stats.users.total }}</p>
+        <p class="text-xs text-red-500 mt-1">{{ stats.users.blocked }} blocked</p>
+      </div>
+      <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-4">
+        <p class="text-xs text-gray-500 font-medium uppercase tracking-wide">Companies</p>
+        <p class="text-2xl font-bold text-gray-900 mt-1">{{ stats.companies.total }}</p>
+        <p class="text-xs text-green-600 mt-1">{{ stats.companies.verified }} verified</p>
+      </div>
+      <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-4">
+        <p class="text-xs text-gray-500 font-medium uppercase tracking-wide">Jobs</p>
+        <p class="text-2xl font-bold text-gray-900 mt-1">{{ stats.jobs.total }}</p>
+        <p class="text-xs text-blue-600 mt-1">{{ stats.jobs.byStatus.active }} active</p>
+      </div>
+      <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-4">
+        <p class="text-xs text-gray-500 font-medium uppercase tracking-wide">Applications</p>
+        <p class="text-2xl font-bold text-gray-900 mt-1">{{ stats.applications.total }}</p>
+        <p class="text-xs text-green-600 mt-1">{{ stats.applications.byStatus.hired }} hired</p>
+      </div>
+      <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-4">
+        <p class="text-xs text-gray-500 font-medium uppercase tracking-wide">Revenue</p>
+        <p class="text-xl font-bold text-gray-900 mt-1">{{ formatCurrency(stats.revenue.total) }}</p>
+        <p class="text-xs text-gray-400 mt-1">all time</p>
+      </div>
+      <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-4">
+        <p class="text-xs text-gray-500 font-medium uppercase tracking-wide">Subscriptions</p>
+        <p class="text-2xl font-bold text-gray-900 mt-1">{{ stats.subscriptions.active }}</p>
+        <p class="text-xs text-green-600 mt-1">active</p>
+      </div>
+    </div>
+
+    <!-- Growth Chart -->
+    <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
+      <h2 class="text-sm font-semibold text-gray-700 mb-4">User & Company Growth (Last 12 Months)</h2>
+      <div class="h-64">
+        <canvas #growthCanvas></canvas>
+      </div>
+    </div>
+
+    <!-- Revenue Chart -->
+    <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
+      <h2 class="text-sm font-semibold text-gray-700 mb-4">Monthly Revenue (Last 12 Months)</h2>
+      <div class="h-64">
+        <canvas #revenueCanvas></canvas>
+      </div>
+    </div>
+
+    <!-- Bottom Row -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+      <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
+        <h2 class="text-sm font-semibold text-gray-700 mb-4">Jobs by Status</h2>
+        <div class="h-52">
+          <canvas #jobStatusCanvas></canvas>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
+        <h2 class="text-sm font-semibold text-gray-700 mb-4">Applications by Status</h2>
+        <div class="h-52">
+          <canvas #applicationCanvas></canvas>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
+        <h2 class="text-sm font-semibold text-gray-700 mb-4">Subscriptions</h2>
+        <div class="h-52">
+          <canvas #subscriptionCanvas></canvas>
+        </div>
+      </div>
+
+    </div>
+  </div>
+}
+
+@if (!isLoading && !stats) {
+  <div class="flex flex-col items-center justify-center min-h-96 text-gray-400">
+    <p class="text-sm">Failed to load dashboard data.</p>
+    <button (click)="loadStats()"
+      class="mt-3 text-sm text-blue-600 hover:underline">
+      Try again
+    </button>
+  </div>
+}

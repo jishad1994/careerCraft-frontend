@@ -178,4 +178,14 @@ export class CandidateProfileComponent implements OnInit, OnDestroy {
     goBack(): void {
         this.router.navigate([this.previousPageUrl]);
     }
+
+    get latestResume(): IDocuments | null {
+    if (!this.profile?.resumeURL || this.profile.resumeURL.length === 0) {
+        return null;
+    }
+
+    return this.profile.resumeURL.reduce((latest, current) =>
+        new Date(current.uploadedAt) > new Date(latest.uploadedAt) ? current : latest
+    );
+}
 }

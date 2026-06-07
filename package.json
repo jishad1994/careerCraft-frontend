@@ -26,6 +26,7 @@
     "@react-oauth/google": "^0.12.2",
     "@stripe/stripe-js": "^8.8.0",
     "@tailwindcss/postcss": "^4.1.11",
+    "chart.js": "^4.5.1",
     "logger": "^0.0.1",
     "ngx-image-cropper": "^9.1.6",
     "postcss": "^8.5.6",

@@ -19,7 +19,7 @@ import { NoSpaceDirective } from '../../../custom-directives/no-space.directive'
 })
 export class LoginComponent {
   private FB = inject(FormBuilder);
-
+showPassword = false;
   loginForm: FormGroup;
 
   @Input() loading = false;

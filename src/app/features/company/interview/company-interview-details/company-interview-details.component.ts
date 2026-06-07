@@ -252,7 +252,7 @@ export class CompanyInterviewDetailsComponent implements OnInit, OnDestroy {
                 [`/company`, this.interview.applicationId, `interviews`, this.interview.interview._id, `join-interview`],
                 {
                     state: {
-                        returnUrl: `company/dashboard/applications/interviews${this.interviewId}`,
+                        returnUrl: `/company/dashboard/interviews/${this.interview.interview._id}`,
                     },
                 },
             );
